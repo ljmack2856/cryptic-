@@ -229,7 +229,7 @@ nav {
 /* Hero visual */
 .hero-visual {
   flex: 1;
-  max-width: 480px;
+  max-width: 400px;
   position: relative;
   display: flex;
   align-items: center;
@@ -243,13 +243,7 @@ nav {
   height: auto;
   display: block;
   object-fit: contain;
-  filter: drop-shadow(0 0 60px rgba(245,197,24,0.25)) drop-shadow(0 0 20px rgba(245,197,24,0.15));
-  animation: coinFloat 5s ease-in-out infinite;
-}
-
-@keyframes coinFloat {
-  0%,100% { transform: translateY(0) rotate(-1deg); }
-  50%      { transform: translateY(-18px) rotate(1deg); }
+  /* No glow, no animation — clean and stationary */
 }
 
 /* ══════════════════════════════════════
