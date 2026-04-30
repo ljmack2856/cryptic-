@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Investment Plans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ══════════════════════════════════════
+       CSS VARIABLES — DARK / LIGHT THEMES
+    ══════════════════════════════════════ */
+    :root {
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --gold:         #f5a623;
+      --gold-dark:    #d4891a;
+      --green:        #22c55e;
+      --nav-h:        68px;
+      --topbar-h:     40px;
+    }
+
+    [data-theme="dark"] {
+      --bg:           #0a0a0a;
+      --bg-card:      #111111;
+      --bg-card2:     #161616;
+      --bg-hero:      #0a0a0a;
+      --border:       rgba(255,255,255,0.08);
+      --text-hi:      #ffffff;
+      --text-lo:      #888;
+      --text-mid:     #bbb;
+      --topbar-bg:    #111;
+      --nav-bg:       rgba(10,10,10,0.95);
+      --hero-overlay: rgba(0,0,0,0.55);
+      --card-hover:   rgba(245,166,35,0.12);
+      --divider:      rgba(255,255,255,0.08);
+      --yes-bg:       #1877f2;
+      --why-bg:       #0a0a0a;
+      --pay-bg:       #0a0a0a;
+      --feature-border: rgba(255,255,255,0.06);
+    }
+
+    [data-theme="light"] {
+      --bg:           #f5f5f5;
+      --bg-card:      #ffffff;
+      --bg-card2:     #f9f9f9;
+      --bg-hero:      #1a1a2e;
+      --border:       rgba(0,0,0,0.1);
+      --text-hi:      #111111;
+      --text-lo:      #777;
+      --text-mid:     #444;
+      --topbar-bg:    #1a1a2e;
+      --nav-bg:       rgba(245,245,245,0.97);
+      --hero-overlay: rgba(0,0,0,0.45);
+      --card-hover:   rgba(245,166,35,0.06);
+      --divider:      rgba(0,0,0,0.1);
+      --yes-bg:       #1877f2;
+      --why-bg:       #f0f0f0;
+      --pay-bg:       #f0f0f0;
+      --feature-border: rgba(0,0,0,0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-hi);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ══════════════════════════════════════
+       TOP BAR
+    ══════════════════════════════════════ */
+    .topbar {
+      background: var(--topbar-bg);
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 2rem;
+      padding: 0 6%;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .topbar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.8rem;
+      color: #ccc;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .topbar-item svg { flex-shrink: 0; opacity: 0.75; }
+
+    .topbar-divider {
+      width: 1px; height: 16px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 0.25rem 0.65rem;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 0.78rem;
+      font-family: var(--font-body);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .theme-toggle:hover { border-color: var(--gold); color: var(--gold); }
+    .theme-toggle .icon-sun, .theme-toggle .icon-moon { font-size: 0.9rem; }
+    [data-theme="light"] .icon-moon { display: none; }
+    [data-theme="dark"]  .icon-sun  { display: none; }
+
+    /* ══════════════════════════════════════
+       NAVBAR
+    ══════════════════════════════════════ */
+    nav {
+      position: sticky;
+      top: 0;
+      height: var(--nav-h);
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--divider);
+      z-index: 100;
+      padding: 0 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .logo .crypto  { color: var(--text-hi); }
+    .logo .fxminers { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.25rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-mid);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-hi); }
+
+    .btn-login-now {
+      background: var(--gold);
+      color: #000 !important;
+      font-weight: 700;
+      padding: 0.5rem 1.4rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-login-now:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text-hi); border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-panel {
+      position: fixed;
+      top: calc(var(--topbar-h) + var(--nav-h));
+      left: 0; right: 0;
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--divider);
+      padding: 0 6%;
+      z-index: 99;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+    }
+    .mobile-panel.open { max-height: 360px; padding: 1.5rem 6% 2rem; }
+    .mobile-panel a {
+      display: block; color: var(--text-mid); text-decoration: none;
+      font-size: 1rem; font-weight: 500; padding: 0.85rem 0;
+      border-bottom: 1px solid var(--divider); transition: color 0.2s;
+    }
+    .mobile-panel a:hover { color: var(--gold); }
+
+    /* ══════════════════════════════════════
+       HERO BANNER
+    ══════════════════════════════════════ */
+    .plans-hero {
+      position: relative;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .plans-hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('coinflow.png');
+      background-size: cover;
+      background-position: center 30%;
+      filter: brightness(0.45);
+    }
+
+    .plans-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.75) 40%, transparent 100%);
+    }
+
+    .plans-hero-content {
+      position: relative; z-index: 1;
+      padding: 0 6%;
+    }
+    .plans-hero-content h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .breadcrumb {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.6);
+    }
+    .breadcrumb a { color: rgba(255,255,255,0.6); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--gold); }
+
+    /* ══════════════════════════════════════
+       PLANS SECTION
+    ══════════════════════════════════════ */
+    .plans-section {
+      padding: 5rem 6%;
+      background: var(--bg);
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .plans-grid-bottom {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 75%;
+      margin: 0 auto;
+    }
+
+    /* Plan card */
+    .plan-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .plan-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(245,166,35,0.25);
+    }
+    .plan-card.featured {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(245,166,35,0.3), 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    /* Card top row */
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-hi);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .card-duration {
+      font-size: 0.8rem;
+      color: var(--text-lo);
+    }
+    .card-return {
+      background: var(--bg-card2);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .plan-card.featured .card-return {
+      background: rgba(245,166,35,0.15);
+      border: 1px solid rgba(245,166,35,0.3);
+    }
+    .card-return .pct {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-hi);
+      line-height: 1;
+    }
+    .card-return .ret-label {
+      font-size: 0.7rem;
+      color: var(--text-lo);
+      display: block;
+      margin-top: 0.15rem;
+    }
+
+    .card-divider {
+      height: 1px;
+      background: var(--divider);
+      margin: 0 0 1.25rem;
+    }
+
+    /* Features rows */
+    .card-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+    .feat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-lo);
+    }
+    .feat-row .feat-val {
+      color: var(--text-mid);
+      font-weight: 500;
+    }
+    .yes-badge {
+      background: var(--yes-bg);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+    }
+
+    /* Range */
+    .card-range {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-hi);
+      margin-bottom: 1.5rem;
+      padding: 0.75rem;
+      background: var(--bg-card2);
+      border-radius: 8px;
+    }
+
+    /* Invest button */
+    .btn-invest {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--gold);
+      color: #000;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.85rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      margin-top: auto;
+    }
+    .btn-invest:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+    /* ══════════════════════════════════════
+       WHY CHOOSE US
+    ══════════════════════════════════════ */
+    .why-section {
+      background: var(--why-bg);
+      padding: 5rem 6%;
+      border-top: 1px solid var(--divider);
+    }
+
+    .why-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .why-left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      color: var(--text-hi);
+      margin-bottom: 0.75rem;
+      line-height: 1.15;
+    }
+    .why-left p {
+      color: var(--text-lo);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .why-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      border: 1px solid var(--feature-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .why-feat {
+      padding: 1.75rem 1.5rem;
+      border: 1px solid var(--feature-border);
+      background: var(--bg-card);
+      transition: background 0.2s;
+    }
+    .why-feat:hover { background: var(--card-hover); }
+
+    .why-feat-icon {
+      width: 40px; height: 40px;
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .why-feat h4 {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .why-feat p {
+      font-size: 0.85rem;
+      color: var(--text-lo);
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════
+       PAYMENT GATEWAY
+    ══════════════════════════════════════ */
+    .payment-section {
+      background: var(--pay-bg);
+      padding: 5rem 6%;
+      border-top: 1px solid var(--divider);
+    }
+
+    .payment-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .payment-left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 3vw, 2.6rem);
+      font-weight: 800;
+      color: var(--text-hi);
+      margin-bottom: 0.75rem;
+      line-height: 1.15;
+    }
+    .payment-left p {
+      color: var(--text-lo);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Accepted logos row */
+    .payment-logos {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .pay-logo {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-hi);
+      min-width: 100px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .pay-logo:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .pay-logo.mpesa { color: #43b02a; }
+    .pay-logo.btc   { color: var(--gold); }
+    .pay-logo.eth   { color: #627eea; }
+
+    /* Payment right — gateway grid image */
+    .payment-right {
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      border-radius: 16px;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .gw-badge {
+      background: rgba(255,255,255,0.95);
+      border-radius: 10px;
+      padding: 0.75rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #222;
+      transition: transform 0.2s;
+    }
+    .gw-badge:hover { transform: scale(1.04); }
+    .gw-badge.paypal  { color: #003087; }
+    .gw-badge.mpesa2  { color: #43b02a; }
+    .gw-badge.stripe  { color: #635bff; }
+    .gw-badge.braintree { color: #333; font-size: 0.7rem; }
+    .gw-badge.authnet { color: #d00; font-size: 0.7rem; }
+    .gw-badge.paytm   { color: #00baf2; }
+    .gw-badge.insta   { color: #eb6c13; }
+    .gw-badge.ccav    { color: #1a1a1a; }
+
+    /* ══════════════════════════════════════
+       WHATSAPP FLOAT
+    ══════════════════════════════════════ */
+    .whatsapp-float {
+      position: fixed; bottom: 28px; left: 24px;
+      width: 56px; height: 56px;
+      background: #25d366; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+      z-index: 999; text-decoration: none;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+    .whatsapp-float::before {
+      content: ''; position: absolute; inset: -4px; border-radius: 50%;
+      border: 2px solid rgba(37,211,102,0.5);
+      animation: waRing 2.5s ease-out infinite;
+    }
+    @keyframes waRing {
+      0%   { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    .wa-tooltip {
+      position: absolute; left: calc(100% + 12px); bottom: 8px;
+      background: #fff; color: #111;
+      font-family: var(--font-body); font-size: 0.8rem; font-weight: 500;
+      line-height: 1.4; padding: 0.55rem 0.85rem; border-radius: 10px;
+      white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      pointer-events: none; opacity: 0; transform: translateX(-6px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .wa-tooltip::before {
+      content: ''; position: absolute; top: 50%; left: -6px;
+      transform: translateY(-50%);
+      border: 6px solid transparent; border-right-color: #fff; border-left: 0;
+    }
+    .whatsapp-float:hover .wa-tooltip { opacity: 1; transform: translateX(0); }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .plans-grid { grid-template-columns: repeat(2, 1fr); }
+      .plans-grid-bottom { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+    }
+
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .topbar { gap: 1rem; }
+      .topbar-item:first-child { display: none; }
+
+      .why-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .payment-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+
+    @media (max-width: 600px) {
+      .plans-grid { grid-template-columns: 1fr; }
+      .plans-grid-bottom { grid-template-columns: 1fr; }
+      .why-features { grid-template-columns: 1fr; }
+      .payment-right { grid-template-columns: 1fr 1fr; }
+    }
+    /* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer { border-top: 1px solid var(--border); padding: 4rem 6% 2.5rem; }
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem; margin-bottom: 3rem;
+}
+.footer-brand .logo { margin-bottom: 1rem; }
+.footer-brand p { font-size: 0.875rem; color: var(--text-lo); max-width: 260px; line-height: 1.6; }
+
+.footer-col h4 {
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-hi); margin-bottom: 1.25rem;
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.65rem; }
+.footer-col a { font-size: 0.875rem; color: var(--text-lo); text-decoration: none; transition: color 0.2s; }
+.footer-col a:hover { color: var(--accent-green); }
+
+.footer-bottom {
+  padding-top: 2rem; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-bottom p { font-size: 0.8rem; color: var(--text-lo); }
+
+.footer-socials { display: flex; gap: 0.75rem; }
+.social-btn {
+  width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-lo); text-decoration: none; font-size: 0.85rem;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.social-btn:hover { border-color: rgba(34,197,94,0.4); color: var(--accent-green); background: rgba(34,197,94,0.06); }
+
+  </style>
+  
+</head>
+<body>
+
+  <!-- ══ TOP BAR ══ -->
+  <div class="topbar">
+    <a href="tel:+15612830827" class="topbar-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.07 2.18 2 2 0 012.07 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>
+      +1 (561)-283-0827
+    </a>
+    <div class="topbar-divider"></div>
+    <a href="mailto:info@cryptofxminers.com" class="topbar-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      info@cryptofxminers.com
+    </a>
+    <div class="topbar-divider"></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="icon-sun">☀️</span>
+      <span class="icon-moon">🌙</span>
+      <span id="themeLabel">Light Mode</span>
+    </button>
+  </div>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav>
+    <a href="index.html" class="logo">
+      <span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="plans.html" class="active">Plans</a></li>
+      <li><a href="index.html#how-it-works">Contact</a></li>
+      <li><a href="login.html" class="btn-login-now">Login Now</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile panel -->
+  <div id="mobilePanel" class="mobile-panel">
+    <a href="index.html">Home</a>
+    <a href="plans.html">Plans</a>
+    <a href="index.html#how-it-works">Contact</a>
+    <a href="login.html">Login Now</a>
+  </div>
+
+  <!-- ══ HERO BANNER ══ -->
+  <div class="plans-hero">
+    <div class="plans-hero-bg"></div>
+    <div class="plans-hero-overlay"></div>
+    <div class="plans-hero-content">
+      <h1>Investment Plan</h1>
+      <div class="breadcrumb"><a href="index.html">Home</a></div>
+    </div>
+  </div>
+
+  <!-- ══ PLANS GRID ══ -->
+  <section class="plans-section">
+
+    <!-- Row 1: Bronze, Silver, Gold, Premium -->
+    <div class="plans-grid">
+
+      <!-- BRONZE -->
+      <div class="plan-card">
+        <div class="card-top">
+          <div>
+            <div class="card-name">Bronze</div>
+            <div class="card-duration">24hrs plan</div>
+          </div>
+          <div class="card-return">
+            <div class="pct">5%</div>
+            <span class="ret-label">Return</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-features">
+          <div class="feat-row">
+            <span>Profit</span>
+            <span class="feat-val">Every Day</span>
+          </div>
+          <div class="feat-row">
+            <span>Capital will back</span>
+            <span class="yes-badge">Yes</span>
+          </div>
+        </div>
+        <div class="card-range">50$ – 800$</div>
+        <a href="register.html" class="btn-invest">Invest Now</a>
+      </div>
+
+      <!-- SILVER -->
+      <div class="plan-card featured">
+        <div class="card-top">
+          <div>
+            <div class="card-name">Silver</div>
+            <div class="card-duration">48hrs plan</div>
+          </div>
+          <div class="card-return">
+            <div class="pct">10%</div>
+            <span class="ret-label">Return</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-features">
+          <div class="feat-row">
+            <span>Profit</span>
+            <span class="feat-val">Every Day</span>
+          </div>
+          <div class="feat-row">
+            <span>Capital will back</span>
+            <span class="yes-badge">Yes</span>
+          </div>
+        </div>
+        <div class="card-range">801$ – 3000$</div>
+        <a href="register.html" class="btn-invest">Invest Now</a>
+      </div>
+
+      <!-- GOLD -->
+      <div class="plan-card">
+        <div class="card-top">
+          <div>
+            <div class="card-name">Gold</div>
+            <div class="card-duration">72hrs plan</div>
+          </div>
+          <div class="card-return">
+            <div class="pct">8%</div>
+            <span class="ret-label">Return</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-features">
+          <div class="feat-row">
+            <span>Profit</span>
+            <span class="feat-val">Every Week</span>
+          </div>
+          <div class="feat-row">
+            <span>Capital will back</span>
+            <span class="yes-badge">Yes</span>
+          </div>
+        </div>
+        <div class="card-range">3001$ – 5000$</div>
+        <a href="register.html" class="btn-invest">Invest Now</a>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="plan-card">
+        <div class="card-top">
+          <div>
+            <div class="card-name">Premium</div>
+            <div class="card-duration">weekly plan</div>
+          </div>
+          <div class="card-return">
+            <div class="pct">5%</div>
+            <span class="ret-label">Return</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-features">
+          <div class="feat-row">
+            <span>Profit</span>
+            <span class="feat-val">Every Hour</span>
+          </div>
+          <div class="feat-row">
+            <span>Capital will back</span>
+            <span class="yes-badge">Yes</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-features">
+          <div class="feat-row">
+            <span>Profit</span>
+            <span class="feat-val">Every Month</span>
+          </div>
+          <div class="feat-row">
+            <span>Capital will back</span>
+            <span class="yes-badge">Yes</span>
+          </div>
+        </div>
+        <div class="card-range">10001$ – 50000$</div>
+        <a href="register.html" class="btn-invest">Invest Now</a>
+      </div>
+
+    </div>
+
+    <!-- Row 2: Executive centered -->
+    <div class="plans-grid-bottom">
+      <div class="plan-card">
+        <div class="card-top">
+          <div>
+            <div class="card-name">Executive</div>
+            <div class="card-duration">monthly plan</div>
+          </div>
+          <div class="card-return">
+            <div class="pct">4%</div>
+            <span class="ret-label">Return</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-features">
+          <div class="feat-row">
+            <span>Profit</span>
+            <span class="feat-val">Every Month</span>
+          </div>
+          <div class="feat-row">
+            <span>Capital will back</span>
+            <span class="yes-badge">Yes</span>
+          </div>
+        </div>
+        <div class="card-range">10001$ – 50000$</div>
+        <a href="register.html" class="btn-invest">Invest Now</a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ WHY CHOOSE US ══ -->
+  <section class="why-section">
+    <div class="why-inner">
+      <div class="why-left">
+        <h2>Why Choose US</h2>
+        <p>We are the best in the market with solutions that suits you.</p>
+      </div>
+      <div class="why-features">
+        <div class="why-feat">
+          <div class="why-feat-icon">🌍</div>
+          <h4>Investing Without Borders</h4>
+          <p>You can invest in our company from anywhere in the world.</p>
+        </div>
+        <div class="why-feat">
+          <div class="why-feat-icon">🕐</div>
+          <h4>24/7 Support</h4>
+          <p>Our specialists are available around the clock to help you with any questions.</p>
+        </div>
+        <div class="why-feat">
+          <div class="why-feat-icon">🛡️</div>
+          <h4>Insured Deposits</h4>
+          <p>Your deposits are insured by our Special Trust Fund. Your deposits are safe.</p>
+        </div>
+        <div class="why-feat">
+          <div class="why-feat-icon">📈</div>
+          <h4>Daily Profit</h4>
+          <p>You can make profit every day with our investment proposals!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PAYMENT GATEWAY ══ -->
+  <section class="payment-section">
+    <div class="payment-inner">
+      <div class="payment-left">
+        <h2>Our Payment Gateway</h2>
+        <p>We uphold various gateways that suits you.</p>
+        <div class="payment-logos">
+          <div class="pay-logo mpesa">M-PESA</div>
+          <div class="pay-logo btc">₿ Bitcoin</div>
+          <div class="pay-logo eth">Ξ Ethereum</div>
+          <div class="pay-logo">USDT</div>
+        </div>
+      </div>
+      <div class="payment-right">
+        <div class="gw-badge paypal">PayPal</div>
+        <div class="gw-badge mpesa2">M·PESA</div>
+        <div class="gw-badge stripe">stripe</div>
+        <div class="gw-badge braintree">Braintree</div>
+        <div class="gw-badge authnet">authorize.net</div>
+        <div class="gw-badge paytm">Paytm</div>
+        <div class="gw-badge insta">instamojo</div>
+        <div class="gw-badge ccav">CCAvenue</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ WHATSAPP ══ -->
+  <a href="https://wa.me/1234567890" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" fill="#fff">
+      <path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.736 5.472 2.027 7.774L0 32l8.418-2.005A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.5a13.43 13.43 0 01-6.845-1.872l-.49-.29-5.001 1.192 1.216-4.862-.32-.5A13.46 13.46 0 012.5 16C2.5 8.544 8.544 2.5 16 2.5S29.5 8.544 29.5 16 23.456 29.5 16 29.5zm7.44-9.77c-.408-.204-2.414-1.19-2.788-1.327-.374-.136-.646-.204-.918.204-.272.408-1.054 1.327-1.292 1.599-.238.272-.476.306-.884.102-.408-.204-1.724-.635-3.284-2.026-1.213-1.082-2.033-2.42-2.27-2.828-.238-.408-.026-.629.179-.832.183-.183.408-.476.612-.714.204-.238.272-.408.408-.68.136-.272.068-.51-.034-.714-.102-.204-.918-2.21-1.258-3.028-.332-.796-.67-.688-.918-.7l-.782-.013c-.272 0-.714.102-1.088.51-.374.408-1.428 1.394-1.428 3.4s1.462 3.944 1.666 4.216c.204.272 2.876 4.388 6.972 6.154.975.42 1.735.672 2.328.861.978.31 1.869.266 2.573.162.785-.117 2.414-.986 2.754-1.938.34-.952.34-1.768.238-1.938-.102-.17-.374-.272-.782-.476z"/>
+    </svg>
+    <span class="wa-tooltip">We are here to help,<br/>Let's Chat</span>
+  </a>
+ 
+  <script>
+    // ── Theme toggle
+    const html       = document.documentElement;
+    const toggle     = document.getElementById('themeToggle');
+    const themeLabel = document.getElementById('themeLabel');
+
+    toggle.addEventListener('click', () => {
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeLabel.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    });
+
+    // ── Hamburger
+    const hamburger   = document.getElementById('hamburger');
+    const mobilePanel = document.getElementById('mobilePanel');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobilePanel.classList.toggle('open');
+    });
+    mobilePanel.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobilePanel.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
