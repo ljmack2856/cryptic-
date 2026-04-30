@@ -229,7 +229,7 @@ nav {
 /* Hero visual */
 .hero-visual {
   flex: 1;
-  max-width: 400px;
+  max-width: 480px;
   position: relative;
   display: flex;
   align-items: center;
@@ -243,7 +243,7 @@ nav {
   height: auto;
   display: block;
   object-fit: contain;
-  /* No glow, no animation — clean and stationary */
+  /* STATIONARY — no filter, no animation, no glow, no border */
 }
 
 /* ══════════════════════════════════════
@@ -602,6 +602,238 @@ nav {
 }
 
 /* ══════════════════════════════════════
+   PROFIT CALCULATOR SECTION
+══════════════════════════════════════ */
+.calc-section {
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+  padding: 6rem 6%;
+  background: #f0f4f8;
+  border-top: 1px solid #dde3ea;
+  border-bottom: 1px solid #dde3ea;
+}
+
+.calc-image {
+  flex: 1;
+  max-width: 500px;
+}
+.calc-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.calc-content {
+  flex: 1;
+  max-width: 580px;
+}
+
+.calc-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.calc-content h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.calc-content > p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+
+/* Two-column row: Select Plan + Enter Amount */
+.calc-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.calc-field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+/* Custom select wrapper */
+.calc-select-wrap {
+  position: relative;
+}
+.calc-select-wrap select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff;
+  border: 1.5px solid #4a6fa5;
+  border-radius: 6px;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.calc-select-wrap select:focus {
+  border-color: #2a4a8a;
+  box-shadow: 0 0 0 3px rgba(74,111,165,0.15);
+}
+.calc-select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 0.85rem; top: 50%;
+  transform: translateY(-50%);
+  color: #4a6fa5;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+/* Amount input */
+.calc-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #cdd5e0;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.calc-input:focus {
+  border-color: #4a6fa5;
+  box-shadow: 0 0 0 3px rgba(74,111,165,0.12);
+}
+.calc-input::placeholder { color: #aab; }
+
+/* Hint text under amount */
+.calc-hint {
+  font-size: 0.75rem;
+  color: #e05c2a;
+  margin-top: 0.35rem;
+  min-height: 1rem;
+  display: block;
+}
+
+/* Profit Amount — full width */
+.calc-profit-row {
+  margin-bottom: 1.5rem;
+}
+.calc-profit-row label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+.calc-profit-display {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #cdd5e0;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a7a3f;
+  cursor: default;
+}
+
+/* Breakdown grid */
+.calc-breakdown {
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.calc-breakdown.visible { display: grid; }
+
+.breakdown-card {
+  background: #fff;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  text-align: center;
+}
+.breakdown-card .bd-label {
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.3rem;
+}
+.breakdown-card .bd-value {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+/* Calculate button */
+.btn-calculate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #4a6fa5;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.85rem 2.25rem;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  letter-spacing: 0.03em;
+}
+.btn-calculate:hover {
+  background: #2a4a8a;
+  transform: translateY(-2px);
+}
+
+/* Error state */
+.calc-input.error,
+.calc-select-wrap select.error {
+  border-color: #e05c2a;
+}
+
+@media (max-width: 860px) {
+  .calc-section {
+    flex-direction: column;
+    gap: 3rem;
+    padding: 5rem 5%;
+    background: #f0f4f8;
+  }
+  .calc-image { max-width: 320px; margin: 0 auto; }
+  .calc-content { max-width: 100%; }
+  .calc-row { grid-template-columns: 1fr; }
+  .calc-breakdown { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .calc-breakdown { grid-template-columns: 1fr 1fr; }
+}
+
+/* ══════════════════════════════════════
    FOOTER
 ══════════════════════════════════════ */
 footer { border-top: 1px solid var(--border); padding: 4rem 6% 2.5rem; }
@@ -678,4 +910,252 @@ footer { border-top: 1px solid var(--border); padding: 4rem 6% 2.5rem; }
   .section { padding: 5rem 5%; }
   #home { padding: calc(var(--nav-h) + 3rem) 5% 4rem; }
   .cta-box { padding: 3rem 1.75rem; }
+}
+
+@media (max-width: 400px) {
+  .section { padding: 3rem 3%; }
+}
+/* ══════════════════════════════════════
+   HOW IT WORKS SECTION
+══════════════════════════════════════ */
+.hiw-section {
+  background: #111;
+  padding: 6rem 6%;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.hiw-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.hiw-sub {
+  font-size: 1rem;
+  color: var(--text-lo);
+  margin-bottom: 4rem;
+}
+
+.hiw-timeline {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Horizontal connecting line */
+.hiw-line {
+  position: absolute;
+  top: 14px;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  z-index: 0;
+}
+
+.hiw-step {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.5rem;
+}
+
+.hiw-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.5);
+  background: #111;
+  flex-shrink: 0;
+  transition: border-color 0.3s;
+}
+.hiw-dot.active {
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 4px rgba(34,197,94,0.15);
+  background: rgba(34,197,94,0.1);
+}
+
+/* Inner filled circle for active */
+.hiw-dot.active::after {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  margin: 7px auto 0;
+}
+
+.hiw-step h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.hiw-step p {
+  font-size: 0.82rem;
+  color: var(--text-lo);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Mobile — stack vertically */
+@media (max-width: 700px) {
+  .hiw-timeline {
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+  }
+  .hiw-line {
+    top: 0; bottom: 0; left: 50%;
+    width: 1px; height: auto;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  .hiw-step { flex-direction: row; text-align: left; gap: 1.25rem; max-width: 320px; }
+  .hiw-step h3 { margin-bottom: 0.2rem; }
+}
+/* ══════════════════════════════════════
+   TEAM SECTION
+══════════════════════════════════════ */
+.team-section {
+  background: #f0f4f8;
+  padding: 6rem 6%;
+  border-top: 1px solid #dde3ea;
+  border-bottom: 1px solid #dde3ea;
+}
+
+.team-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+.team-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 0.75rem;
+}
+.team-header p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.team-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Card */
+.tm-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.tm-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.14);
+}
+
+/* Photo area */
+.tm-photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/3.5;
+}
+.tm-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  transition: transform 0.4s;
+}
+.tm-card:hover .tm-photo img {
+  transform: scale(1.04);
+}
+
+/* Social icons overlay — hidden by default, shown on hover/tap */
+.tm-socials {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+/* Show on card hover (desktop) */
+.tm-card:hover .tm-socials {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Show on tap (mobile) — toggled via JS */
+.tm-card.tapped .tm-socials {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tm-socials a {
+  width: 36px; height: 36px;
+  background: #1877f2; /* Facebook blue default */
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.tm-socials a:hover { transform: scale(1.12); opacity: 0.9; }
+.tm-socials a:nth-child(1) { background: #1877f2; } /* Facebook */
+.tm-socials a:nth-child(2) { background: #1da1f2; } /* Twitter */
+.tm-socials a:nth-child(3) { background: #0a66c2; } /* LinkedIn */
+
+.tm-socials a svg {
+  width: 16px; height: 16px;
+}
+
+/* Name & role */
+.tm-info {
+  padding: 1.1rem 1.25rem 1.4rem;
+  text-align: center;
+}
+.tm-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 0.3rem;
+}
+.tm-info span {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+@media (max-width: 600px) {
+  .team-cards { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .tm-info h3 { font-size: 0.9rem; }
+}
+@media (max-width: 380px) {
+  .team-cards { grid-template-columns: 1fr; }
 }

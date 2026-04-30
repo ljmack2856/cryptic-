@@ -104,7 +104,215 @@
       <a href="register.html" class="btn-green">Create Free Account</a>
     </div>
   </section>
+<!-- ══════════════════════════════
+       PROFIT CALCULATOR SECTION
+       Paste this AFTER the safe-section and BEFORE the footer in index.html
+  ══════════════════════════════ -->
+  <section id="calculator" class="calc-section">
 
+    <div class="calc-image reveal">
+      <!--
+        Replace src with your own calculator/finance illustration image.
+        e.g.  src="images/calculator-illustration.png"
+      -->
+      <img src="images/calculator.png"
+           alt="Profit Calculator"
+           onerror="this.style.display='none'" />
+    </div>
+
+    <div class="calc-content reveal">
+      <div class="calc-label">Profit Calculator</div>
+      <h2>Quick Profit Calculate</h2>
+      <p>Enter your investment amount and select your plan to instantly see your projected daily, weekly, and monthly profits.</p>
+
+      <div class="calc-row">
+        <!-- SELECT PLAN -->
+        <div class="calc-field">
+          <label for="calcPlan">Select Plan</label>
+          <div class="calc-select-wrap">
+            <select id="calcPlan">
+              <option value="bronze">Bronze</option>
+              <option value="silver">Silver</option>
+              <option value="gold">Gold</option>
+              <option value="premium">Premium</option>
+              <option value="executive">Executive</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ENTER AMOUNT -->
+        <div class="calc-field">
+          <label for="calcAmount">Enter Amount</label>
+          <input type="number" id="calcAmount" class="calc-input"
+                 placeholder="0.00" min="0" step="0.01" />
+          <span class="calc-hint" id="calcHint"></span>
+        </div>
+      </div>
+
+      <!-- PROFIT DISPLAY -->
+      <div class="calc-profit-row">
+        <label>Profit Amount</label>
+        <div class="calc-profit-display" id="calcProfit">0.00</div>
+      </div>
+
+      <!-- BREAKDOWN CARDS (shown after calculation) -->
+      <div class="calc-breakdown" id="calcBreakdown">
+        <div class="breakdown-card">
+          <div class="bd-label">Daily</div>
+          <div class="bd-value" id="bdDaily">$0.00</div>
+        </div>
+        <div class="breakdown-card">
+          <div class="bd-label">Weekly</div>
+          <div class="bd-value" id="bdWeekly">$0.00</div>
+        </div>
+        <div class="breakdown-card">
+          <div class="bd-label">Monthly</div>
+          <div class="bd-value" id="bdMonthly">$0.00</div>
+        </div>
+      </div>
+
+      <button class="btn-calculate" id="calcBtn">Calculate Now</button>
+    </div>
+
+  </section>
+  <!-- ══════════════════════════════
+     HOW IT WORKS SECTION
+══════════════════════════════ -->
+<section id="how-it-works" class="hiw-section">
+  <h2 class="hiw-title">How it Works</h2>
+  <p class="hiw-sub">With CryptoFXMiners the process is smooth</p>
+
+  <div class="hiw-timeline">
+    <div class="hiw-line"></div>
+
+    <div class="hiw-step">
+      <div class="hiw-dot"></div>
+      <h3>Create Account</h3>
+      <p>Get started with a free account</p>
+    </div>
+
+    <div class="hiw-step">
+      <div class="hiw-dot active"></div>
+      <h3>Deposit Funds</h3>
+      <p>Deposit to your secured account wallet</p>
+    </div>
+
+    <div class="hiw-step">
+      <div class="hiw-dot"></div>
+      <h3>Investments</h3>
+      <p>Invest on a package of your choice</p>
+    </div>
+
+    <div class="hiw-step">
+      <div class="hiw-dot"></div>
+      <h3>Analyse Profits</h3>
+      <p>Analyse your real-time rebates</p>
+    </div>
+
+    <div class="hiw-step">
+      <div class="hiw-dot"></div>
+      <h3>Withdraw</h3>
+      <p>Withdraw your funds anytime you wish</p>
+    </div>
+  </div>
+</section>
+<!-- ══════════════════════════════
+     TEAM SECTION
+══════════════════════════════ -->
+<section id="team" class="team-section">
+  <div class="team-header reveal">
+    <h2>Meet Our Team</h2>
+    <p>Best team with knowledge in cryptocurrency world.</p>
+  </div>
+
+  <div class="team-cards reveal">
+
+    <div class="tm-card">
+      <div class="tm-photo">
+        <img src="images/team1.jpg" alt="Richard Brent" />
+        <div class="tm-socials">
+          <a href="#" target="_blank" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="tm-info">
+        <h3>Richard Brent</h3>
+        <span>Chief Executive Officer</span>
+      </div>
+    </div>
+
+    <div class="tm-card">
+      <div class="tm-photo">
+        <img src="images/team2.jpg" alt="Britney Bells" />
+        <div class="tm-socials">
+          <a href="#" target="_blank" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="tm-info">
+        <h3>Britney Bells</h3>
+        <span>Product Manager</span>
+      </div>
+    </div>
+
+    <div class="tm-card">
+      <div class="tm-photo">
+        <img src="images/team3.jpg" alt="Williams Chad" />
+        <div class="tm-socials">
+          <a href="#" target="_blank" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="tm-info">
+        <h3>Williams Chad</h3>
+        <span>Business Manager</span>
+      </div>
+    </div>
+
+    <div class="tm-card">
+      <div class="tm-photo">
+        <img src="images/team4.jpg" alt="Steven Cole" />
+        <div class="tm-socials">
+          <a href="#" target="_blank" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" target="_blank" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="tm-info">
+        <h3>Steven Cole</h3>
+        <span>Digital Marketer</span>
+      </div>
+    </div>
+
+  </div>
+</section>
   <!-- ══════════════════════════════
        FOOTER
   ══════════════════════════════ -->
@@ -154,7 +362,7 @@
       </div>
     </div>
   </footer>
-
+  <script src="calculator.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
