@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Create Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0a0a0a; --input-bg:#0d0d0d; --border:rgba(255,255,255,0.1);
+      --gold:#f5a623; --gold-dark:#d4891a; --text-hi:#ffffff; --text-lo:#888;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:3rem 1.25rem 4rem; position:relative; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; z-index:0; background:radial-gradient(circle at 8% 55%,rgba(245,166,35,0.04) 0%,transparent 40%),radial-gradient(circle at 92% 20%,rgba(245,166,35,0.04) 0%,transparent 40%); pointer-events:none; }
+    .dot { position:fixed; width:6px; height:6px; border-radius:50%; background:var(--gold); opacity:0.35; animation:dotFloat 6s ease-in-out infinite; z-index:0; }
+    .dot:nth-child(1){top:30%;left:4%;animation-delay:0s;animation-duration:7s}
+    .dot:nth-child(2){top:55%;left:3%;animation-delay:1.5s;animation-duration:5s}
+    .dot:nth-child(3){top:75%;right:3%;animation-delay:0.8s;animation-duration:6s}
+    .dot:nth-child(4){top:20%;right:4%;animation-delay:2s;animation-duration:8s}
+    .dot:nth-child(5){top:88%;left:96%;animation-delay:3s;animation-duration:6s}
+    @keyframes dotFloat{0%,100%{transform:translateY(0);opacity:0.35}50%{transform:translateY(-14px);opacity:0.6}}
+    .register-card { position:relative; z-index:1; width:100%; max-width:560px; }
+    .reg-logo { text-align:center; margin-bottom:2.5rem; text-decoration:none; display:block; }
+    .reg-logo span { font-family:var(--font-display); font-size:clamp(1.6rem,5vw,2.2rem); font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .reg-logo .crypto{color:#fff} .reg-logo .fxminers{color:var(--gold)}
+    .reg-heading { font-size:1.35rem; font-weight:400; margin-bottom:0.5rem; }
+    .reg-underline { width:48px; height:3px; background:var(--gold); border-radius:2px; margin-bottom:2rem; }
+    .reg-form { display:flex; flex-direction:column; gap:1.25rem; }
+    .field-group { display:flex; flex-direction:column; gap:0.45rem; }
+    .field-group label { font-size:0.9rem; font-weight:400; }
+    .field-group input, .field-group select { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:6px; padding:0.9rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.95rem; outline:none; transition:border-color 0.2s,box-shadow 0.2s; appearance:none; }
+    .field-group input:focus, .field-group select:focus { border-color:rgba(245,166,35,0.5); box-shadow:0 0 0 3px rgba(245,166,35,0.08); }
+    .field-group input::placeholder{color:#444}
+    .country-wrap{position:relative}
+    .country-wrap select{padding-left:2.75rem;cursor:pointer}
+    .country-flag{position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none;z-index:1}
+    .country-arrow{position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);color:var(--text-lo);font-size:0.75rem;pointer-events:none}
+    .phone-wrap{display:flex}
+    .phone-prefix{background:var(--input-bg);border:1px solid var(--border);border-right:none;border-radius:6px 0 0 6px;padding:0.9rem 0.85rem;color:var(--text-lo);font-size:0.9rem;display:flex;align-items:center;gap:0.35rem;white-space:nowrap;flex-shrink:0}
+    .phone-wrap input{border-radius:0 6px 6px 0;flex:1}
+    .pw-wrap{position:relative}
+    .pw-wrap input{padding-right:2.75rem}
+    .pw-toggle{position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-lo);font-size:0.9rem;transition:color 0.2s}
+    .pw-toggle:hover{color:var(--gold)}
+    .terms-row{display:flex;align-items:center;gap:0.65rem;margin-top:0.25rem}
+    .terms-row input[type="checkbox"]{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+    .terms-row label{font-size:0.875rem;color:var(--text-lo);cursor:pointer;user-select:none}
+    .terms-row a{color:var(--gold);text-decoration:none}
+    .btn-signup{background:var(--gold);color:#000;font-family:var(--font-body);font-size:1rem;font-weight:700;padding:0.95rem 2.5rem;border-radius:7px;border:none;cursor:pointer;width:fit-content;margin-top:0.25rem;transition:background 0.2s,transform 0.2s,box-shadow 0.2s;display:flex;align-items:center;gap:0.6rem}
+    .btn-signup:hover{background:var(--gold-dark);transform:translateY(-2px);box-shadow:0 6px 24px rgba(245,166,35,0.25)}
+    .btn-signup:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+    .signin-link{margin-top:1.5rem;font-size:0.9rem;color:var(--text-lo)}
+    .signin-link a{color:var(--gold);text-decoration:none;font-weight:500}
+    .field-error{font-size:0.75rem;color:#f87171;display:none;margin-top:0.2rem}
+    .field-group.invalid input,.field-group.invalid select{border-color:rgba(248,113,113,0.5)}
+    .field-group.invalid .field-error{display:block}
+    .toast{position:fixed;top:1.5rem;left:50%;transform:translateX(-50%) translateY(-80px);background:#1a1a1a;border:1px solid var(--border);color:var(--text-hi);font-size:0.875rem;font-weight:500;padding:0.85rem 1.5rem;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:9999;transition:transform 0.4s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:0.6rem;max-width:90vw}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    .toast.success{border-color:rgba(34,197,94,0.4)}
+    .toast.error{border-color:rgba(248,113,113,0.4)}
+    .spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,0.3);border-top-color:#000;border-radius:50%;animation:spin 0.7s linear infinite;display:none}
+    .btn-signup:disabled .spinner{display:inline-block}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .whatsapp-float{position:fixed;bottom:28px;left:24px;width:56px;height:56px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.45);z-index:999;text-decoration:none;transition:transform 0.25s}
+    .whatsapp-float:hover{transform:scale(1.1)}
+    .whatsapp-float::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(37,211,102,0.5);animation:waRing 2.5s ease-out infinite}
+    @keyframes waRing{0%{transform:scale(1);opacity:0.8}100%{transform:scale(1.6);opacity:0}}
+    .wa-tooltip{position:absolute;left:calc(100% + 12px);bottom:8px;background:#fff;color:#111;font-family:var(--font-body);font-size:0.8rem;font-weight:500;line-height:1.4;padding:0.55rem 0.85rem;border-radius:10px;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.15);pointer-events:none;opacity:0;transform:translateX(-6px);transition:opacity 0.2s,transform 0.2s}
+    .wa-tooltip::before{content:'';position:absolute;top:50%;left:-6px;transform:translateY(-50%);border:6px solid transparent;border-right-color:#fff;border-left:0}
+    .whatsapp-float:hover .wa-tooltip{opacity:1;transform:translateX(0)}
+    @media(max-width:480px){body{padding:2rem 1rem 3rem}}
+  </style>
+</head>
+<body>
+  <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  <div class="toast" id="toast"></div>
+
+  <div class="register-card">
+    <a href="index.html" class="reg-logo">
+      <span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span>
+    </a>
+    <h1 class="reg-heading">Create your Free Account</h1>
+    <div class="reg-underline"></div>
+
+    <form class="reg-form" id="regForm" novalidate>
+      <div class="field-group" id="fg-name">
+        <label for="fullName">Your Name</label>
+        <input type="text" id="fullName" autocomplete="name"/>
+        <span class="field-error">Please enter your full name.</span>
+      </div>
+      <div class="field-group" id="fg-email">
+        <label for="email">Your Email</label>
+        <input type="email" id="email" autocomplete="email"/>
+        <span class="field-error">Please enter a valid email address.</span>
+      </div>
+      <div class="field-group" id="fg-username">
+        <label for="username">User Name</label>
+        <input type="text" id="username" autocomplete="username"/>
+        <span class="field-error">Please choose a username (min 3 characters).</span>
+      </div>
+      <div class="field-group" id="fg-country">
+        <label for="country">Country Of Origin</label>
+        <div class="country-wrap">
+          <span class="country-flag" id="countryFlag">🇰🇪</span>
+          <select id="country">
+            <option value="AF" data-flag="🇦🇫">Afghanistan</option><option value="AL" data-flag="🇦🇱">Albania</option><option value="DZ" data-flag="🇩🇿">Algeria</option><option value="AD" data-flag="🇦🇩">Andorra</option><option value="AO" data-flag="🇦🇴">Angola</option><option value="AG" data-flag="🇦🇬">Antigua and Barbuda</option><option value="AR" data-flag="🇦🇷">Argentina</option><option value="AM" data-flag="🇦🇲">Armenia</option><option value="AU" data-flag="🇦🇺">Australia</option><option value="AT" data-flag="🇦🇹">Austria</option><option value="AZ" data-flag="🇦🇿">Azerbaijan</option><option value="BS" data-flag="🇧🇸">Bahamas</option><option value="BH" data-flag="🇧🇭">Bahrain</option><option value="BD" data-flag="🇧🇩">Bangladesh</option><option value="BB" data-flag="🇧🇧">Barbados</option><option value="BY" data-flag="🇧🇾">Belarus</option><option value="BE" data-flag="🇧🇪">Belgium</option><option value="BZ" data-flag="🇧🇿">Belize</option><option value="BJ" data-flag="🇧🇯">Benin</option><option value="BT" data-flag="🇧🇹">Bhutan</option><option value="BO" data-flag="🇧🇴">Bolivia</option><option value="BA" data-flag="🇧🇦">Bosnia and Herzegovina</option><option value="BW" data-flag="🇧🇼">Botswana</option><option value="BR" data-flag="🇧🇷">Brazil</option><option value="BN" data-flag="🇧🇳">Brunei</option><option value="BG" data-flag="🇧🇬">Bulgaria</option><option value="BF" data-flag="🇧🇫">Burkina Faso</option><option value="BI" data-flag="🇧🇮">Burundi</option><option value="CV" data-flag="🇨🇻">Cabo Verde</option><option value="KH" data-flag="🇰🇭">Cambodia</option><option value="CM" data-flag="🇨🇲">Cameroon</option><option value="CA" data-flag="🇨🇦">Canada</option><option value="CF" data-flag="🇨🇫">Central African Republic</option><option value="TD" data-flag="🇹🇩">Chad</option><option value="CL" data-flag="🇨🇱">Chile</option><option value="CN" data-flag="🇨🇳">China</option><option value="CO" data-flag="🇨🇴">Colombia</option><option value="KM" data-flag="🇰🇲">Comoros</option><option value="CG" data-flag="🇨🇬">Congo</option><option value="CR" data-flag="🇨🇷">Costa Rica</option><option value="HR" data-flag="🇭🇷">Croatia</option><option value="CU" data-flag="🇨🇺">Cuba</option><option value="CY" data-flag="🇨🇾">Cyprus</option><option value="CZ" data-flag="🇨🇿">Czech Republic</option><option value="DK" data-flag="🇩🇰">Denmark</option><option value="DJ" data-flag="🇩🇯">Djibouti</option><option value="DM" data-flag="🇩🇲">Dominica</option><option value="DO" data-flag="🇩🇴">Dominican Republic</option><option value="EC" data-flag="🇪🇨">Ecuador</option><option value="EG" data-flag="🇪🇬">Egypt</option><option value="SV" data-flag="🇸🇻">El Salvador</option><option value="GQ" data-flag="🇬🇶">Equatorial Guinea</option><option value="ER" data-flag="🇪🇷">Eritrea</option><option value="EE" data-flag="🇪🇪">Estonia</option><option value="SZ" data-flag="🇸🇿">Eswatini</option><option value="ET" data-flag="🇪🇹">Ethiopia</option><option value="FJ" data-flag="🇫🇯">Fiji</option><option value="FI" data-flag="🇫🇮">Finland</option><option value="FR" data-flag="🇫🇷">France</option><option value="GA" data-flag="🇬🇦">Gabon</option><option value="GM" data-flag="🇬🇲">Gambia</option><option value="GE" data-flag="🇬🇪">Georgia</option><option value="DE" data-flag="🇩🇪">Germany</option><option value="GH" data-flag="🇬🇭">Ghana</option><option value="GR" data-flag="🇬🇷">Greece</option><option value="GD" data-flag="🇬🇩">Grenada</option><option value="GT" data-flag="🇬🇹">Guatemala</option><option value="GN" data-flag="🇬🇳">Guinea</option><option value="GW" data-flag="🇬🇼">Guinea-Bissau</option><option value="GY" data-flag="🇬🇾">Guyana</option><option value="HT" data-flag="🇭🇹">Haiti</option><option value="HN" data-flag="🇭🇳">Honduras</option><option value="HU" data-flag="🇭🇺">Hungary</option><option value="IS" data-flag="🇮🇸">Iceland</option><option value="IN" data-flag="🇮🇳">India</option><option value="ID" data-flag="🇮🇩">Indonesia</option><option value="IR" data-flag="🇮🇷">Iran</option><option value="IQ" data-flag="🇮🇶">Iraq</option><option value="IE" data-flag="🇮🇪">Ireland</option><option value="IL" data-flag="🇮🇱">Israel</option><option value="IT" data-flag="🇮🇹">Italy</option><option value="JM" data-flag="🇯🇲">Jamaica</option><option value="JP" data-flag="🇯🇵">Japan</option><option value="JO" data-flag="🇯🇴">Jordan</option><option value="KZ" data-flag="🇰🇿">Kazakhstan</option><option value="KE" data-flag="🇰🇪" selected>Kenya</option><option value="KI" data-flag="🇰🇮">Kiribati</option><option value="KW" data-flag="🇰🇼">Kuwait</option><option value="KG" data-flag="🇰🇬">Kyrgyzstan</option><option value="LA" data-flag="🇱🇦">Laos</option><option value="LV" data-flag="🇱🇻">Latvia</option><option value="LB" data-flag="🇱🇧">Lebanon</option><option value="LS" data-flag="🇱🇸">Lesotho</option><option value="LR" data-flag="🇱🇷">Liberia</option><option value="LY" data-flag="🇱🇾">Libya</option><option value="LI" data-flag="🇱🇮">Liechtenstein</option><option value="LT" data-flag="🇱🇹">Lithuania</option><option value="LU" data-flag="🇱🇺">Luxembourg</option><option value="MG" data-flag="🇲🇬">Madagascar</option><option value="MW" data-flag="🇲🇼">Malawi</option><option value="MY" data-flag="🇲🇾">Malaysia</option><option value="MV" data-flag="🇲🇻">Maldives</option><option value="ML" data-flag="🇲🇱">Mali</option><option value="MT" data-flag="🇲🇹">Malta</option><option value="MH" data-flag="🇲🇭">Marshall Islands</option><option value="MR" data-flag="🇲🇷">Mauritania</option><option value="MU" data-flag="🇲🇺">Mauritius</option><option value="MX" data-flag="🇲🇽">Mexico</option><option value="FM" data-flag="🇫🇲">Micronesia</option><option value="MD" data-flag="🇲🇩">Moldova</option><option value="MC" data-flag="🇲🇨">Monaco</option><option value="MN" data-flag="🇲🇳">Mongolia</option><option value="ME" data-flag="🇲🇪">Montenegro</option><option value="MA" data-flag="🇲🇦">Morocco</option><option value="MZ" data-flag="🇲🇿">Mozambique</option><option value="MM" data-flag="🇲🇲">Myanmar</option><option value="NA" data-flag="🇳🇦">Namibia</option><option value="NR" data-flag="🇳🇷">Nauru</option><option value="NP" data-flag="🇳🇵">Nepal</option><option value="NL" data-flag="🇳🇱">Netherlands</option><option value="NZ" data-flag="🇳🇿">New Zealand</option><option value="NI" data-flag="🇳🇮">Nicaragua</option><option value="NE" data-flag="🇳🇪">Niger</option><option value="NG" data-flag="🇳🇬">Nigeria</option><option value="NO" data-flag="🇳🇴">Norway</option><option value="OM" data-flag="🇴🇲">Oman</option><option value="PK" data-flag="🇵🇰">Pakistan</option><option value="PW" data-flag="🇵🇼">Palau</option><option value="PA" data-flag="🇵🇦">Panama</option><option value="PG" data-flag="🇵🇬">Papua New Guinea</option><option value="PY" data-flag="🇵🇾">Paraguay</option><option value="PE" data-flag="🇵🇪">Peru</option><option value="PH" data-flag="🇵🇭">Philippines</option><option value="PL" data-flag="🇵🇱">Poland</option><option value="PT" data-flag="🇵🇹">Portugal</option><option value="QA" data-flag="🇶🇦">Qatar</option><option value="RO" data-flag="🇷🇴">Romania</option><option value="RU" data-flag="🇷🇺">Russia</option><option value="RW" data-flag="🇷🇼">Rwanda</option><option value="KN" data-flag="🇰🇳">Saint Kitts and Nevis</option><option value="LC" data-flag="🇱🇨">Saint Lucia</option><option value="VC" data-flag="🇻🇨">Saint Vincent and the Grenadines</option><option value="WS" data-flag="🇼🇸">Samoa</option><option value="SM" data-flag="🇸🇲">San Marino</option><option value="ST" data-flag="🇸🇹">Sao Tome and Principe</option><option value="SA" data-flag="🇸🇦">Saudi Arabia</option><option value="SN" data-flag="🇸🇳">Senegal</option><option value="RS" data-flag="🇷🇸">Serbia</option><option value="SC" data-flag="🇸🇨">Seychelles</option><option value="SL" data-flag="🇸🇱">Sierra Leone</option><option value="SG" data-flag="🇸🇬">Singapore</option><option value="SK" data-flag="🇸🇰">Slovakia</option><option value="SI" data-flag="🇸🇮">Slovenia</option><option value="SB" data-flag="🇸🇧">Solomon Islands</option><option value="SO" data-flag="🇸🇴">Somalia</option><option value="ZA" data-flag="🇿🇦">South Africa</option><option value="SS" data-flag="🇸🇸">South Sudan</option><option value="ES" data-flag="🇪🇸">Spain</option><option value="LK" data-flag="🇱🇰">Sri Lanka</option><option value="SD" data-flag="🇸🇩">Sudan</option><option value="SR" data-flag="🇸🇷">Suriname</option><option value="SE" data-flag="🇸🇪">Sweden</option><option value="CH" data-flag="🇨🇭">Switzerland</option><option value="SY" data-flag="🇸🇾">Syria</option><option value="TW" data-flag="🇹🇼">Taiwan</option><option value="TJ" data-flag="🇹🇯">Tajikistan</option><option value="TZ" data-flag="🇹🇿">Tanzania</option><option value="TH" data-flag="🇹🇭">Thailand</option><option value="TL" data-flag="🇹🇱">Timor-Leste</option><option value="TG" data-flag="🇹🇬">Togo</option><option value="TO" data-flag="🇹🇴">Tonga</option><option value="TT" data-flag="🇹🇹">Trinidad and Tobago</option><option value="TN" data-flag="🇹🇳">Tunisia</option><option value="TR" data-flag="🇹🇷">Turkey</option><option value="TM" data-flag="🇹🇲">Turkmenistan</option><option value="TV" data-flag="🇹🇻">Tuvalu</option><option value="UG" data-flag="🇺🇬">Uganda</option><option value="UA" data-flag="🇺🇦">Ukraine</option><option value="AE" data-flag="🇦🇪">United Arab Emirates</option><option value="GB" data-flag="🇬🇧">United Kingdom</option><option value="US" data-flag="🇺🇸">United States</option><option value="UY" data-flag="🇺🇾">Uruguay</option><option value="UZ" data-flag="🇺🇿">Uzbekistan</option><option value="VU" data-flag="🇻🇺">Vanuatu</option><option value="VE" data-flag="🇻🇪">Venezuela</option><option value="VN" data-flag="🇻🇳">Vietnam</option><option value="YE" data-flag="🇾🇪">Yemen</option><option value="ZM" data-flag="🇿🇲">Zambia</option><option value="ZW" data-flag="🇿🇼">Zimbabwe</option>
+          </select>
+          <span class="country-arrow">▾</span>
+        </div>
+      </div>
+      <div class="field-group" id="fg-phone">
+        <label for="phone">Your Phone Number</label>
+        <div class="phone-wrap">
+          <div class="phone-prefix" id="phonePrefix">🇰🇪 +254</div>
+          <input type="tel" id="phone" placeholder="712 345 678"/>
+        </div>
+        <span class="field-error">Please enter a valid phone number.</span>
+      </div>
+      <div class="field-group" id="fg-password">
+        <label for="password">Your Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" autocomplete="new-password"/>
+          <button type="button" class="pw-toggle" id="pwToggle1">👁</button>
+        </div>
+        <span class="field-error">Password must be at least 8 characters.</span>
+      </div>
+      <div class="field-group" id="fg-confirm">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="confirmPassword" autocomplete="new-password"/>
+          <button type="button" class="pw-toggle" id="pwToggle2">👁</button>
+        </div>
+        <span class="field-error">Passwords do not match.</span>
+      </div>
+      <div class="terms-row" id="termsRow">
+        <input type="checkbox" id="terms"/>
+        <label for="terms">I accept all <a href="#">Terms &amp; Condition</a></label>
+      </div>
+      <button type="submit" class="btn-signup" id="submitBtn">
+        <span class="spinner" id="spinner"></span>
+        <span id="btnText">Sign Up</span>
+      </button>
+    </form>
+    <p class="signin-link">Already Registered ? <a href="login.html">Sign In</a></p>
+  </div>
+
+  <a href="https://wa.me/1234567890" class="whatsapp-float" target="_blank" rel="noopener">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" fill="#fff"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.736 5.472 2.027 7.774L0 32l8.418-2.005A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.5a13.43 13.43 0 01-6.845-1.872l-.49-.29-5.001 1.192 1.216-4.862-.32-.5A13.46 13.46 0 012.5 16C2.5 8.544 8.544 2.5 16 2.5S29.5 8.544 29.5 16 23.456 29.5 16 29.5zm7.44-9.77c-.408-.204-2.414-1.19-2.788-1.327-.374-.136-.646-.204-.918.204-.272.408-1.054 1.327-1.292 1.599-.238.272-.476.306-.884.102-.408-.204-1.724-.635-3.284-2.026-1.213-1.082-2.033-2.42-2.27-2.828-.238-.408-.026-.629.179-.832.183-.183.408-.476.612-.714.204-.238.272-.408.408-.68.136-.272.068-.51-.034-.714-.102-.204-.918-2.21-1.258-3.028-.332-.796-.67-.688-.918-.7l-.782-.013c-.272 0-.714.102-1.088.51-.374.408-1.428 1.394-1.428 3.4s1.462 3.944 1.666 4.216c.204.272 2.876 4.388 6.972 6.154.975.42 1.735.672 2.328.861.978.31 1.869.266 2.573.162.785-.117 2.414-.986 2.754-1.938.34-.952.34-1.768.238-1.938-.102-.17-.374-.272-.782-.476z"/></svg>
+    <span class="wa-tooltip">We are here to help,<br/>Let's Chat</span>
+  </a>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+    const supabase = createClient(
+      'https://xbazuosvlggtolahgcjv.supabase.co',
+      'sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F'
+    )
+
+    // Redirect if already logged in
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) window.location.href = 'dashboard.html'
+
+    const countryData = {
+      AF:{flag:'🇦🇫',code:'+93'},AL:{flag:'🇦🇱',code:'+355'},DZ:{flag:'🇩🇿',code:'+213'},AD:{flag:'🇦🇩',code:'+376'},AO:{flag:'🇦🇴',code:'+244'},AG:{flag:'🇦🇬',code:'+1'},AR:{flag:'🇦🇷',code:'+54'},AM:{flag:'🇦🇲',code:'+374'},AU:{flag:'🇦🇺',code:'+61'},AT:{flag:'🇦🇹',code:'+43'},AZ:{flag:'🇦🇿',code:'+994'},BS:{flag:'🇧🇸',code:'+1'},BH:{flag:'🇧🇭',code:'+973'},BD:{flag:'🇧🇩',code:'+880'},BB:{flag:'🇧🇧',code:'+1'},BY:{flag:'🇧🇾',code:'+375'},BE:{flag:'🇧🇪',code:'+32'},BZ:{flag:'🇧🇿',code:'+501'},BJ:{flag:'🇧🇯',code:'+229'},BT:{flag:'🇧🇹',code:'+975'},BO:{flag:'🇧🇴',code:'+591'},BA:{flag:'🇧🇦',code:'+387'},BW:{flag:'🇧🇼',code:'+267'},BR:{flag:'🇧🇷',code:'+55'},BN:{flag:'🇧🇳',code:'+673'},BG:{flag:'🇧🇬',code:'+359'},BF:{flag:'🇧🇫',code:'+226'},BI:{flag:'🇧🇮',code:'+257'},CV:{flag:'🇨🇻',code:'+238'},KH:{flag:'🇰🇭',code:'+855'},CM:{flag:'🇨🇲',code:'+237'},CA:{flag:'🇨🇦',code:'+1'},CF:{flag:'🇨🇫',code:'+236'},TD:{flag:'🇹🇩',code:'+235'},CL:{flag:'🇨🇱',code:'+56'},CN:{flag:'🇨🇳',code:'+86'},CO:{flag:'🇨🇴',code:'+57'},KM:{flag:'🇰🇲',code:'+269'},CG:{flag:'🇨🇬',code:'+242'},CR:{flag:'🇨🇷',code:'+506'},HR:{flag:'🇭🇷',code:'+385'},CU:{flag:'🇨🇺',code:'+53'},CY:{flag:'🇨🇾',code:'+357'},CZ:{flag:'🇨🇿',code:'+420'},DK:{flag:'🇩🇰',code:'+45'},DJ:{flag:'🇩🇯',code:'+253'},DM:{flag:'🇩🇲',code:'+1'},DO:{flag:'🇩🇴',code:'+1'},EC:{flag:'🇪🇨',code:'+593'},EG:{flag:'🇪🇬',code:'+20'},SV:{flag:'🇸🇻',code:'+503'},GQ:{flag:'🇬🇶',code:'+240'},ER:{flag:'🇪🇷',code:'+291'},EE:{flag:'🇪🇪',code:'+372'},SZ:{flag:'🇸🇿',code:'+268'},ET:{flag:'🇪🇹',code:'+251'},FJ:{flag:'🇫🇯',code:'+679'},FI:{flag:'🇫🇮',code:'+358'},FR:{flag:'🇫🇷',code:'+33'},GA:{flag:'🇬🇦',code:'+241'},GM:{flag:'🇬🇲',code:'+220'},GE:{flag:'🇬🇪',code:'+995'},DE:{flag:'🇩🇪',code:'+49'},GH:{flag:'🇬🇭',code:'+233'},GR:{flag:'🇬🇷',code:'+30'},GD:{flag:'🇬🇩',code:'+1'},GT:{flag:'🇬🇹',code:'+502'},GN:{flag:'🇬🇳',code:'+224'},GW:{flag:'🇬🇼',code:'+245'},GY:{flag:'🇬🇾',code:'+592'},HT:{flag:'🇭🇹',code:'+509'},HN:{flag:'🇭🇳',code:'+504'},HU:{flag:'🇭🇺',code:'+36'},IS:{flag:'🇮🇸',code:'+354'},IN:{flag:'🇮🇳',code:'+91'},ID:{flag:'🇮🇩',code:'+62'},IR:{flag:'🇮🇷',code:'+98'},IQ:{flag:'🇮🇶',code:'+964'},IE:{flag:'🇮🇪',code:'+353'},IL:{flag:'🇮🇱',code:'+972'},IT:{flag:'🇮🇹',code:'+39'},JM:{flag:'🇯🇲',code:'+1'},JP:{flag:'🇯🇵',code:'+81'},JO:{flag:'🇯🇴',code:'+962'},KZ:{flag:'🇰🇿',code:'+7'},KE:{flag:'🇰🇪',code:'+254'},KI:{flag:'🇰🇮',code:'+686'},KW:{flag:'🇰🇼',code:'+965'},KG:{flag:'🇰🇬',code:'+996'},LA:{flag:'🇱🇦',code:'+856'},LV:{flag:'🇱🇻',code:'+371'},LB:{flag:'🇱🇧',code:'+961'},LS:{flag:'🇱🇸',code:'+266'},LR:{flag:'🇱🇷',code:'+231'},LY:{flag:'🇱🇾',code:'+218'},LI:{flag:'🇱🇮',code:'+423'},LT:{flag:'🇱🇹',code:'+370'},LU:{flag:'🇱🇺',code:'+352'},MG:{flag:'🇲🇬',code:'+261'},MW:{flag:'🇲🇼',code:'+265'},MY:{flag:'🇲🇾',code:'+60'},MV:{flag:'🇲🇻',code:'+960'},ML:{flag:'🇲🇱',code:'+223'},MT:{flag:'🇲🇹',code:'+356'},MH:{flag:'🇲🇭',code:'+692'},MR:{flag:'🇲🇷',code:'+222'},MU:{flag:'🇲🇺',code:'+230'},MX:{flag:'🇲🇽',code:'+52'},FM:{flag:'🇫🇲',code:'+691'},MD:{flag:'🇲🇩',code:'+373'},MC:{flag:'🇲🇨',code:'+377'},MN:{flag:'🇲🇳',code:'+976'},ME:{flag:'🇲🇪',code:'+382'},MA:{flag:'🇲🇦',code:'+212'},MZ:{flag:'🇲🇿',code:'+258'},MM:{flag:'🇲🇲',code:'+95'},NA:{flag:'🇳🇦',code:'+264'},NR:{flag:'🇳🇷',code:'+674'},NP:{flag:'🇳🇵',code:'+977'},NL:{flag:'🇳🇱',code:'+31'},NZ:{flag:'🇳🇿',code:'+64'},NI:{flag:'🇳🇮',code:'+505'},NE:{flag:'🇳🇪',code:'+227'},NG:{flag:'🇳🇬',code:'+234'},NO:{flag:'🇳🇴',code:'+47'},OM:{flag:'🇴🇲',code:'+968'},PK:{flag:'🇵🇰',code:'+92'},PW:{flag:'🇵🇼',code:'+680'},PA:{flag:'🇵🇦',code:'+507'},PG:{flag:'🇵🇬',code:'+675'},PY:{flag:'🇵🇾',code:'+595'},PE:{flag:'🇵🇪',code:'+51'},PH:{flag:'🇵🇭',code:'+63'},PL:{flag:'🇵🇱',code:'+48'},PT:{flag:'🇵🇹',code:'+351'},QA:{flag:'🇶🇦',code:'+974'},RO:{flag:'🇷🇴',code:'+40'},RU:{flag:'🇷🇺',code:'+7'},RW:{flag:'🇷🇼',code:'+250'},KN:{flag:'🇰🇳',code:'+1'},LC:{flag:'🇱🇨',code:'+1'},VC:{flag:'🇻🇨',code:'+1'},WS:{flag:'🇼🇸',code:'+685'},SM:{flag:'🇸🇲',code:'+378'},ST:{flag:'🇸🇹',code:'+239'},SA:{flag:'🇸🇦',code:'+966'},SN:{flag:'🇸🇳',code:'+221'},RS:{flag:'🇷🇸',code:'+381'},SC:{flag:'🇸🇨',code:'+248'},SL:{flag:'🇸🇱',code:'+232'},SG:{flag:'🇸🇬',code:'+65'},SK:{flag:'🇸🇰',code:'+421'},SI:{flag:'🇸🇮',code:'+386'},SB:{flag:'🇸🇧',code:'+677'},SO:{flag:'🇸🇴',code:'+252'},ZA:{flag:'🇿🇦',code:'+27'},SS:{flag:'🇸🇸',code:'+211'},ES:{flag:'🇪🇸',code:'+34'},LK:{flag:'🇱🇰',code:'+94'},SD:{flag:'🇸🇩',code:'+249'},SR:{flag:'🇸🇷',code:'+597'},SE:{flag:'🇸🇪',code:'+46'},CH:{flag:'🇨🇭',code:'+41'},SY:{flag:'🇸🇾',code:'+963'},TW:{flag:'🇹🇼',code:'+886'},TJ:{flag:'🇹🇯',code:'+992'},TZ:{flag:'🇹🇿',code:'+255'},TH:{flag:'🇹🇭',code:'+66'},TL:{flag:'🇹🇱',code:'+670'},TG:{flag:'🇹🇬',code:'+228'},TO:{flag:'🇹🇴',code:'+676'},TT:{flag:'🇹🇹',code:'+1'},TN:{flag:'🇹🇳',code:'+216'},TR:{flag:'🇹🇷',code:'+90'},TM:{flag:'🇹🇲',code:'+993'},TV:{flag:'🇹🇻',code:'+688'},UG:{flag:'🇺🇬',code:'+256'},UA:{flag:'🇺🇦',code:'+380'},AE:{flag:'🇦🇪',code:'+971'},GB:{flag:'🇬🇧',code:'+44'},US:{flag:'🇺🇸',code:'+1'},UY:{flag:'🇺🇾',code:'+598'},UZ:{flag:'🇺🇿',code:'+998'},VU:{flag:'🇻🇺',code:'+678'},VE:{flag:'🇻🇪',code:'+58'},VN:{flag:'🇻🇳',code:'+84'},YE:{flag:'🇾🇪',code:'+967'},ZM:{flag:'🇿🇲',code:'+260'},ZW:{flag:'🇿🇼',code:'+263'},
+    }
+
+    // Country → flag + phone prefix
+    const countrySelect = document.getElementById('country')
+    const countryFlag   = document.getElementById('countryFlag')
+    const phonePrefix   = document.getElementById('phonePrefix')
+    countrySelect.addEventListener('change', () => {
+      const d = countryData[countrySelect.value] || {flag:'🌍',code:''}
+      countryFlag.textContent = d.flag
+      phonePrefix.textContent = `${d.flag} ${d.code}`
+    })
+
+    // Password toggles
+    document.getElementById('pwToggle1').addEventListener('click', () => {
+      const i = document.getElementById('password')
+      const on = i.type === 'password'
+      i.type = on ? 'text' : 'password'
+      document.getElementById('pwToggle1').textContent = on ? '🙈' : '👁'
+    })
+    document.getElementById('pwToggle2').addEventListener('click', () => {
+      const i = document.getElementById('confirmPassword')
+      const on = i.type === 'password'
+      i.type = on ? 'text' : 'password'
+      document.getElementById('pwToggle2').textContent = on ? '🙈' : '👁'
+    })
+
+    // Toast
+    function showToast(msg, type = 'error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg
+      t.className = `toast ${type} show`
+      setTimeout(() => t.classList.remove('show'), 4500)
+    }
+
+    // Loading
+    function setLoading(on) {
+      document.getElementById('submitBtn').disabled = on
+      document.getElementById('spinner').style.display = on ? 'inline-block' : 'none'
+      document.getElementById('btnText').textContent = on ? 'Creating Account...' : 'Sign Up'
+    }
+
+    // Validate
+    function validate(fgId, inputId, condition) {
+      const fg  = document.getElementById(fgId)
+      const val = document.getElementById(inputId).value.trim()
+      const ok  = condition(val)
+      fg.classList.toggle('invalid', !ok)
+      return ok
+    }
+
+    // Clear on input
+    document.querySelectorAll('.field-group input, .field-group select').forEach(el => {
+      el.addEventListener('input', () => el.closest('.field-group').classList.remove('invalid'))
+    })
+
+    // Submit
+    document.getElementById('regForm').addEventListener('submit', async (e) => {
+      e.preventDefault()
+
+      const nameVal    = document.getElementById('fullName').value.trim()
+      const emailVal   = document.getElementById('email').value.trim()
+      const userVal    = document.getElementById('username').value.trim()
+      const phoneVal   = document.getElementById('phone').value.trim()
+      const passVal    = document.getElementById('password').value
+      const confirmVal = document.getElementById('confirmPassword').value
+      const country    = countrySelect.value
+      const terms      = document.getElementById('terms').checked
+
+      let ok = true
+      ok = validate('fg-name',     'fullName',        v => v.length >= 2) && ok
+      ok = validate('fg-email',    'email',           v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok
+      ok = validate('fg-username', 'username',        v => v.length >= 3) && ok
+      ok = validate('fg-phone',    'phone',           v => v.replace(/\D/g,'').length >= 6) && ok
+      ok = validate('fg-password', 'password',        v => v.length >= 8) && ok
+      ok = validate('fg-confirm',  'confirmPassword', v => v === passVal && v.length >= 8) && ok
+
+      if (!terms) {
+        document.getElementById('termsRow').style.color = '#f87171'
+        showToast('⚠️ Please accept the Terms & Conditions.')
+        ok = false
+      } else {
+        document.getElementById('termsRow').style.color = ''
+      }
+
+      if (!ok) return
+      setLoading(true)
+
+      try {
+        // Sign up
+        const { data, error } = await supabase.auth.signUp({
+          email:    emailVal,
+          password: passVal,
+          options: {
+            data: { full_name:nameVal, username:userVal, phone:phoneVal, country }
+          }
+        })
+        if (error) throw error
+
+        // Save profile
+        if (data.user) {
+          await supabase.from('profiles').upsert({
+            id: data.user.id, email:emailVal,
+            full_name:nameVal, username:userVal, phone:phoneVal, country
+          })
+        }
+
+        showToast('✅ Account created! Check your email to verify then sign in.', 'success')
+        setTimeout(() => window.location.href = 'login.html', 3500)
+
+      } catch (err) {
+        const msg = err.message || ''
+        if (msg.toLowerCase().includes('already')) {
+          showToast('⚠️ This email is already registered. Please sign in.')
+        } else {
+          showToast(`⚠️ ${msg || 'Registration failed. Please try again.'}`)
+        }
+      } finally {
+        setLoading(false)
+      }
+    })
+  </script>
+</body>
+</html>
