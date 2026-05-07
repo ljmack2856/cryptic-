@@ -270,12 +270,8 @@
         if (error) throw error
 
         // Save profile
-        if (data.user) {
-          await supabase.from('profiles').upsert({
-            id: data.user.id, email:emailVal,
-            full_name:nameVal, username:userVal, phone:phoneVal, country
-          })
-        }
+       
+        
 
         showToast('✅ Account created! Check your email to verify then sign in.', 'success')
         setTimeout(() => window.location.href = 'login.html', 3500)
