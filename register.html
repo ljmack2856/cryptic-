@@ -263,8 +263,9 @@
           email:    emailVal,
           password: passVal,
           options: {
-            data: { full_name:nameVal, username:userVal, phone:phoneVal, country }
-          }
+           emailRedirectTo: 'https://ljmack2856.github.io/cryptic-/login.html',
+           data: { full_name:nameVal, username:userVal, phone:phoneVal, country }
+                   }
         })
         if (error) throw error
 
