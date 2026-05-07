@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0d0d0d;
+      --sidebar:   #111111;
+      --card:      #161616;
+      --border:    rgba(255,255,255,0.07);
+      --gold:      #f5a623;
+      --gold-dark: #d4891a;
+      --blue:      #2563eb;
+      --text-hi:   #ffffff;
+      --text-lo:   #777;
+      --text-mid:  #aaa;
+      --sidebar-w: 280px;
+      --header-h:  68px;
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-hi);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ══ SIDEBAR ══ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 200;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      transition: transform 0.3s;
+    }
+
+    .sidebar-logo {
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sidebar-logo a {
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 1.1rem; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .sidebar-logo .crypto  { color: #fff; }
+    .sidebar-logo .fxminers { color: var(--gold); }
+
+    .sidebar-nav { padding: 1.25rem 0; flex: 1; }
+
+    .nav-group { margin-bottom: 1.5rem; }
+    .nav-group-label {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold);
+      padding: 0 1.5rem 0.6rem;
+    }
+
+    .nav-link {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.65rem 1.5rem;
+      color: var(--text-mid);
+      text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .nav-link:hover { background: rgba(245,166,35,0.06); color: var(--text-hi); }
+    .nav-link.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: rgba(245,166,35,0.08);
+    }
+    .nav-link .icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+
+    /* KYC alert */
+    .kyc-alert {
+      margin: 0 1rem 1rem;
+      background: rgba(245,166,35,0.08);
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.82rem; color: var(--gold);
+      line-height: 1.5; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .kyc-alert:hover { background: rgba(245,166,35,0.14); }
+
+    /* ══ MAIN CONTENT ══ */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex; flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ══ HEADER ══ */
+    .header {
+      height: var(--header-h);
+      background: var(--sidebar);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+
+    .hamburger-btn {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 4px; padding: 4px;
+    }
+    .hamburger-btn span {
+      display: block; width: 20px; height: 2px;
+      background: var(--text-hi); border-radius: 2px;
+    }
+
+    /* Language selector */
+    .lang-select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.8rem;
+      color: var(--text-hi);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      cursor: pointer; outline: none;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+
+    /* Currency dropdown */
+    .currency-wrap { position: relative; }
+    .currency-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 1rem;
+      color: var(--text-hi);
+      font-family: var(--font-body);
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .currency-btn .arrow { font-size: 0.7rem; }
+
+    .currency-dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      min-width: 130px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .currency-dropdown.open { display: block; }
+    .currency-opt {
+      padding: 0.65rem 1.1rem;
+      font-size: 0.875rem; color: var(--text-mid);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .currency-opt:hover { background: rgba(245,166,35,0.1); color: var(--gold); }
+    .currency-opt.selected { background: var(--gold); color: #000; font-weight: 700; }
+
+    /* User avatar */
+    .user-btn {
+      display: flex; align-items: center; gap: 0.65rem;
+      background: none; border: none; cursor: pointer;
+      text-decoration: none;
+    }
+    .user-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #d4891a);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.9rem; font-weight: 800; color: #000;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-name { font-size: 0.875rem; font-weight: 600; color: var(--text-hi); }
+
+    /* ══ PAGE CONTENT ══ */
+    .page { padding: 2rem; flex: 1; }
+
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.75rem; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem; font-weight: 700; color: var(--text-hi);
+    }
+    .breadcrumb {
+      font-size: 0.8rem; color: var(--text-lo);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .breadcrumb .sep { color: var(--text-lo); }
+    .breadcrumb .current { color: var(--gold); }
+
+    /* KYC Banner */
+    .kyc-banner {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.75rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      cursor: pointer;
+    }
+    .kyc-banner p { font-size: 0.9rem; color: var(--text-mid); }
+    .kyc-banner .kyc-btn {
+      background: var(--gold); color: #000;
+      font-weight: 700; font-size: 0.8rem;
+      padding: 0.45rem 1.1rem; border-radius: 6px;
+      border: none; cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.1rem;
+      display: flex; align-items: center; gap: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .stat-card:hover { border-color: rgba(245,166,35,0.2); transform: translateY(-2px); }
+
+    .stat-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+
+    .stat-info .stat-label {
+      font-size: 0.8rem; color: var(--text-mid);
+      margin-bottom: 0.2rem; line-height: 1.3;
+    }
+    .stat-info .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--gold);
+    }
+
+    /* Referral */
+    .referral-section { margin: 1.75rem 0; }
+    .referral-label {
+      font-size: 0.9rem; color: var(--gold);
+      font-weight: 600; margin-bottom: 0.75rem;
+    }
+    .referral-box {
+      display: flex; gap: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden;
+    }
+    .referral-input {
+      flex: 1; background: none; border: none;
+      padding: 0.85rem 1rem;
+      color: var(--text-mid); font-family: var(--font-body);
+      font-size: 0.875rem; outline: none;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .referral-copy {
+      background: var(--blue); border: none;
+      padding: 0 1rem; cursor: pointer;
+      color: #fff; font-size: 1rem;
+      transition: background 0.2s; flex-shrink: 0;
+    }
+    .referral-copy:hover { background: #1d4ed8; }
+
+    /* Transactions table */
+    .table-section { margin-top: 1.75rem; }
+    .table-title {
+      font-size: 1rem; font-weight: 600;
+      color: var(--text-hi); margin-bottom: 1rem;
+    }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table thead tr {
+      background: var(--gold);
+    }
+    .data-table thead th {
+      padding: 0.8rem 1rem;
+      font-size: 0.82rem; font-weight: 700;
+      color: #000; text-align: left;
+    }
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .data-table tbody td {
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem; color: var(--text-mid);
+    }
+    .no-data {
+      text-align: center; padding: 2.5rem 1rem;
+      color: var(--text-lo); font-size: 0.9rem;
+    }
+
+    /* ══ KYC MODAL ══ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #161616;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%; max-width: 540px;
+      max-height: 90vh; overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; cursor: pointer;
+      color: var(--text-lo); font-size: 1.2rem;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text-hi); }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .modal-sub { font-size: 0.85rem; color: var(--text-lo); margin-bottom: 1.75rem; }
+
+    .kyc-form { display: flex; flex-direction: column; gap: 1rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-field label { font-size: 0.82rem; color: var(--text-mid); font-weight: 500; }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 0.9rem;
+      color: var(--text-hi);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+      appearance: none;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus { border-color: rgba(245,166,35,0.4); }
+    .form-field input::placeholder,
+    .form-field textarea::placeholder { color: #444; }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+
+    /* File upload */
+    .file-upload {
+      border: 1.5px dashed rgba(245,166,35,0.25);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .file-upload:hover { border-color: var(--gold); background: rgba(245,166,35,0.04); }
+    .file-upload input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .file-upload .upload-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .file-upload p { font-size: 0.8rem; color: var(--text-lo); }
+    .file-upload .file-name { font-size: 0.78rem; color: var(--gold); margin-top: 0.4rem; }
+
+    .btn-submit-kyc {
+      background: var(--gold); color: #000;
+      font-family: var(--font-body);
+      font-size: 0.95rem; font-weight: 700;
+      padding: 0.85rem; border-radius: 8px;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn-submit-kyc:hover { background: var(--gold-dark); transform: translateY(-1px); }
+    .btn-submit-kyc:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ══ FOOTER ══ */
+    .dash-footer {
+      border-top: 1px solid var(--border);
+      padding: 1rem 2rem;
+      font-size: 0.78rem; color: var(--text-lo);
+      text-align: center;
+    }
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 190;
+      background: rgba(0,0,0,0.6);
+    }
+    .sidebar-overlay.open { display: block; }
+
+    /* Toast */
+    .toast {
+      position: fixed; top: 1.25rem; left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: #1a1a1a; border: 1px solid var(--border);
+      color: var(--text-hi); font-size: 0.875rem; font-weight: 500;
+      padding: 0.75rem 1.5rem; border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      z-index: 9999;
+      transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: rgba(34,197,94,0.4); }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 1100px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 860px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main { margin-left: 0; }
+      .hamburger-btn { display: flex; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .page { padding: 1.25rem; }
+      .header { padding: 0 1.25rem; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 540px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .page-header { flex-direction: column; align-items: flex-start; }
+      .user-name { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html">
+        <span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link active">
+          <span class="icon">📊</span> Dashboard
+        </a>
+        <a href="dashboard-transactions.html" class="nav-link">
+          <span class="icon">💳</span> Transactions
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="#" class="nav-link">
+          <span class="icon">📡</span> Copy Signals
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">📈</span> Invest History
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="#" class="nav-link">
+          <span class="icon">↔️</span> Transfer Money
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">💰</span> Send Request Money
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">📥</span> Receive Request Money
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link">
+          <span class="icon">➕</span> Create Deposit
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">🕐</span> Deposit History
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="#" class="nav-link">
+          <span class="icon">💸</span> Payout
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">📋</span> Payout History
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="#" class="nav-link">
+          <span class="icon">👥</span> Referred Users
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">🎁</span> Referral Commissions
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link">
+          <span class="icon">✉️</span> Messages
+        </a>
+        <a href="#" class="nav-link" id="kycNavLink">
+          <span class="icon">🪪</span> KYC Verification
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">✏️</span> Edit Profile
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">🔐</span> 2FA Security
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">🔑</span> Change Password
+        </a>
+        <a href="#" class="nav-link" id="logoutBtn">
+          <span class="icon">🚪</span> Logout
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn">
+          <span></span><span></span><span></span>
+        </button>
+        <select class="lang-select">
+          <option value="en">EN</option>
+          <option value="sw">SW</option>
+          <option value="fr">FR</option>
+        </select>
+      </div>
+
+      <div class="header-right">
+        <!-- Currency picker -->
+        <div class="currency-wrap">
+          <button class="currency-btn" id="currencyBtn">
+            <span id="currencyLabel">USD</span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="currency-dropdown" id="currencyDropdown">
+            <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="BDT">BDT</div>
+            <div class="currency-opt" data-code="EUR">EUR</div>
+            <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="INR">INR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="TSH">TSH</div>
+            <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
+          </div>
+        </div>
+
+        <!-- User -->
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page -->
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <div class="breadcrumb">
+          <span>Dashboard</span>
+          <span class="sep">—</span>
+          <span class="current">Dashboard</span>
+        </div>
+      </div>
+
+      <!-- KYC Banner -->
+      <div class="kyc-banner" id="kycBanner">
+        <p>📋 You have information to submit for KYC verification.</p>
+        <button class="kyc-btn" id="openKycBtn">Submit</button>
+      </div>
+
+      <!-- Stats Row 1 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <div class="stat-label">Main Balance</div>
+            <div class="stat-value" id="statMain">0$</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <div class="stat-label">Interest Balance</div>
+            <div class="stat-value" id="statInterest">0$</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏦</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Deposit</div>
+            <div class="stat-value" id="statDeposit">0$</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Invest</div>
+            <div class="stat-value" id="statInvest">0$</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Row 2 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">💸</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Payout</div>
+            <div class="stat-value" id="statPayout">0$</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Referral Bonus</div>
+            <div class="stat-value" id="statReferral">0$</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🤝</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Transaction</div>
+            <div class="stat-value" id="statTransaction">0$</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🎫</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Ticket</div>
+            <div class="stat-value" id="statTicket">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Referral URL -->
+      <div class="referral-section">
+        <div class="referral-label">Referral URL</div>
+        <div class="referral-box">
+          <input type="text" class="referral-input" id="referralUrl" readonly/>
+          <button class="referral-copy" id="copyReferral" title="Copy referral link">📋</button>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="table-section">
+        <div class="table-title">Recent Transactions</div>
+        <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Type</th>
+                <th>Txn ID</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="txBody">
+              <tr><td colspan="5" class="no-data">No Data Found</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer class="dash-footer">
+      COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners
+    </footer>
+  </div>
+
+  <!-- ══ KYC MODAL ══ -->
+  <div class="modal-overlay" id="kycModal">
+    <div class="modal">
+      <button class="modal-close" id="closeKyc">✕</button>
+      <h2 class="modal-title">KYC Verification</h2>
+      <p class="modal-sub">Please fill in your details to complete identity verification.</p>
+
+      <form class="kyc-form" id="kycForm" novalidate>
+        <div class="form-row">
+          <div class="form-field">
+            <label>First Name *</label>
+            <input type="text" id="kycFirst" placeholder="John" required/>
+          </div>
+          <div class="form-field">
+            <label>Last Name *</label>
+            <input type="text" id="kycLast" placeholder="Doe" required/>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Email Address *</label>
+          <input type="email" id="kycEmail" placeholder="john@example.com" required/>
+        </div>
+
+        <div class="form-field">
+          <label>Phone Number *</label>
+          <input type="tel" id="kycPhone" placeholder="+254 712 345 678" required/>
+        </div>
+
+        <div class="form-field">
+          <label>ID Document Type *</label>
+          <select id="kycDocType">
+            <option value="">Select document type</option>
+            <option value="national_id">National ID</option>
+            <option value="passport">Passport</option>
+            <option value="driving_licence">Driving Licence</option>
+            <option value="voters_card">Voter's Card</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>ID / Document Number *</label>
+          <input type="text" id="kycDocNumber" placeholder="e.g. 12345678" required/>
+        </div>
+
+        <div class="form-field">
+          <label>Upload Document (Front) *</label>
+          <div class="file-upload">
+            <input type="file" id="kycDocFront" accept="image/*,.pdf" onchange="showFileName('kycDocFront','fileNameFront')"/>
+            <div class="upload-icon">📄</div>
+            <p>Click to upload front of ID</p>
+            <div class="file-name" id="fileNameFront"></div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Upload Document (Back)</label>
+          <div class="file-upload">
+            <input type="file" id="kycDocBack" accept="image/*,.pdf" onchange="showFileName('kycDocBack','fileNameBack')"/>
+            <div class="upload-icon">📄</div>
+            <p>Click to upload back of ID (optional)</p>
+            <div class="file-name" id="fileNameBack"></div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Additional Notes</label>
+          <textarea id="kycNotes" placeholder="Any additional information..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit-kyc" id="kycSubmitBtn">Submit KYC</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+    const supabase = createClient(
+      'https://xbazuosvlggtolahgcjv.supabase.co',
+      'sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F'
+    )
+
+    // ── Auth guard — redirect to login if not authenticated
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      window.location.href = 'login.html'
+    }
+
+    const user = session.user
+
+    // ── Populate user info
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+    document.getElementById('userAvatar').textContent = initials
+
+    // ── Referral URL
+    const referralUrl = `https://cryptofxminers.com?reff=${user.id.replace(/-/g,'')}`
+    document.getElementById('referralUrl').value = referralUrl
+
+    // ── Copy referral
+    document.getElementById('copyReferral').addEventListener('click', () => {
+      navigator.clipboard.writeText(referralUrl).then(() => showToast('✅ Referral link copied!', 'success'))
+    })
+
+    // ── Load profile & pre-fill KYC email
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+
+    if (profile) {
+      document.getElementById('kycEmail').value = profile.email || user.email || ''
+      document.getElementById('kycPhone').value = profile.phone || ''
+      const nameParts = (profile.full_name || '').split(' ')
+      document.getElementById('kycFirst').value = nameParts[0] || ''
+      document.getElementById('kycLast').value  = nameParts.slice(1).join(' ') || ''
+
+      // Hide KYC banner if already submitted
+      if (profile.kyc_status === 'submitted' || profile.kyc_status === 'approved') {
+        document.getElementById('kycBanner').style.display = 'none'
+      }
+    }
+
+    // ── KYC form submit
+    document.getElementById('kycForm').addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const btn = document.getElementById('kycSubmitBtn')
+      btn.disabled = true
+      btn.textContent = 'Submitting...'
+
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            kyc_first_name:  document.getElementById('kycFirst').value.trim(),
+            kyc_last_name:   document.getElementById('kycLast').value.trim(),
+            kyc_phone:       document.getElementById('kycPhone').value.trim(),
+            kyc_doc_type:    document.getElementById('kycDocType').value,
+            kyc_doc_number:  document.getElementById('kycDocNumber').value.trim(),
+            kyc_notes:       document.getElementById('kycNotes').value.trim(),
+            kyc_status:      'submitted',
+            kyc_submitted_at: new Date().toISOString(),
+          })
+          .eq('id', user.id)
+
+        if (error) throw error
+
+        showToast('✅ KYC submitted! We will review within 24-48 hours.', 'success')
+        document.getElementById('kycModal').classList.remove('open')
+        document.getElementById('kycBanner').style.display = 'none'
+
+      } catch (err) {
+        showToast('⚠️ ' + (err.message || 'Submission failed. Try again.'))
+      } finally {
+        btn.disabled = false
+        btn.textContent = 'Submit KYC'
+      }
+    })
+
+    // ── Logout
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault()
+      await supabase.auth.signOut()
+      clearSessionCookies()
+      window.location.href = 'login.html'
+    })
+
+    // ── Toast
+    window.showToast = function(msg, type = 'error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg
+      t.className = `toast ${type} show`
+      setTimeout(() => t.classList.remove('show'), 4000)
+    }
+  </script>
+
+  <script>
+    // ── Hamburger sidebar toggle
+    const sidebar  = document.getElementById('sidebar')
+    const overlay  = document.getElementById('sidebarOverlay')
+    const hamburger = document.getElementById('hamburgerBtn')
+
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('open')
+      overlay.classList.toggle('open')
+    })
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open')
+      overlay.classList.remove('open')
+    })
+
+    // ── Currency dropdown — close on outside click
+    const currencyBtn      = document.getElementById('currencyBtn')
+    const currencyDropdown = document.getElementById('currencyDropdown')
+    const currencyLabel    = document.getElementById('currencyLabel')
+
+    currencyBtn.addEventListener('click', (e) => {
+      e.stopPropagation()
+      currencyDropdown.classList.toggle('open')
+    })
+
+    document.querySelectorAll('.currency-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.currency-opt').forEach(o => o.classList.remove('selected'))
+        opt.classList.add('selected')
+        currencyLabel.textContent = opt.dataset.code
+        currencyDropdown.classList.remove('open')
+      })
+    })
+
+    // Close currency dropdown on outside click
+    document.addEventListener('click', (e) => {
+      if (!currencyBtn.contains(e.target) && !currencyDropdown.contains(e.target)) {
+        currencyDropdown.classList.remove('open')
+      }
+    })
+
+    // Close on touch outside (mobile)
+    document.addEventListener('touchstart', (e) => {
+      if (!currencyBtn.contains(e.target) && !currencyDropdown.contains(e.target)) {
+        currencyDropdown.classList.remove('open')
+      }
+    })
+
+    // ── KYC Modal
+    const kycModal  = document.getElementById('kycModal')
+    const openKyc   = document.getElementById('openKycBtn')
+    const closeKyc  = document.getElementById('closeKyc')
+    const kycNavLink = document.getElementById('kycNavLink')
+
+    function openKycModal(e) {
+      if (e) e.preventDefault()
+      kycModal.classList.add('open')
+    }
+    openKyc.addEventListener('click', openKycModal)
+    kycNavLink.addEventListener('click', openKycModal)
+    closeKyc.addEventListener('click', () => kycModal.classList.remove('open'))
+    kycModal.addEventListener('click', (e) => {
+      if (e.target === kycModal) kycModal.classList.remove('open')
+    })
+
+    // ── File name display
+    window.showFileName = function(inputId, labelId) {
+      const file = document.getElementById(inputId).files[0]
+      document.getElementById(labelId).textContent = file ? file.name : ''
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Transactions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="dashboard.css"/>
+  <style>
+    /* Reuse dashboard base styles inline for self-contained file */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .currency-wrap { position:relative; }
+    .currency-btn { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; }
+    .currency-dropdown { position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; overflow:hidden; min-width:130px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:999; display:none; }
+    .currency-dropdown.open { display:block; }
+    .currency-opt { padding:0.65rem 1.1rem; font-size:0.875rem; color:var(--text-mid); cursor:pointer; transition:background 0.15s,color 0.15s; }
+    .currency-opt:hover { background:rgba(245,166,35,0.1); color:var(--gold); }
+    .currency-opt.selected { background:var(--gold); color:#000; font-weight:700; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; background:none; border:none; cursor:pointer; text-decoration:none; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; color:var(--text-hi); }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--gold); }
+    .breadcrumb .current { color:var(--gold); }
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.8rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .data-table tbody td { padding:0.85rem 1rem; font-size:0.85rem; color:var(--text-mid); }
+    .no-data { text-align:center; padding:2.5rem 1rem; color:var(--text-lo); font-size:0.9rem; }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.25rem;
+    }
+    .filter-field { display:flex; flex-direction:column; gap:0.4rem; flex:1; min-width:160px; }
+    .filter-field label { font-size:0.78rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.06em; }
+    .filter-field input,
+    .filter-field select {
+      background: #0d0d0d; border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.7rem 0.9rem;
+      color: var(--text-hi); font-family: var(--font-body); font-size: 0.875rem;
+      outline: none; appearance: none; transition: border-color 0.2s;
+      width: 100%;
+    }
+    .filter-field input:focus,
+    .filter-field select:focus { border-color: rgba(245,166,35,0.4); }
+    .filter-field input::placeholder { color: #444; }
+
+    .btn-filter {
+      background: var(--blue); color: #fff;
+      font-family: var(--font-body); font-size: 0.875rem; font-weight: 700;
+      padding: 0.7rem 1.75rem; border-radius: 6px; border: none;
+      cursor: pointer; align-self: flex-end;
+      transition: background 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+    .btn-filter:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+    /* Badge */
+    .badge {
+      display: inline-block; padding: 0.25rem 0.6rem;
+      border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .badge-deposit    { background: rgba(34,197,94,0.12);  color: #22c55e; }
+    .badge-payout     { background: rgba(245,166,35,0.12); color: var(--gold); }
+    .badge-referral   { background: rgba(139,92,246,0.12); color: #8b5cf6; }
+    .badge-invest     { background: rgba(59,130,246,0.12); color: #3b82f6; }
+    .badge-transfer   { background: rgba(236,72,153,0.12); color: #ec4899; }
+    .badge-default    { background: rgba(255,255,255,0.06); color: var(--text-mid); }
+
+    /* Pagination */
+    .pagination {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap;
+    }
+    .page-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text-mid); padding: 0.5rem 0.85rem;
+      border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+      font-family: var(--font-body); transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .page-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .page-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 700; }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    @media(max-width:860px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main { margin-left:0; }
+      .hamburger-btn { display:flex; }
+      .page { padding:1.25rem; }
+      .header { padding:0 1.25rem; }
+      .filter-bar { flex-direction:column; }
+      .btn-filter { align-self:stretch; text-align:center; }
+    }
+    @media(max-width:540px) {
+      .user-name { display:none; }
+      .page-header { flex-direction:column; align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link active"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="#" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="#" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="#" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="#" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="#" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="#" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="#" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="#" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="#" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="currency-wrap">
+          <button class="currency-btn" id="currencyBtn">
+            <span id="currencyLabel">USD</span><span style="font-size:0.7rem">▾</span>
+          </button>
+          <div class="currency-dropdown" id="currencyDropdown">
+            <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="BDT">BDT</div>
+            <div class="currency-opt" data-code="EUR">EUR</div>
+            <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="INR">INR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="TSH">TSH</div>
+            <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
+          </div>
+        </div>
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Transaction</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a>
+          <span>—</span>
+          <span class="current">Transaction</span>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label>Transaction No</label>
+          <input type="text" id="filterTxnId" placeholder="Transaction no"/>
+        </div>
+        <div class="filter-field">
+          <label>Type</label>
+          <select id="filterType">
+            <option value="">Select Type</option>
+            <option value="all">All</option>
+            <option value="deposit">Deposit</option>
+            <option value="payout">Payout</option>
+            <option value="referral_bonus">Referral Bonus</option>
+            <option value="send_money">Send Money</option>
+            <option value="receive_money">Receive Money</option>
+            <option value="invest">Invest</option>
+            <option value="interest_money">Interest Money</option>
+            <option value="request_money">Request Money</option>
+            <option value="payout_rejected">Payout Rejected</option>
+          </select>
+        </div>
+        <button class="btn-filter" id="filterBtn">Submit</button>
+      </div>
+
+      <!-- Table -->
+      <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Type</th>
+              <th>Txn ID</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="txBody">
+            <tr><td colspan="5" class="no-data">No Data Found</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+    const supabase = createClient(
+      'https://xbazuosvlggtolahgcjv.supabase.co',
+      'sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F'
+    )
+
+    // Auth guard
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+
+    // User info
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+    document.getElementById('userAvatar').textContent = initials
+
+    // Toast
+    function showToast(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(() => t.classList.remove('show'), 4000)
+    }
+
+    // Badge helper
+    const typeColors = {
+      deposit:'badge-deposit', payout:'badge-payout',
+      referral_bonus:'badge-referral', invest:'badge-invest',
+      send_money:'badge-transfer', receive_money:'badge-transfer',
+      interest_money:'badge-invest', request_money:'badge-default',
+      payout_rejected:'badge-default'
+    }
+    function badge(type) {
+      const cls = typeColors[type] || 'badge-default'
+      const label = type.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase())
+      return `<span class="badge ${cls}">${label}</span>`
+    }
+
+    // Load transactions from Supabase
+    const PAGE_SIZE = 10
+    let currentPage = 1
+    let allTx = []
+
+    async function loadTransactions() {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+
+      if (error) { showToast('Failed to load transactions'); return }
+      allTx = data || []
+      applyFilter()
+    }
+
+    function applyFilter() {
+      const txnId   = document.getElementById('filterTxnId').value.trim().toLowerCase()
+      const typeVal = document.getElementById('filterType').value
+
+      let filtered = allTx
+      if (txnId)   filtered = filtered.filter(t => t.txn_id?.toLowerCase().includes(txnId))
+      if (typeVal && typeVal !== 'all') filtered = filtered.filter(t => t.type === typeVal)
+
+      currentPage = 1
+      renderTable(filtered)
+      renderPagination(filtered)
+    }
+
+    function renderTable(data) {
+      const body = document.getElementById('txBody')
+      const start = (currentPage - 1) * PAGE_SIZE
+      const slice = data.slice(start, start + PAGE_SIZE)
+
+      if (!slice.length) {
+        body.innerHTML = '<tr><td colspan="5" class="no-data">No Data Found</td></tr>'
+        return
+      }
+
+      body.innerHTML = slice.map((t, i) => `
+        <tr>
+          <td>${start + i + 1}</td>
+          <td>${badge(t.type)}</td>
+          <td style="font-family:monospace;font-size:0.78rem;color:var(--text-lo)">${t.txn_id || '—'}</td>
+          <td style="color:${t.type === 'payout' || t.type === 'send_money' ? '#f87171' : '#22c55e'}; font-weight:600;">
+            ${t.type === 'payout' || t.type === 'send_money' ? '-' : '+'}$${Number(t.amount||0).toFixed(2)}
+          </td>
+          <td>${new Date(t.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'})}</td>
+        </tr>
+      `).join('')
+    }
+
+    function renderPagination(data) {
+      const total = Math.ceil(data.length / PAGE_SIZE)
+      const pg = document.getElementById('pagination')
+      if (total <= 1) { pg.innerHTML = ''; return }
+
+      pg.innerHTML = `
+        <button class="page-btn" id="pgPrev" ${currentPage===1?'disabled':''}>← Prev</button>
+        ${Array.from({length:total},(_,i)=>`
+          <button class="page-btn ${i+1===currentPage?'active':''}" data-page="${i+1}">${i+1}</button>
+        `).join('')}
+        <button class="page-btn" id="pgNext" ${currentPage===total?'disabled':''}>Next →</button>
+      `
+
+      pg.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentPage = parseInt(btn.dataset.page)
+          renderTable(data); renderPagination(data)
+        })
+      })
+      pg.querySelector('#pgPrev')?.addEventListener('click', () => { if(currentPage>1){currentPage--;renderTable(data);renderPagination(data)} })
+      pg.querySelector('#pgNext')?.addEventListener('click', () => { if(currentPage<total){currentPage++;renderTable(data);renderPagination(data)} })
+    }
+
+    document.getElementById('filterBtn').addEventListener('click', applyFilter)
+    document.getElementById('filterTxnId').addEventListener('keydown', e => { if(e.key==='Enter') applyFilter() })
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault()
+      await supabase.auth.signOut()
+      clearSessionCookies()
+      window.location.href = 'login.html'
+    })
+
+    loadTransactions()
+  </script>
+
+  <script>
+    // Hamburger
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+      sidebar.classList.toggle('open'); overlay.classList.toggle('open')
+    })
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open') })
+
+    // Currency dropdown
+    const currBtn = document.getElementById('currencyBtn')
+    const currDD  = document.getElementById('currencyDropdown')
+    const currLbl = document.getElementById('currencyLabel')
+    currBtn.addEventListener('click', e => { e.stopPropagation(); currDD.classList.toggle('open') })
+    document.querySelectorAll('.currency-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.currency-opt').forEach(o => o.classList.remove('selected'))
+        opt.classList.add('selected'); currLbl.textContent = opt.dataset.code; currDD.classList.remove('open')
+      })
+    })
+    document.addEventListener('click', e => { if(!currBtn.contains(e.target)&&!currDD.contains(e.target)) currDD.classList.remove('open') })
+    document.addEventListener('touchstart', e => { if(!currBtn.contains(e.target)&&!currDD.contains(e.target)) currDD.classList.remove('open') })
+  </script>
+</body>
+</html>
