@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Edit Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .currency-wrap { position:relative; }
+    .currency-btn { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; }
+    .currency-dropdown { position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; overflow:hidden; min-width:130px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:999; display:none; }
+    .currency-dropdown.open { display:block; }
+    .currency-opt { padding:0.65rem 1.1rem; font-size:0.875rem; color:var(--text-mid); cursor:pointer; transition:background 0.15s,color 0.15s; }
+    .currency-opt:hover { background:rgba(245,166,35,0.1); color:var(--gold); }
+    .currency-opt.selected { background:var(--gold); color:#000; font-weight:700; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; background:none; border:none; cursor:pointer; text-decoration:none; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; color:var(--text-hi); }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--gold); }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(34,197,94,0.4); }
+    .toast.error { border-color:rgba(248,113,113,0.4); }
+
+    /* Profile specific */
+    .profile-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:12px; padding:2rem; max-width:700px;
+    }
+
+    /* Avatar upload */
+    .avatar-section {
+      display:flex; align-items:center; gap:1.5rem;
+      padding-bottom:1.5rem; margin-bottom:1.5rem;
+      border-bottom:1px solid var(--border);
+    }
+    .avatar-preview {
+      width:80px; height:80px; border-radius:50%;
+      background:linear-gradient(135deg,var(--gold),#d4891a);
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--font-display); font-size:1.8rem; font-weight:800;
+      color:#000; flex-shrink:0; overflow:hidden;
+    }
+    .avatar-preview img { width:100%; height:100%; object-fit:cover; display:none; }
+    .avatar-info h3 { font-size:1rem; font-weight:600; margin-bottom:0.25rem; }
+    .avatar-info p { font-size:0.8rem; color:var(--text-lo); margin-bottom:0.75rem; }
+    .btn-avatar {
+      background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.25);
+      color:var(--gold); font-size:0.82rem; font-weight:600;
+      padding:0.45rem 1rem; border-radius:6px; cursor:pointer;
+      font-family:var(--font-body); transition:background 0.2s;
+    }
+    .btn-avatar:hover { background:rgba(245,166,35,0.18); }
+
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    .form-field { display:flex; flex-direction:column; gap:0.4rem; }
+    .form-field.full { grid-column:1/-1; }
+    .form-field label { font-size:0.82rem; color:var(--text-mid); font-weight:500; }
+    .form-field input,
+    .form-field select {
+      background:#0d0d0d; border:1px solid var(--border); border-radius:6px;
+      padding:0.8rem 1rem; color:var(--text-hi); font-family:var(--font-body);
+      font-size:0.9rem; outline:none; appearance:none; width:100%;
+      transition:border-color 0.2s;
+    }
+    .form-field input:focus,
+    .form-field select:focus { border-color:rgba(245,166,35,0.4); }
+    .form-field input::placeholder { color:#444; }
+    .form-field input:disabled { opacity:0.5; cursor:not-allowed; }
+
+    .btn-save {
+      background:var(--gold); color:#000;
+      font-family:var(--font-body); font-size:0.95rem; font-weight:700;
+      padding:0.85rem 2rem; border-radius:8px; border:none;
+      cursor:pointer; margin-top:1.5rem;
+      transition:background 0.2s, transform 0.2s;
+      display:flex; align-items:center; gap:0.6rem;
+    }
+    .btn-save:hover { background:var(--gold-dark); transform:translateY(-1px); }
+    .btn-save:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    .spinner { width:16px; height:16px; border:2px solid rgba(0,0,0,0.3); border-top-color:#000; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+    .btn-save:disabled .spinner { display:inline-block; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    @media(max-width:860px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main { margin-left:0; }
+      .hamburger-btn { display:flex; }
+      .page { padding:1.25rem; }
+      .header { padding:0 1.25rem; }
+      .form-grid { grid-template-columns:1fr; }
+      .form-field.full { grid-column:auto; }
+    }
+    @media(max-width:540px) {
+      .user-name { display:none; }
+      .avatar-section { flex-direction:column; align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="#" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="#" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="#" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="#" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="#" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link active"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="currency-wrap">
+          <button class="currency-btn" id="currencyBtn"><span id="currencyLabel">USD</span><span style="font-size:0.7rem">▾</span></button>
+          <div class="currency-dropdown" id="currencyDropdown">
+            <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="EUR">EUR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
+          </div>
+        </div>
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Edit Profile</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a>
+          <span>—</span>
+          <span class="current">Edit Profile</span>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <!-- Avatar -->
+        <div class="avatar-section">
+          <div class="avatar-preview" id="avatarPreview">
+            <img id="avatarImg" src="" alt=""/>
+            <span id="avatarInitials">?</span>
+          </div>
+          <div class="avatar-info">
+            <h3 id="profileName">Loading...</h3>
+            <p>Update your personal information below</p>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Full Name</label>
+            <input type="text" id="pfFullName" placeholder="John Doe"/>
+          </div>
+          <div class="form-field">
+            <label>Username</label>
+            <input type="text" id="pfUsername" placeholder="johndoe"/>
+          </div>
+          <div class="form-field full">
+            <label>Email Address</label>
+            <input type="email" id="pfEmail" disabled/>
+          </div>
+          <div class="form-field">
+            <label>Phone Number</label>
+            <input type="tel" id="pfPhone" placeholder="+254 712 345 678"/>
+          </div>
+          <div class="form-field">
+            <label>Country</label>
+            <input type="text" id="pfCountry" placeholder="Kenya"/>
+          </div>
+        </div>
+
+        <button class="btn-save" id="saveBtn">
+          <span class="spinner" id="saveSpinner"></span>
+          <span id="saveBtnText">Save Changes</span>
+        </button>
+      </div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+
+    function showToast(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(() => t.classList.remove('show'), 4000)
+    }
+
+    // Load profile
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+
+    const name = profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+
+    document.getElementById('userAvatar').textContent = initials
+    document.getElementById('userName').textContent = name
+    document.getElementById('avatarInitials').textContent = initials
+    document.getElementById('profileName').textContent = name
+
+    document.getElementById('pfFullName').value = profile?.full_name || ''
+    document.getElementById('pfUsername').value  = profile?.username  || ''
+    document.getElementById('pfEmail').value     = user.email || ''
+    document.getElementById('pfPhone').value     = profile?.phone   || ''
+    document.getElementById('pfCountry').value   = profile?.country  || ''
+
+    // Save
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('saveBtn')
+      btn.disabled = true
+      document.getElementById('saveBtnText').textContent = 'Saving...'
+
+      try {
+        const { error } = await supabase.from('profiles').update({
+          full_name:  document.getElementById('pfFullName').value.trim(),
+          username:   document.getElementById('pfUsername').value.trim(),
+          phone:      document.getElementById('pfPhone').value.trim(),
+          country:    document.getElementById('pfCountry').value.trim(),
+          updated_at: new Date().toISOString(),
+        }).eq('id', user.id)
+
+        if (error) throw error
+        showToast('✅ Profile updated successfully!', 'success')
+        document.getElementById('profileName').textContent = document.getElementById('pfFullName').value.trim()
+
+      } catch(err) {
+        showToast('⚠️ ' + (err.message || 'Update failed'))
+      } finally {
+        btn.disabled = false
+        document.getElementById('saveBtnText').textContent = 'Save Changes'
+      }
+    })
+
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault()
+      await supabase.auth.signOut()
+      clearSessionCookies()
+      window.location.href = 'login.html'
+    })
+  </script>
+  <script>
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open') })
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open') })
+    const currBtn = document.getElementById('currencyBtn')
+    const currDD  = document.getElementById('currencyDropdown')
+    const currLbl = document.getElementById('currencyLabel')
+    currBtn.addEventListener('click', e => { e.stopPropagation(); currDD.classList.toggle('open') })
+    document.querySelectorAll('.currency-opt').forEach(opt => {
+      opt.addEventListener('click', () => { document.querySelectorAll('.currency-opt').forEach(o=>o.classList.remove('selected')); opt.classList.add('selected'); currLbl.textContent=opt.dataset.code; currDD.classList.remove('open') })
+    })
+    document.addEventListener('click', e => { if(!currBtn.contains(e.target)&&!currDD.contains(e.target)) currDD.classList.remove('open') })
+  </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Payout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(34,197,94,0.4); }
+    .toast.error { border-color:rgba(248,113,113,0.4); }
+
+    /* Balance info */
+    .balance-bar {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;
+      margin-bottom:1.75rem;
+    }
+    .balance-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:10px; padding:1.25rem;
+      display:flex; align-items:center; gap:1rem;
+    }
+    .balance-icon { font-size:1.5rem; }
+    .balance-label { font-size:0.78rem; color:var(--text-lo); margin-bottom:0.25rem; }
+    .balance-val { font-family:var(--font-display); font-size:1.2rem; font-weight:700; color:var(--gold); }
+
+    /* Form */
+    .payout-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:2rem; max-width:600px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    .form-field { display:flex; flex-direction:column; gap:0.4rem; }
+    .form-field.full { grid-column:1/-1; }
+    .form-field label { font-size:0.82rem; color:var(--text-mid); font-weight:500; }
+    .form-field input,
+    .form-field select {
+      background:#0d0d0d; border:1px solid var(--border); border-radius:6px;
+      padding:0.8rem 1rem; color:var(--text-hi); font-family:var(--font-body);
+      font-size:0.9rem; outline:none; appearance:none; width:100%;
+      transition:border-color 0.2s;
+    }
+    .form-field input:focus, .form-field select:focus { border-color:rgba(245,166,35,0.4); }
+    .form-field input::placeholder { color:#444; }
+    .fee-note { font-size:0.75rem; color:var(--text-lo); margin-top:0.3rem; }
+    .net-display {
+      background:#0d0d0d; border:1px solid var(--border); border-radius:6px;
+      padding:0.8rem 1rem; font-family:var(--font-display);
+      font-size:1.1rem; font-weight:700; color:#22c55e;
+    }
+
+    .btn-submit { background:var(--gold); color:#000; font-family:var(--font-body); font-size:0.95rem; font-weight:700; padding:0.85rem 2rem; border-radius:8px; border:none; cursor:pointer; margin-top:1.5rem; transition:background 0.2s,transform 0.2s; display:flex; align-items:center; gap:0.6rem; }
+    .btn-submit:hover { background:var(--gold-dark); transform:translateY(-1px); }
+    .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    /* Table */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.8rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); }
+    .data-table tbody td { padding:0.85rem 1rem; font-size:0.85rem; color:var(--text-mid); }
+    .no-data { text-align:center; padding:2.5rem; color:var(--text-lo); }
+    .badge { display:inline-block; padding:0.25rem 0.6rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+    .badge-pending { background:rgba(245,166,35,0.12); color:var(--gold); }
+    .badge-approved { background:rgba(34,197,94,0.12); color:#22c55e; }
+    .badge-rejected { background:rgba(248,113,113,0.12); color:#f87171; }
+
+    .spinner { width:16px; height:16px; border:2px solid rgba(0,0,0,0.3); border-top-color:#000; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+    .btn-submit:disabled .spinner { display:inline-block; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    @media(max-width:860px) { .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)} .main{margin-left:0} .hamburger-btn{display:flex} .page{padding:1.25rem} .header{padding:0 1.25rem} .balance-bar{grid-template-columns:1fr} .form-grid{grid-template-columns:1fr} .form-field.full{grid-column:auto} }
+    @media(max-width:540px) { .user-name{display:none} }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="#" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="#" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="#" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="#" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="#" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link active"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Payout</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a><span>—</span>
+          <span class="current">Payout</span>
+        </div>
+      </div>
+
+      <!-- Balance info -->
+      <div class="balance-bar">
+        <div class="balance-card">
+          <div class="balance-icon">💰</div>
+          <div><div class="balance-label">Main Balance</div><div class="balance-val" id="balMain">$0.00</div></div>
+        </div>
+        <div class="balance-card">
+          <div class="balance-icon">📊</div>
+          <div><div class="balance-label">Interest Balance</div><div class="balance-val" id="balInterest">$0.00</div></div>
+        </div>
+        <div class="balance-card">
+          <div class="balance-icon">💸</div>
+          <div><div class="balance-label">Total Paid Out</div><div class="balance-val" id="balPayout">$0.00</div></div>
+        </div>
+      </div>
+
+      <!-- Payout form -->
+      <div class="payout-card" style="margin-bottom:2rem;">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Withdrawal Method *</label>
+            <select id="payoutMethod">
+              <option value="">Select Method</option>
+              <option value="bitcoin">Bitcoin (BTC)</option>
+              <option value="ethereum">Ethereum (ETH)</option>
+              <option value="usdt_trc20">USDT TRC20</option>
+              <option value="usdt_erc20">USDT ERC20</option>
+              <option value="mpesa">M-Pesa</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Amount (USD) *</label>
+            <input type="number" id="payoutAmount" placeholder="0.00" min="10" step="0.01"/>
+            <span class="fee-note">Min. withdrawal: $10 | Fee: 2%</span>
+          </div>
+          <div class="form-field full">
+            <label>Wallet Address / Phone Number *</label>
+            <input type="text" id="payoutWallet" placeholder="Enter your wallet address or phone number"/>
+          </div>
+          <div class="form-field">
+            <label>You will receive</label>
+            <div class="net-display" id="netDisplay">$0.00</div>
+          </div>
+        </div>
+        <button class="btn-submit" id="payoutBtn">
+          <span class="spinner" id="payoutSpinner"></span>
+          <span id="payoutBtnText">Request Payout</span>
+        </button>
+      </div>
+
+      <!-- Payout history -->
+      <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Method</th><th>Wallet</th><th>Amount</th><th>Fee</th><th>Net</th><th>Status</th></tr></thead>
+          <tbody id="payoutHistoryBody">
+            <tr><td colspan="7" class="no-data">No Data Found</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
+
+    const { data:{session} } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userAvatar').textContent = initials
+    document.getElementById('userName').textContent = name
+
+    function showToast(msg,type='error') {
+      const t=document.getElementById('toast'); t.textContent=msg; t.className=`toast ${type} show`
+      setTimeout(()=>t.classList.remove('show'),4000)
+    }
+
+    // Load balances
+    const {data:profile} = await supabase.from('profiles').select('main_balance,interest_balance,total_payout').eq('id',user.id).single()
+    if (profile) {
+      document.getElementById('balMain').textContent     = `$${Number(profile.main_balance||0).toFixed(2)}`
+      document.getElementById('balInterest').textContent = `$${Number(profile.interest_balance||0).toFixed(2)}`
+      document.getElementById('balPayout').textContent   = `$${Number(profile.total_payout||0).toFixed(2)}`
+    }
+
+    // Calculate net
+    document.getElementById('payoutAmount').addEventListener('input', e => {
+      const amt = parseFloat(e.target.value) || 0
+      const fee = amt * 0.02
+      const net = Math.max(0, amt - fee)
+      document.getElementById('netDisplay').textContent = `$${net.toFixed(2)}`
+    })
+
+    // Submit payout
+    document.getElementById('payoutBtn').addEventListener('click', async () => {
+      const method = document.getElementById('payoutMethod').value
+      const amount = parseFloat(document.getElementById('payoutAmount').value)
+      const wallet = document.getElementById('payoutWallet').value.trim()
+
+      if (!method) { showToast('⚠️ Please select a withdrawal method.'); return }
+      if (!amount || amount < 10) { showToast('⚠️ Minimum withdrawal is $10.'); return }
+      if (!wallet) { showToast('⚠️ Please enter your wallet address or phone number.'); return }
+
+      const mainBal = parseFloat(profile?.main_balance || 0)
+      if (amount > mainBal) { showToast('⚠️ Insufficient balance.'); return }
+
+      const btn = document.getElementById('payoutBtn')
+      btn.disabled = true
+      document.getElementById('payoutBtnText').textContent = 'Submitting...'
+
+      try {
+        const fee = amount * 0.02
+        const net = amount - fee
+        const txnId = 'PAY-' + Date.now()
+
+        const {error} = await supabase.from('withdrawals').insert({
+          user_id:user.id, txn_id:txnId, method, wallet_address:wallet,
+          amount, fee, net_amount:net, status:'pending', created_at:new Date().toISOString()
+        })
+        if (error) throw error
+
+        showToast('✅ Payout request submitted! Processing within 24 hours.','success')
+        document.getElementById('payoutMethod').value = ''
+        document.getElementById('payoutAmount').value = ''
+        document.getElementById('payoutWallet').value = ''
+        document.getElementById('netDisplay').textContent = '$0.00'
+        loadHistory()
+      } catch(err) {
+        showToast('⚠️ ' + (err.message||'Submission failed'))
+      } finally {
+        btn.disabled = false
+        document.getElementById('payoutBtnText').textContent = 'Request Payout'
+      }
+    })
+
+    // Load history
+    async function loadHistory() {
+      const {data} = await supabase.from('withdrawals').select('*').eq('user_id',user.id).order('created_at',{ascending:false})
+      const body = document.getElementById('payoutHistoryBody')
+      if (!data?.length) { body.innerHTML='<tr><td colspan="7" class="no-data">No Data Found</td></tr>'; return }
+      const cls = {pending:'badge-pending',approved:'badge-approved',rejected:'badge-rejected'}
+      body.innerHTML = data.map(w=>`
+        <tr>
+          <td>${new Date(w.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+          <td style="text-transform:capitalize">${w.method?.replace(/_/g,' ')||'—'}</td>
+          <td style="font-family:monospace;font-size:0.75rem;max-width:140px;overflow:hidden;text-overflow:ellipsis">${w.wallet_address||'—'}</td>
+          <td style="color:#f87171;font-weight:600">$${Number(w.amount).toFixed(2)}</td>
+          <td style="color:var(--text-lo)">$${Number(w.fee||0).toFixed(2)}</td>
+          <td style="color:#22c55e;font-weight:600">$${Number(w.net_amount||0).toFixed(2)}</td>
+          <td><span class="badge ${cls[w.status]||'badge-pending'}">${w.status}</span></td>
+        </tr>
+      `).join('')
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async e => {
+      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    })
+    loadHistory()
+  </script>
+  <script>
+    const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open')})
+    overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open')})
+  </script>
+</body>
+</html>
