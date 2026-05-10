@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Copy Trade Signals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --green:#22c55e; --red:#f87171;
+      --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+
+    /* ── Sidebar ── */
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+
+    /* ── Main ── */
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .currency-wrap { position:relative; }
+    .currency-btn { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; }
+    .currency-dropdown { position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; overflow:hidden; min-width:130px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:999; display:none; }
+    .currency-dropdown.open { display:block; }
+    .currency-opt { padding:0.65rem 1.1rem; font-size:0.875rem; color:var(--text-mid); cursor:pointer; transition:background 0.15s,color 0.15s; }
+    .currency-opt:hover { background:rgba(245,166,35,0.1); color:var(--gold); }
+    .currency-opt.selected { background:var(--gold); color:#000; font-weight:700; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); max-width:90vw; text-align:center; }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(34,197,94,0.4); }
+    .toast.error   { border-color:rgba(248,113,113,0.4); }
+    .toast.warn    { border-color:rgba(245,166,35,0.4); }
+
+    /* ── Balance info bar ── */
+    .balance-info {
+      display:flex; align-items:center; gap:1rem;
+      background:var(--card); border:1px solid var(--border);
+      border-radius:10px; padding:1rem 1.5rem;
+      margin-bottom:1.75rem; flex-wrap:wrap;
+    }
+    .balance-info .bal-item { display:flex; align-items:center; gap:0.5rem; }
+    .balance-info .bal-label { font-size:0.8rem; color:var(--text-lo); }
+    .balance-info .bal-val { font-family:var(--font-display); font-size:1.1rem; font-weight:700; color:var(--gold); }
+    .balance-info .bal-divider { width:1px; height:28px; background:var(--border); }
+
+    /* ── Table card ── */
+    .table-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:12px; overflow:hidden;
+    }
+    .table-card-header {
+      padding:1.25rem 1.5rem;
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .table-card-title {
+      font-family:var(--font-display); font-size:1.05rem; font-weight:700;
+    }
+    .table-wrap { overflow-x:auto; }
+
+    /* ── Signals table ── */
+    .signals-table { width:100%; border-collapse:collapse; min-width:700px; }
+    .signals-table thead tr { background:var(--gold); }
+    .signals-table thead th {
+      padding:0.85rem 1rem; font-size:0.78rem; font-weight:700;
+      color:#000; text-align:left; white-space:nowrap;
+    }
+    .signals-table thead th .th-inner {
+      display:flex; align-items:center; gap:0.5rem;
+    }
+    .signals-table thead th .th-avatar {
+      width:28px; height:28px; border-radius:50%;
+      background:rgba(0,0,0,0.2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.75rem; font-weight:800; color:#000; flex-shrink:0;
+    }
+    .signals-table tbody tr {
+      border-bottom:1px solid var(--border);
+      transition:background 0.15s;
+    }
+    .signals-table tbody tr:last-child { border-bottom:none; }
+    .signals-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .signals-table tbody td {
+      padding:1rem;
+      font-size:0.875rem; color:var(--text-mid);
+      vertical-align:middle;
+    }
+
+    /* Trader name cell */
+    .trader-cell { display:flex; align-items:center; gap:0.75rem; }
+    .trader-avatar {
+      width:40px; height:40px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--font-display); font-size:0.85rem; font-weight:800;
+      color:#fff; flex-shrink:0;
+    }
+    .trader-name { font-weight:600; color:var(--text-hi); font-size:0.875rem; }
+    .trader-tag  { font-size:0.72rem; color:var(--text-lo); margin-top:0.1rem; }
+
+    /* Return rate */
+    .return-rate { font-weight:700; font-size:0.95rem; }
+    .return-rate.positive { color:var(--green); }
+    .return-rate.negative { color:var(--red); }
+
+    /* Stat cells */
+    .stat-cell { font-weight:600; color:var(--text-hi); }
+    .stat-sub   { font-size:0.72rem; color:var(--text-lo); margin-top:0.1rem; }
+
+    /* ── Copy Signal button + dropdown ── */
+    .action-wrap { position:relative; }
+
+    .btn-copy {
+      background:linear-gradient(135deg, var(--blue), #1d4ed8);
+      color:#fff; border:none; border-radius:7px;
+      padding:0.55rem 1.1rem; font-size:0.8rem; font-weight:700;
+      font-family:var(--font-body); cursor:pointer;
+      white-space:nowrap;
+      transition:transform 0.2s, box-shadow 0.2s;
+      display:flex; align-items:center; gap:0.4rem;
+    }
+    .btn-copy:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(37,99,235,0.35); }
+    .btn-copy .arrow { font-size:0.65rem; transition:transform 0.2s; }
+    .btn-copy.open .arrow { transform:rotate(180deg); }
+
+    /* Plan dropdown */
+    .plan-dropdown {
+      position:absolute; top:calc(100% + 6px); right:0;
+      background:#1a1a1a; border:1px solid var(--border);
+      border-radius:10px; overflow:hidden;
+      min-width:230px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.6);
+      z-index:300;
+      display:none;
+      animation:dropIn 0.2s ease;
+    }
+    .plan-dropdown.open { display:block; }
+
+    @keyframes dropIn {
+      from { opacity:0; transform:translateY(-6px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .plan-dropdown-header {
+      padding:0.75rem 1rem;
+      font-size:0.72rem; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      color:var(--text-lo);
+      border-bottom:1px solid var(--border);
+    }
+
+    .plan-option {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0.75rem 1rem; cursor:pointer;
+      transition:background 0.15s;
+      gap:0.5rem;
+    }
+    .plan-option:hover { background:rgba(255,255,255,0.04); }
+    .plan-option:last-child { border-bottom:none; }
+
+    .plan-option .plan-left { display:flex; flex-direction:column; gap:0.1rem; }
+    .plan-option .plan-name { font-size:0.875rem; font-weight:600; color:var(--text-hi); }
+    .plan-option .plan-range { font-size:0.72rem; color:var(--text-lo); }
+
+    .plan-option .plan-badge {
+      font-size:0.68rem; font-weight:700; padding:0.2rem 0.55rem;
+      border-radius:20px; white-space:nowrap; flex-shrink:0;
+    }
+    .badge-available  { background:rgba(34,197,94,0.12);  color:var(--green); }
+    .badge-copied     { background:rgba(245,166,35,0.15);  color:var(--gold); }
+    .badge-locked     { background:rgba(248,113,113,0.1);  color:var(--red); }
+
+    /* Copied state on button */
+    .btn-copy.copied {
+      background:linear-gradient(135deg,#15803d,#16a34a);
+    }
+
+    @media(max-width:860px) {
+      .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)}
+      .main{margin-left:0} .hamburger-btn{display:flex}
+      .page{padding:1.25rem} .header{padding:0 1.25rem}
+      .balance-info{gap:0.75rem}
+    }
+    @media(max-width:540px) {
+      .user-name{display:none}
+      .page-header{flex-direction:column;align-items:flex-start}
+      .balance-info .bal-divider{display:none}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="dashboard-copy-signals.html" class="nav-link active"><span class="icon">📡</span> Copy Signals</a>
+        <a href="#" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="#" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="#" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="#" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="currency-wrap">
+          <button class="currency-btn" id="currencyBtn">
+            <span id="currencyLabel">USD</span><span style="font-size:0.7rem">▾</span>
+          </button>
+          <div class="currency-dropdown" id="currencyDropdown">
+            <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="EUR">EUR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
+          </div>
+        </div>
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Copy Trade Signals</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a><span>—</span>
+          <span class="current">Copy Signals</span>
+        </div>
+      </div>
+
+      <!-- Balance info -->
+      <div class="balance-info">
+        <div class="bal-item">
+          <span class="bal-label">Your Balance:</span>
+          <span class="bal-val" id="userBalance">$0.00</span>
+        </div>
+        <div class="bal-divider"></div>
+        <div class="bal-item">
+          <span class="bal-label">Active Plan:</span>
+          <span class="bal-val" id="activePlan">None</span>
+        </div>
+        <div class="bal-divider"></div>
+        <div class="bal-item" style="margin-left:auto">
+          <span style="font-size:0.8rem;color:var(--text-lo)">
+            💡 Your balance determines which plans you can copy
+          </span>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-card-header">
+          <div class="table-card-title">Copy Trade Signals</div>
+          <span style="font-size:0.8rem;color:var(--text-lo)">7 traders available</span>
+        </div>
+        <div class="table-wrap">
+          <table class="signals-table" id="signalsTable">
+            <thead>
+              <tr>
+                <th><div class="th-inner"><div class="th-avatar">👤</div>Name</div></th>
+                <th><div class="th-inner"><div class="th-avatar">📈</div>Return Rate</div></th>
+                <th><div class="th-inner"><div class="th-avatar">📅</div>Days Trading</div></th>
+                <th><div class="th-inner"><div class="th-avatar">👥</div>Followers</div></th>
+                <th><div class="th-inner"><div class="th-avatar">💰</div>Managed Funds</div></th>
+                <th><div class="th-inner"><div class="th-avatar">⚡</div>Action</div></th>
+              </tr>
+            </thead>
+            <tbody id="signalsBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient(
+      'https://xbazuosvlggtolahgcjv.supabase.co',
+      'sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F'
+    )
+
+    // Auth guard
+    const { data:{session} } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userAvatar').textContent = initials
+    document.getElementById('userName').textContent   = name
+
+    // Toast
+    window.showToast = function(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(()=>t.classList.remove('show'), 3500)
+    }
+
+    // Investment plans config — must match exactly with deposit page
+    const PLANS = [
+      { key:'bronze',    label:'Bronze',    min:150,   max:500,   rate:'5%',  period:'24hrs'   },
+      { key:'silver',    label:'Silver',    min:501,   max:1000,  rate:'10%', period:'48hrs'   },
+      { key:'gold',      label:'Gold',      min:1001,  max:3000,  rate:'8%',  period:'72hrs'   },
+      { key:'premium',   label:'Premium',   min:3001,  max:10000, rate:'5%',  period:'weekly'  },
+      { key:'executive', label:'Executive', min:10001, max:99999, rate:'4%',  period:'monthly' },
+    ]
+
+    // Trader data — fill in your real data here
+    const TRADERS = [
+      { id:1, name:'Alex Morgan',   tag:'Forex & BTC Specialist',  returnRate:+42.5, days:847, followers:3241, managed:'$2.4M',  color:'#6366f1' },
+      { id:2, name:'Sarah Chen',    tag:'Crypto Quant Trader',     returnRate:+38.2, days:612, followers:2180, managed:'$1.8M',  color:'#ec4899' },
+      { id:3, name:'James Okafor',  tag:'Gold & Commodities',      returnRate:+29.7, days:1203,followers:4750, managed:'$5.1M',  color:'#f59e0b' },
+      { id:4, name:'Maria Santos',  tag:'Scalping Expert',         returnRate:+55.1, days:421, followers:1890, managed:'$980K',  color:'#10b981' },
+      { id:5, name:'David Kimani',  tag:'Long-term Growth Fund',   returnRate:+18.4, days:2140,followers:6320, managed:'$12.3M', color:'#3b82f6' },
+      { id:6, name:'Aisha Patel',   tag:'DeFi & Altcoin Trader',   returnRate:+67.3, days:284, followers:1120, managed:'$450K',  color:'#8b5cf6' },
+      { id:7, name:'Chen Wei',      tag:'Risk-Managed Portfolio',  returnRate:+24.9, days:1560,followers:5430, managed:'$8.7M',  color:'#14b8a6' },
+    ]
+
+    // Load user balance
+    let userBalance = 0
+    let activePlanKey = 'none'
+    let copiedSignals = {} // { traderId: planKey }
+
+    const {data:profile} = await supabase.from('profiles').select('main_balance,total_deposit').eq('id',user.id).single()
+    if (profile) {
+      userBalance = parseFloat(profile.main_balance || 0)
+      document.getElementById('userBalance').textContent = `$${userBalance.toFixed(2)}`
+
+      // Determine active plan based on balance
+      for (let i = PLANS.length-1; i >= 0; i--) {
+        if (userBalance >= PLANS[i].min) {
+          activePlanKey = PLANS[i].key
+          document.getElementById('activePlan').textContent = PLANS[i].label
+          break
+        }
+      }
+      if (activePlanKey === 'none') {
+        document.getElementById('activePlan').textContent = 'None — Deposit to start'
+        document.getElementById('activePlan').style.color = 'var(--text-lo)'
+      }
+    }
+
+    // Load saved copied signals from Supabase
+    const {data:copies} = await supabase.from('copy_signals')
+      .select('trader_id,plan_key').eq('user_id',user.id)
+    if (copies) {
+      copies.forEach(c => { copiedSignals[c.trader_id] = c.plan_key })
+    }
+
+    // Render table
+    function renderTable() {
+      const tbody = document.getElementById('signalsBody')
+      tbody.innerHTML = TRADERS.map(t => {
+        const initials = t.name.split(' ').map(n=>n[0]).join('')
+        const isCopied = !!copiedSignals[t.id]
+        const copiedPlan = isCopied ? PLANS.find(p=>p.key===copiedSignals[t.id]) : null
+
+        return `
+          <tr>
+            <td>
+              <div class="trader-cell">
+                <div class="trader-avatar" style="background:${t.color}">${initials}</div>
+                <div>
+                  <div class="trader-name">${t.name}</div>
+                  <div class="trader-tag">${t.tag}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="return-rate positive">+${t.returnRate}%</span></td>
+            <td><div class="stat-cell">${t.days.toLocaleString()}</div><div class="stat-sub">days</div></td>
+            <td><div class="stat-cell">${t.followers.toLocaleString()}</div><div class="stat-sub">followers</div></td>
+            <td><div class="stat-cell">${t.managed}</div></td>
+            <td>
+              <div class="action-wrap" id="wrap-${t.id}">
+                <button class="btn-copy ${isCopied?'copied':''}" id="btn-${t.id}" onclick="toggleDropdown(${t.id})">
+                  ${isCopied ? `✅ Copied (${copiedPlan?.label||''})` : '📡 Copy Signal'}
+                  <span class="arrow">▾</span>
+                </button>
+                <div class="plan-dropdown" id="drop-${t.id}">
+                  <div class="plan-dropdown-header">Select Investment Plan</div>
+                  ${PLANS.map(p => {
+                    const canAfford  = userBalance >= p.min
+                    const isCopiedPlan = copiedSignals[t.id] === p.key
+                    let badge, clickable
+
+                    if (isCopiedPlan) {
+                      badge = `<span class="plan-badge badge-copied">✅ Copied</span>`
+                      clickable = `onclick="uncopyPlan(${t.id},'${p.key}')"`
+                    } else if (canAfford) {
+                      badge = `<span class="plan-badge badge-available">Available</span>`
+                      clickable = `onclick="copyPlan(${t.id},'${p.key}')"`
+                    } else {
+                      badge = `<span class="plan-badge badge-locked">Insufficient Capital</span>`
+                      clickable = `onclick="showToast('⚠️ Insufficient capital. Minimum deposit for ${p.label} is $${p.min.toLocaleString()}','warn')"`
+                    }
+
+                    return `
+                      <div class="plan-option" ${clickable}>
+                        <div class="plan-left">
+                          <div class="plan-name">${p.label} — ${p.rate}</div>
+                          <div class="plan-range">$${p.min.toLocaleString()} – $${p.max.toLocaleString()} | ${p.period}</div>
+                        </div>
+                        ${badge}
+                      </div>
+                    `
+                  }).join('')}
+                </div>
+              </div>
+            </td>
+          </tr>
+        `
+      }).join('')
+    }
+
+    // Toggle dropdown
+    window.toggleDropdown = function(traderId) {
+      const drop = document.getElementById(`drop-${traderId}`)
+      const btn  = document.getElementById(`btn-${traderId}`)
+      const isOpen = drop.classList.contains('open')
+
+      // Close all others
+      document.querySelectorAll('.plan-dropdown').forEach(d => d.classList.remove('open'))
+      document.querySelectorAll('.btn-copy').forEach(b => b.classList.remove('open'))
+
+      if (!isOpen) {
+        drop.classList.add('open')
+        btn.classList.add('open')
+      }
+    }
+
+    // Copy a plan
+    window.copyPlan = async function(traderId, planKey) {
+      // Remove existing copy for this trader if any
+      if (copiedSignals[traderId]) {
+        await supabase.from('copy_signals')
+          .delete().eq('user_id',user.id).eq('trader_id',traderId)
+      }
+
+      const { error } = await supabase.from('copy_signals').upsert({
+        user_id:   user.id,
+        trader_id: traderId,
+        plan_key:  planKey,
+        copied_at: new Date().toISOString(),
+      })
+
+      if (error) { showToast('⚠️ Failed to copy signal. Try again.'); return }
+
+      copiedSignals[traderId] = planKey
+      const plan = PLANS.find(p=>p.key===planKey)
+      const trader = TRADERS.find(t=>t.id===traderId)
+      showToast(`✅ Now copying ${trader.name} on ${plan.label} plan!`, 'success')
+      renderTable()
+      // Close dropdown
+      document.querySelectorAll('.plan-dropdown').forEach(d=>d.classList.remove('open'))
+    }
+
+    // Uncopy a plan
+    window.uncopyPlan = async function(traderId, planKey) {
+      const { error } = await supabase.from('copy_signals')
+        .delete().eq('user_id',user.id).eq('trader_id',traderId)
+
+      if (error) { showToast('⚠️ Failed to remove. Try again.'); return }
+
+      delete copiedSignals[traderId]
+      const trader = TRADERS.find(t=>t.id===traderId)
+      showToast(`Stopped copying ${trader.name}`, 'error')
+      renderTable()
+      document.querySelectorAll('.plan-dropdown').forEach(d=>d.classList.remove('open'))
+    }
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.action-wrap')) {
+        document.querySelectorAll('.plan-dropdown').forEach(d=>d.classList.remove('open'))
+        document.querySelectorAll('.btn-copy').forEach(b=>b.classList.remove('open'))
+      }
+    })
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async e => {
+      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    })
+
+    renderTable()
+  </script>
+
+  <script>
+    // Hamburger
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open')})
+    overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('open')})
+
+    // Currency
+    const currBtn=document.getElementById('currencyBtn'),currDD=document.getElementById('currencyDropdown'),currLbl=document.getElementById('currencyLabel')
+    currBtn.addEventListener('click',e=>{e.stopPropagation();currDD.classList.toggle('open')})
+    document.querySelectorAll('.currency-opt').forEach(opt=>{
+      opt.addEventListener('click',()=>{document.querySelectorAll('.currency-opt').forEach(o=>o.classList.remove('selected'));opt.classList.add('selected');currLbl.textContent=opt.dataset.code;currDD.classList.remove('open')})
+    })
+    document.addEventListener('click',e=>{if(!currBtn.contains(e.target)&&!currDD.contains(e.target))currDD.classList.remove('open')})
+  </script>
+</body>
+</html>
