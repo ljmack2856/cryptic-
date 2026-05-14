@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Withdraw History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .currency-wrap { position:relative; }
+    .currency-btn { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; }
+    .currency-dropdown { position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; overflow:hidden; min-width:130px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:999; display:none; }
+    .currency-dropdown.open { display:block; }
+    .currency-opt { padding:0.65rem 1.1rem; font-size:0.875rem; color:var(--text-mid); cursor:pointer; transition:background 0.15s,color 0.15s; }
+    .currency-opt:hover { background:rgba(245,166,35,0.1); color:var(--gold); }
+    .currency-opt.selected { background:var(--gold); color:#000; font-weight:700; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+
+    /* Filter bar */
+    .filter-bar { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; }
+    .filter-field { display:flex; flex-direction:column; gap:0.4rem; flex:1; min-width:160px; }
+    .filter-field label { font-size:0.78rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.06em; }
+    .filter-field input, .filter-field select { background:#0d0d0d; border:1px solid var(--border); border-radius:6px; padding:0.7rem 0.9rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.875rem; outline:none; appearance:none; transition:border-color 0.2s; width:100%; }
+    .filter-field input:focus, .filter-field select:focus { border-color:rgba(245,166,35,0.4); }
+    .filter-field input::placeholder { color:#444; }
+    .btn-filter { background:var(--blue); color:#fff; font-family:var(--font-body); font-size:0.875rem; font-weight:700; padding:0.7rem 1.75rem; border-radius:6px; border:none; cursor:pointer; align-self:flex-end; transition:background 0.2s; white-space:nowrap; }
+    .btn-filter:hover { background:#1d4ed8; }
+
+    /* Table */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; white-space:nowrap; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .data-table tbody td { padding:0.9rem 1rem; font-size:0.875rem; color:var(--text-mid); vertical-align:middle; }
+    .no-data { text-align:center; padding:3rem 1rem; color:var(--text-lo); font-size:0.9rem; }
+
+    .badge { display:inline-block; padding:0.25rem 0.65rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+    .badge-pending  { background:rgba(245,166,35,0.12); color:var(--gold); }
+    .badge-approved { background:rgba(34,197,94,0.12);  color:#22c55e; }
+    .badge-rejected { background:rgba(248,113,113,0.12); color:#f87171; }
+
+    /* Buyer cell */
+    .buyer-cell { display:flex; align-items:center; gap:0.65rem; }
+    .buyer-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.72rem; font-weight:800; color:#000; flex-shrink:0; }
+    .buyer-name { font-size:0.875rem; font-weight:600; color:var(--text-hi); }
+    .buyer-email { font-size:0.72rem; color:var(--text-lo); }
+
+    /* Pagination */
+    .pagination { display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-btn { background:var(--card); border:1px solid var(--border); color:var(--text-mid); padding:0.5rem 0.85rem; border-radius:6px; cursor:pointer; font-size:0.85rem; font-family:var(--font-body); transition:background 0.2s,color 0.2s,border-color 0.2s; }
+    .page-btn:hover { border-color:var(--gold); color:var(--gold); }
+    .page-btn.active { background:var(--gold); color:#000; border-color:var(--gold); font-weight:700; }
+    .page-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+    @media(max-width:860px) { .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)} .main{margin-left:0} .hamburger-btn{display:flex} .page{padding:1.25rem} .header{padding:0 1.25rem} .filter-bar{flex-direction:column} .btn-filter{align-self:stretch;text-align:center} }
+    @media(max-width:540px) { .user-name{display:none} .page-header{flex-direction:column;align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="dashboard-copy-signals.html" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="dashboard-invest-history.html" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="dashboard-transfer.html" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="dashboard-request-money.html" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="dashboard-receive-request.html" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="dashboard-deposit-history.html" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="dashboard-payout-history.html" class="nav-link active"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="currency-wrap">
+          <button class="currency-btn" id="currencyBtn">
+            <span id="currencyLabel">USD</span><span style="font-size:0.7rem">▾</span>
+          </button>
+          <div class="currency-dropdown" id="currencyDropdown">
+            <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="EUR">EUR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
+          </div>
+        </div>
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Withdraw History</h1>
+        <div class="breadcrumb">
+          <a href="dashboard-payout.html">Payout</a><span>—</span>
+          <span class="current">Withdraw History</span>
+        </div>
+      </div>
+
+      <!-- Filter -->
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label>Transaction No</label>
+          <input type="text" id="filterTxn" placeholder="Transaction no"/>
+        </div>
+        <div class="filter-field">
+          <label>Select Type</label>
+          <select id="filterStatus">
+            <option value="">Select Type</option>
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <button class="btn-filter" id="filterBtn">Submit</button>
+      </div>
+
+      <!-- Table -->
+      <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Buyer</th>
+              <th>Transaction No</th>
+              <th>Payment Method</th>
+              <th>Amount</th>
+              <th>Fee</th>
+              <th>Status</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          <tbody id="payoutBody">
+            <tr><td colspan="7" class="no-data">No Data Found</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
+
+    const { data:{session} } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userAvatar').textContent = initials
+    document.getElementById('userName').textContent = name
+
+    const PAGE_SIZE = 10
+    let currentPage = 1
+    let allWithdrawals = []
+
+    async function loadWithdrawals() {
+      const { data } = await supabase
+        .from('withdrawals').select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+      allWithdrawals = data || []
+      applyFilter()
+    }
+
+    function applyFilter() {
+      const txn    = document.getElementById('filterTxn').value.trim().toLowerCase()
+      const status = document.getElementById('filterStatus').value
+      let filtered = allWithdrawals
+      if (txn)    filtered = filtered.filter(w => w.txn_id?.toLowerCase().includes(txn))
+      if (status && status !== 'all') filtered = filtered.filter(w => w.status === status)
+      currentPage = 1
+      renderTable(filtered)
+      renderPagination(filtered)
+    }
+
+    function renderTable(data) {
+      const body = document.getElementById('payoutBody')
+      const start = (currentPage - 1) * PAGE_SIZE
+      const slice = data.slice(start, start + PAGE_SIZE)
+
+      if (!slice.length) {
+        body.innerHTML = '<tr><td colspan="7" class="no-data">No Data Found</td></tr>'
+        return
+      }
+
+      const cls = { pending:'badge-pending', approved:'badge-approved', rejected:'badge-rejected' }
+
+      body.innerHTML = slice.map(w => `
+        <tr>
+          <td>
+            <div class="buyer-cell">
+              <div class="buyer-avatar">${initials}</div>
+              <div>
+                <div class="buyer-name">${name}</div>
+                <div class="buyer-email">${user.email}</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-family:monospace;font-size:0.78rem;color:var(--text-lo)">${w.txn_id||'—'}</td>
+          <td style="text-transform:capitalize">${w.method?.replace(/_/g,' ')||'—'}</td>
+          <td style="color:#f87171;font-weight:700">$${Number(w.amount).toFixed(2)}</td>
+          <td style="color:var(--text-lo)">$${Number(w.fee||0).toFixed(2)}</td>
+          <td><span class="badge ${cls[w.status]||'badge-pending'}">${w.status||'pending'}</span></td>
+          <td>
+            <a href="dashboard-payout.html" style="color:var(--gold);font-size:0.8rem;font-weight:600;text-decoration:none;">
+              View
+            </a>
+          </td>
+        </tr>
+      `).join('')
+    }
+
+    function renderPagination(data) {
+      const total = Math.ceil(data.length / PAGE_SIZE)
+      const pg = document.getElementById('pagination')
+      if (total <= 1) { pg.innerHTML = ''; return }
+
+      pg.innerHTML = `
+        <button class="page-btn" id="pgPrev" ${currentPage===1?'disabled':''}>← Prev</button>
+        ${Array.from({length:total},(_,i)=>`
+          <button class="page-btn ${i+1===currentPage?'active':''}" data-page="${i+1}">${i+1}</button>
+        `).join('')}
+        <button class="page-btn" id="pgNext" ${currentPage===total?'disabled':''}>Next →</button>
+      `
+      pg.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentPage = parseInt(btn.dataset.page)
+          renderTable(data); renderPagination(data)
+        })
+      })
+      pg.querySelector('#pgPrev')?.addEventListener('click', () => { if(currentPage>1){currentPage--;renderTable(data);renderPagination(data)} })
+      pg.querySelector('#pgNext')?.addEventListener('click', () => { if(currentPage<total){currentPage++;renderTable(data);renderPagination(data)} })
+    }
+
+    document.getElementById('filterBtn').addEventListener('click', applyFilter)
+    document.getElementById('filterTxn').addEventListener('keydown', e => { if(e.key==='Enter') applyFilter() })
+
+    document.getElementById('logoutBtn').addEventListener('click', async e => {
+      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    })
+
+    loadWithdrawals()
+  </script>
+
+  <script>
+    const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sb.classList.toggle('open');ov.classList.toggle('open')})
+    ov.addEventListener('click',()=>{sb.classList.remove('open');ov.classList.remove('open')})
+    const currBtn=document.getElementById('currencyBtn'),currDD=document.getElementById('currencyDropdown'),currLbl=document.getElementById('currencyLabel')
+    currBtn.addEventListener('click',e=>{e.stopPropagation();currDD.classList.toggle('open')})
+    document.querySelectorAll('.currency-opt').forEach(opt=>{
+      opt.addEventListener('click',()=>{document.querySelectorAll('.currency-opt').forEach(o=>o.classList.remove('selected'));opt.classList.add('selected');currLbl.textContent=opt.dataset.code;currDD.classList.remove('open')})
+    })
+    document.addEventListener('click',e=>{if(!currBtn.contains(e.target)&&!currDD.contains(e.target))currDD.classList.remove('open')})
+  </script>
+</body>
+</html>

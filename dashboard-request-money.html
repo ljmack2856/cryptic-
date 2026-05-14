@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Request Money</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); max-width:90vw; }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(34,197,94,0.4); }
+    .toast.error   { border-color:rgba(248,113,113,0.4); }
+
+    /* Form card */
+    .form-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:12px; padding:2rem;
+      max-width:800px; margin-bottom:2rem;
+      display:flex; flex-direction:column; gap:1.25rem;
+    }
+
+    .form-field { display:flex; flex-direction:column; gap:0.45rem; }
+    .form-field label { font-size:0.85rem; color:var(--text-mid); font-weight:500; }
+    .form-field input, .form-field textarea {
+      background:#0d0d0d; border:1px solid var(--border); border-radius:6px;
+      padding:0.85rem 1rem; color:var(--text-hi); font-family:var(--font-body);
+      font-size:0.9rem; outline:none; width:100%; transition:border-color 0.2s;
+    }
+    .form-field input:focus, .form-field textarea:focus { border-color:rgba(245,166,35,0.4); }
+    .form-field input::placeholder, .form-field textarea::placeholder { color:#444; }
+    .form-field textarea { resize:vertical; min-height:130px; }
+
+    /* Receiver lookup status */
+    .receiver-status { font-size:0.75rem; margin-top:0.3rem; min-height:1rem; transition:color 0.2s; }
+    .receiver-status.found    { color:#22c55e; }
+    .receiver-status.notfound { color:#f87171; }
+    .receiver-status.loading  { color:var(--text-lo); }
+
+    .btn-submit {
+      background:var(--blue); color:#fff; font-family:var(--font-body);
+      font-size:0.95rem; font-weight:700; padding:0.9rem;
+      border-radius:8px; border:none; cursor:pointer;
+      transition:background 0.2s, transform 0.2s;
+      display:flex; align-items:center; justify-content:center; gap:0.6rem;
+      width:100%;
+    }
+    .btn-submit:hover { background:#1d4ed8; transform:translateY(-1px); }
+    .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    .spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+    .btn-submit:disabled .spinner { display:inline-block; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* Pending requests banner */
+    .pending-banner {
+      background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2);
+      border-radius:10px; padding:1rem 1.25rem; margin-bottom:1.5rem;
+      display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;
+    }
+    .pending-banner .pb-icon { font-size:1.25rem; }
+    .pending-banner .pb-text { font-size:0.875rem; color:var(--text-mid); flex:1; }
+    .pending-banner .pb-count { font-family:var(--font-display); font-size:1rem; font-weight:700; color:var(--gold); }
+
+    /* Table */
+    .section-title { font-size:1rem; font-weight:600; color:var(--text-hi); margin-bottom:1rem; }
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; white-space:nowrap; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .data-table tbody td { padding:0.9rem 1rem; font-size:0.85rem; color:var(--text-mid); }
+    .no-data { text-align:center; padding:2.5rem; color:var(--text-lo); font-size:0.875rem; }
+    .badge { display:inline-block; padding:0.25rem 0.65rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+    .badge-pending  { background:rgba(245,166,35,0.12); color:var(--gold); }
+    .badge-success  { background:rgba(34,197,94,0.12);  color:#22c55e; }
+    .badge-rejected { background:rgba(248,113,113,0.12); color:#f87171; }
+
+    @media(max-width:860px) { .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)} .main{margin-left:0} .hamburger-btn{display:flex} .page{padding:1.25rem} .header{padding:0 1.25rem} }
+    @media(max-width:540px) { .user-name{display:none} .page-header{flex-direction:column;align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="dashboard-copy-signals.html" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="dashboard-invest-history.html" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="dashboard-transfer.html" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="dashboard-request-money.html" class="nav-link active"><span class="icon">💰</span> Send Request Money</a>
+        <a href="dashboard-receive-request.html" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Request Money</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a><span>—</span>
+          <span class="current">Request Money</span>
+        </div>
+      </div>
+
+      <!-- Pending count banner -->
+      <div class="pending-banner" id="pendingBanner" style="display:none;">
+        <span class="pb-icon">⏳</span>
+        <span class="pb-text">You have pending money requests</span>
+        <span class="pb-count" id="pendingCount">0 pending</span>
+      </div>
+
+      <!-- Request form -->
+      <div class="form-card">
+        <div class="form-field">
+          <label>Receiver Email *</label>
+          <input type="email" id="receiverEmail" placeholder="doe@gmail.com"/>
+          <div class="receiver-status" id="receiverStatus"></div>
+        </div>
+
+        <div class="form-field">
+          <label>Account Name</label>
+          <input type="text" id="accountName" placeholder="John Doe" readonly/>
+        </div>
+
+        <div class="form-field">
+          <label>Amount *</label>
+          <input type="number" id="requestAmount" placeholder="0.0" min="1" step="0.01"/>
+        </div>
+
+        <div class="form-field">
+          <label>Description</label>
+          <textarea id="requestDesc" placeholder="Receive account details"></textarea>
+        </div>
+
+        <button class="btn-submit" id="submitBtn">
+          <span class="spinner" id="submitSpinner"></span>
+          <span id="submitBtnText">Submit</span>
+        </button>
+      </div>
+
+      <!-- Sent requests history -->
+      <div class="section-title">Sent Requests</div>
+      <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Transaction ID</th>
+              <th>Receiver</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="requestHistoryBody">
+            <tr><td colspan="6" class="no-data">No requests sent yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
+
+    const { data:{session} } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    document.getElementById('userAvatar').textContent = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+
+    function showToast(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(()=>t.classList.remove('show'), 4000)
+    }
+
+    // Receiver email lookup with debounce
+    let receiverUID = null
+    let lookupTimer = null
+
+    document.getElementById('receiverEmail').addEventListener('input', e => {
+      const email = e.target.value.trim()
+      const status = document.getElementById('receiverStatus')
+      const nameField = document.getElementById('accountName')
+      receiverUID = null
+      nameField.value = ''
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = ''; return
+      }
+      if (email === user.email) {
+        status.textContent = "⚠️ Can't request from yourself"
+        status.className = 'receiver-status notfound'; return
+      }
+
+      clearTimeout(lookupTimer)
+      status.textContent = 'Looking up...'; status.className = 'receiver-status loading'
+
+      lookupTimer = setTimeout(async () => {
+        const { data } = await supabase
+          .from('profiles').select('id,full_name,email').eq('email', email).single()
+        if (data) {
+          receiverUID = data.id
+          nameField.value = data.full_name || data.email.split('@')[0]
+          status.textContent = '✅ User found'
+          status.className = 'receiver-status found'
+        } else {
+          receiverUID = null
+          status.textContent = '❌ User not found on CryptoFXMiners'
+          status.className = 'receiver-status notfound'
+        }
+      }, 700)
+    })
+
+    // Submit request
+    document.getElementById('submitBtn').addEventListener('click', async () => {
+      const email  = document.getElementById('receiverEmail').value.trim()
+      const amount = parseFloat(document.getElementById('requestAmount').value)
+      const desc   = document.getElementById('requestDesc').value.trim()
+
+      if (!email)       { showToast('⚠️ Please enter receiver email.'); return }
+      if (!receiverUID) { showToast('⚠️ Receiver not found. Check email.'); return }
+      if (!amount || amount < 1) { showToast('⚠️ Minimum request amount is $1.'); return }
+
+      const btn = document.getElementById('submitBtn')
+      btn.disabled = true
+      document.getElementById('submitBtnText').textContent = 'Sending Request...'
+
+      try {
+        const txnId = 'REQ-' + Date.now()
+
+        // Save money request to transactions table
+        const { error } = await supabase.from('transactions').insert({
+          user_id:    user.id,
+          txn_id:     txnId,
+          type:       'request_money',
+          amount:     amount,
+          note:       `Request to ${email}${desc ? ' — ' + desc : ''}`,
+          status:     'pending',
+          created_at: new Date().toISOString()
+        })
+
+        if (error) throw error
+
+        // Also notify receiver by creating a transaction record on their side
+        await supabase.from('transactions').insert({
+          user_id:    receiverUID,
+          txn_id:     'REQ-RECV-' + Date.now(),
+          type:       'request_money',
+          amount:     amount,
+          note:       `Money request from ${user.email}${desc ? ' — ' + desc : ''}`,
+          status:     'pending',
+          created_at: new Date().toISOString()
+        })
+
+        showToast(`✅ Money request of $${amount.toFixed(2)} sent to ${email}!`, 'success')
+
+        // Clear form
+        document.getElementById('receiverEmail').value = ''
+        document.getElementById('accountName').value   = ''
+        document.getElementById('requestAmount').value = ''
+        document.getElementById('requestDesc').value   = ''
+        document.getElementById('receiverStatus').textContent = ''
+        receiverUID = null
+
+        loadHistory()
+
+      } catch(err) {
+        showToast('⚠️ ' + (err.message || 'Request failed. Try again.'))
+      } finally {
+        btn.disabled = false
+        document.getElementById('submitBtnText').textContent = 'Submit'
+      }
+    })
+
+    // Load sent requests history
+    async function loadHistory() {
+      const { data } = await supabase
+        .from('transactions').select('*')
+        .eq('user_id', user.id)
+        .eq('type', 'request_money')
+        .order('created_at', { ascending: false })
+        .limit(20)
+
+      const body = document.getElementById('requestHistoryBody')
+
+      if (!data?.length) {
+        body.innerHTML = '<tr><td colspan="6" class="no-data">No requests sent yet</td></tr>'
+        return
+      }
+
+      // Count pending
+      const pending = data.filter(d => d.status === 'pending').length
+      if (pending > 0) {
+        document.getElementById('pendingBanner').style.display = 'flex'
+        document.getElementById('pendingCount').textContent = `${pending} pending`
+      }
+
+      const cls = { pending:'badge-pending', completed:'badge-success', rejected:'badge-rejected' }
+
+      body.innerHTML = data.map(r => `
+        <tr>
+          <td>${new Date(r.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+          <td style="font-family:monospace;font-size:0.78rem;color:var(--text-lo)">${r.txn_id||'—'}</td>
+          <td style="font-size:0.82rem;max-width:180px;overflow:hidden;text-overflow:ellipsis">${r.note?.split('—')[0]?.replace('Request to ','')?.trim()||'—'}</td>
+          <td style="color:var(--gold);font-weight:700">$${Number(r.amount).toFixed(2)}</td>
+          <td style="font-size:0.8rem;color:var(--text-lo);max-width:200px;overflow:hidden;text-overflow:ellipsis">
+            ${r.note?.includes('—') ? r.note.split('—').slice(1).join('—').trim() : '—'}
+          </td>
+          <td><span class="badge ${cls[r.status]||'badge-pending'}">${r.status}</span></td>
+        </tr>
+      `).join('')
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async e => {
+      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    })
+
+    loadHistory()
+  </script>
+
+  <script>
+    const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sb.classList.toggle('open');ov.classList.toggle('open')})
+    ov.addEventListener('click',()=>{sb.classList.remove('open');ov.classList.remove('open')})
+  </script>
+</body>
+</html>

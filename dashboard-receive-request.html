@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Receive Request Money</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .currency-wrap { position:relative; }
+    .currency-btn { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; }
+    .currency-dropdown { position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; overflow:hidden; min-width:130px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:999; display:none; }
+    .currency-dropdown.open { display:block; }
+    .currency-opt { padding:0.65rem 1.1rem; font-size:0.875rem; color:var(--text-mid); cursor:pointer; transition:background 0.15s,color 0.15s; }
+    .currency-opt:hover { background:rgba(245,166,35,0.1); color:var(--gold); }
+    .currency-opt.selected { background:var(--gold); color:#000; font-weight:700; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); max-width:90vw; }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(34,197,94,0.4); }
+
+    /* Table */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; white-space:nowrap; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .data-table tbody td { padding:0.9rem 1rem; font-size:0.875rem; color:var(--text-mid); vertical-align:middle; }
+    .no-data { text-align:center; padding:3rem 1rem; color:var(--text-lo); font-size:0.9rem; }
+
+    .badge { display:inline-block; padding:0.25rem 0.65rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+    .badge-pending  { background:rgba(245,166,35,0.12); color:var(--gold); }
+    .badge-paid     { background:rgba(34,197,94,0.12);  color:#22c55e; }
+    .badge-rejected { background:rgba(248,113,113,0.12); color:#f87171; }
+
+    /* Action buttons */
+    .action-btns { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .btn-pay {
+      background:var(--gold); color:#000; border:none;
+      padding:0.4rem 0.9rem; border-radius:6px;
+      font-size:0.78rem; font-weight:700; cursor:pointer;
+      font-family:var(--font-body); transition:background 0.2s, transform 0.2s;
+      white-space:nowrap;
+    }
+    .btn-pay:hover { background:var(--gold-dark); transform:translateY(-1px); }
+    .btn-reject {
+      background:transparent; color:#f87171;
+      border:1px solid rgba(248,113,113,0.3);
+      padding:0.4rem 0.9rem; border-radius:6px;
+      font-size:0.78rem; font-weight:700; cursor:pointer;
+      font-family:var(--font-body); transition:background 0.2s;
+      white-space:nowrap;
+    }
+    .btn-reject:hover { background:rgba(248,113,113,0.08); }
+
+    /* Detail cell */
+    .detail-text { font-size:0.8rem; color:var(--text-lo); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+    /* Confirm modal */
+    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:1rem; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:#161616; border:1px solid var(--border); border-radius:14px; width:100%; max-width:420px; padding:2rem; position:relative; }
+    .modal-title { font-family:var(--font-display); font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; }
+    .modal-sub { font-size:0.875rem; color:var(--text-lo); margin-bottom:1.5rem; line-height:1.6; }
+    .modal-amount { font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--gold); text-align:center; margin:1rem 0; }
+    .modal-footer { display:flex; gap:0.75rem; margin-top:1.5rem; }
+    .btn-confirm { flex:1; background:var(--gold); color:#000; font-family:var(--font-body); font-size:0.9rem; font-weight:700; padding:0.8rem; border-radius:8px; border:none; cursor:pointer; transition:background 0.2s; }
+    .btn-confirm:hover { background:var(--gold-dark); }
+    .btn-cancel { flex:1; background:rgba(255,255,255,0.05); color:var(--text-mid); font-family:var(--font-body); font-size:0.9rem; font-weight:600; padding:0.8rem; border-radius:8px; border:1px solid var(--border); cursor:pointer; }
+
+    @media(max-width:860px) { .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)} .main{margin-left:0} .hamburger-btn{display:flex} .page{padding:1.25rem} .header{padding:0 1.25rem} }
+    @media(max-width:540px) { .user-name{display:none} .page-header{flex-direction:column;align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Confirm Pay Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+      <h2 class="modal-title">Confirm Payment</h2>
+      <p class="modal-sub" id="modalDesc">Are you sure you want to pay this request?</p>
+      <div class="modal-amount" id="modalAmount">$0.00</div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="modalCancel">Cancel</button>
+        <button class="btn-confirm" id="modalConfirm">Pay Now</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="dashboard-copy-signals.html" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="dashboard-invest-history.html" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="dashboard-transfer.html" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="dashboard-request-money.html" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="dashboard-receive-request.html" class="nav-link active"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="currency-wrap">
+          <button class="currency-btn" id="currencyBtn">
+            <span id="currencyLabel">USD</span><span style="font-size:0.7rem">▾</span>
+          </button>
+          <div class="currency-dropdown" id="currencyDropdown">
+            <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="EUR">EUR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
+          </div>
+        </div>
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Receive Request Money</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a><span>—</span>
+          <span class="current">Receive Request Money</span>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Request From</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="requestBody">
+            <tr><td colspan="5" class="no-data">No Data Found</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
+
+    const { data:{session} } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    document.getElementById('userAvatar').textContent = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+
+    function showToast(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(()=>t.classList.remove('show'), 4000)
+    }
+
+    let pendingPayTxnId = null
+    let pendingPayAmount = 0
+    let pendingRequesterEmail = ''
+
+    // Load incoming requests — transactions where note contains "from {user.email}"
+    // or type=request_money directed at this user
+    async function loadRequests() {
+      const { data } = await supabase
+        .from('transactions').select('*')
+        .eq('user_id', user.id)
+        .eq('type', 'request_money')
+        .ilike('note', 'Money request from%')
+        .order('created_at', { ascending: false })
+
+      const body = document.getElementById('requestBody')
+      if (!data?.length) {
+        body.innerHTML = '<tr><td colspan="5" class="no-data">No Data Found</td></tr>'
+        return
+      }
+
+      body.innerHTML = data.map(r => {
+        const fromEmail = r.note?.replace('Money request from ','').split(' —')[0]?.trim() || '—'
+        const detail    = r.note?.includes('—') ? r.note.split('—').slice(1).join('—').trim() : '—'
+        const isPending = r.status === 'pending'
+
+        return `
+          <tr>
+            <td>${new Date(r.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+            <td style="font-weight:600;color:var(--text-hi)">${fromEmail}</td>
+            <td style="color:var(--gold);font-weight:700">$${Number(r.amount).toFixed(2)}</td>
+            <td>
+              <span class="badge ${r.status==='paid'?'badge-paid':r.status==='rejected'?'badge-rejected':'badge-pending'}">
+                ${r.status}
+              </span>
+            </td>
+            <td>
+              ${isPending ? `
+                <div class="action-btns">
+                  <button class="btn-pay" onclick="openPayModal('${r.id}',${r.amount},'${fromEmail}')">Pay</button>
+                  <button class="btn-reject" onclick="rejectRequest('${r.id}')">Reject</button>
+                </div>
+              ` : `<span class="detail-text">${detail}</span>`}
+            </td>
+          </tr>
+        `
+      }).join('')
+    }
+
+    // Open confirm pay modal
+    window.openPayModal = function(txnId, amount, fromEmail) {
+      pendingPayTxnId = txnId
+      pendingPayAmount = amount
+      pendingRequesterEmail = fromEmail
+      document.getElementById('modalDesc').textContent = `Pay money request from ${fromEmail}`
+      document.getElementById('modalAmount').textContent = `$${Number(amount).toFixed(2)}`
+      document.getElementById('confirmModal').classList.add('open')
+    }
+
+    document.getElementById('modalCancel').addEventListener('click', () => {
+      document.getElementById('confirmModal').classList.remove('open')
+    })
+
+    document.getElementById('confirmModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('confirmModal'))
+        document.getElementById('confirmModal').classList.remove('open')
+    })
+
+    // Confirm pay
+    document.getElementById('modalConfirm').addEventListener('click', async () => {
+      document.getElementById('confirmModal').classList.remove('open')
+
+      try {
+        // Check sender balance
+        const { data:myProfile } = await supabase.from('profiles').select('main_balance').eq('id',user.id).single()
+        const myBal = Number(myProfile?.main_balance || 0)
+        if (pendingPayAmount > myBal) {
+          showToast('⚠️ Insufficient balance to pay this request.'); return
+        }
+
+        // Deduct from payer
+        await supabase.from('profiles').update({ main_balance: myBal - pendingPayAmount }).eq('id', user.id)
+
+        // Credit requester — find their profile by email
+        const { data:requester } = await supabase.from('profiles').select('id,main_balance').eq('email', pendingRequesterEmail).single()
+        if (requester) {
+          const newBal = Number(requester.main_balance||0) + pendingPayAmount
+          await supabase.from('profiles').update({ main_balance: newBal }).eq('id', requester.id)
+        }
+
+        // Mark this request as paid
+        await supabase.from('transactions').update({ status:'paid' }).eq('id', pendingPayTxnId)
+
+        // Log outgoing transaction for payer
+        await supabase.from('transactions').insert({
+          user_id: user.id, txn_id:'PAY-REQ-'+Date.now(),
+          type:'send_money', amount:pendingPayAmount,
+          note:`Paid request from ${pendingRequesterEmail}`,
+          status:'completed', created_at:new Date().toISOString()
+        })
+
+        showToast(`✅ $${pendingPayAmount.toFixed(2)} paid to ${pendingRequesterEmail}!`, 'success')
+        loadRequests()
+
+      } catch(err) {
+        showToast('⚠️ ' + (err.message || 'Payment failed.'))
+      }
+    })
+
+    // Reject request
+    window.rejectRequest = async function(txnId) {
+      await supabase.from('transactions').update({ status:'rejected' }).eq('id', txnId)
+      showToast('Request rejected.', 'error')
+      loadRequests()
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async e => {
+      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    })
+
+    loadRequests()
+  </script>
+
+  <script>
+    const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sb.classList.toggle('open');ov.classList.toggle('open')})
+    ov.addEventListener('click',()=>{sb.classList.remove('open');ov.classList.remove('open')})
+    const currBtn=document.getElementById('currencyBtn'),currDD=document.getElementById('currencyDropdown'),currLbl=document.getElementById('currencyLabel')
+    currBtn.addEventListener('click',e=>{e.stopPropagation();currDD.classList.toggle('open')})
+    document.querySelectorAll('.currency-opt').forEach(opt=>{
+      opt.addEventListener('click',()=>{document.querySelectorAll('.currency-opt').forEach(o=>o.classList.remove('selected'));opt.classList.add('selected');currLbl.textContent=opt.dataset.code;currDD.classList.remove('open')})
+    })
+    document.addEventListener('click',e=>{if(!currBtn.contains(e.target)&&!currDD.contains(e.target))currDD.classList.remove('open')})
+  </script>
+</body>
+</html>

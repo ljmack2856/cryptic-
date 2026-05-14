@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Invest History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* Filter bar */
+    .filter-bar { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; }
+    .filter-field { display:flex; flex-direction:column; gap:0.4rem; flex:1; min-width:160px; }
+    .filter-field label { font-size:0.78rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.06em; }
+    .filter-field input, .filter-field select { background:#0d0d0d; border:1px solid var(--border); border-radius:6px; padding:0.7rem 0.9rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.875rem; outline:none; appearance:none; transition:border-color 0.2s; width:100%; }
+    .filter-field input:focus, .filter-field select:focus { border-color:rgba(245,166,35,0.4); }
+    .filter-field input::placeholder { color:#444; }
+    .btn-filter { background:var(--blue); color:#fff; font-family:var(--font-body); font-size:0.875rem; font-weight:700; padding:0.7rem 1.75rem; border-radius:6px; border:none; cursor:pointer; align-self:flex-end; transition:background 0.2s; white-space:nowrap; }
+    .btn-filter:hover { background:#1d4ed8; }
+
+    /* Section label */
+    .section-label { font-size:0.9rem; font-weight:700; color:var(--gold); margin-bottom:1rem; }
+
+    /* Table */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; white-space:nowrap; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .data-table tbody td { padding:0.9rem 1rem; font-size:0.875rem; color:var(--text-mid); }
+    .no-data { text-align:center; padding:3rem 1rem; color:var(--text-lo); }
+
+    /* Status badge */
+    .badge { display:inline-flex; align-items:center; gap:0.3rem; padding:0.3rem 0.75rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+    .badge-running  { background:rgba(34,197,94,0.12);  color:#22c55e; }
+    .badge-completed{ background:rgba(37,99,235,0.12);  color:var(--blue); }
+    .badge-pending  { background:rgba(245,166,35,0.12); color:var(--gold); }
+
+    /* Countdown */
+    .countdown { font-family:monospace; font-size:0.82rem; color:var(--text-mid); }
+
+    @media(max-width:860px) { .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)} .main{margin-left:0} .hamburger-btn{display:flex} .page{padding:1.25rem} .header{padding:0 1.25rem} .filter-bar{flex-direction:column} .btn-filter{align-self:stretch;text-align:center} }
+    @media(max-width:540px) { .user-name{display:none} .page-header{flex-direction:column;align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="dashboard-copy-signals.html" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="dashboard-invest-history.html" class="nav-link active"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="dashboard-transfer.html" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="#" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="#" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Invest History</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Plans</a><span>—</span>
+          <span class="current">Invest History</span>
+        </div>
+      </div>
+
+      <!-- Filter -->
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label>Transaction No</label>
+          <input type="text" id="filterTxn" placeholder="Transaction no"/>
+        </div>
+        <div class="filter-field">
+          <label>Select Type</label>
+          <select id="filterType">
+            <option value="">Select Type</option>
+            <option value="all">All</option>
+            <option value="bronze">Bronze</option>
+            <option value="silver">Silver</option>
+            <option value="gold">Gold</option>
+            <option value="premium">Premium</option>
+            <option value="executive">Executive</option>
+          </select>
+        </div>
+        <button class="btn-filter" id="filterBtn">Submit</button>
+      </div>
+
+      <!-- Table -->
+      <div class="section-label">Invests</div>
+      <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Transaction</th>
+              <th>Method</th>
+              <th>Plan</th>
+              <th>Wallet</th>
+              <th>Profit Amount</th>
+              <th>Status</th>
+              <th>Next Profit</th>
+            </tr>
+          </thead>
+          <tbody id="investBody">
+            <tr><td colspan="7" class="no-data">No investment history found</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
+
+    const { data:{session} } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    document.getElementById('userAvatar').textContent = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+
+    // Plan daily rates
+    const PLAN_RATES = { bronze:0.05, silver:0.10, gold:0.08, premium:0.05, executive:0.04 }
+    const PLAN_PERIODS = { bronze:1, silver:2, gold:3, premium:7, executive:30 } // days
+
+    let allDeposits = []
+
+    async function loadDeposits() {
+      const { data } = await supabase
+        .from('deposits')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+
+      allDeposits = data || []
+      renderTable(allDeposits)
+    }
+
+    function renderTable(data) {
+      const body = document.getElementById('investBody')
+      if (!data.length) {
+        body.innerHTML = '<tr><td colspan="7" class="no-data">No investment history found</td></tr>'
+        return
+      }
+
+      body.innerHTML = data.map(d => {
+        const plan = (d.method || 'bronze').toLowerCase()
+        const rate = PLAN_RATES[plan] || 0.05
+        const profit = (d.amount * rate).toFixed(2)
+        const isApproved = d.status === 'approved'
+        const statusBadge = isApproved
+          ? `<span class="badge badge-running">● Running</span>`
+          : `<span class="badge badge-pending">Pending</span>`
+
+        // Countdown — next profit in 24hrs from creation
+        const created = new Date(d.created_at)
+        const nextProfit = new Date(created.getTime() + PLAN_PERIODS[plan] * 86400000)
+        const now = new Date()
+        const diff = nextProfit - now
+        let countdown = '—'
+        if (diff > 0 && isApproved) {
+          const days  = Math.floor(diff / 86400000)
+          const hours = Math.floor((diff % 86400000) / 3600000)
+          const mins  = Math.floor((diff % 3600000) / 60000)
+          const secs  = Math.floor((diff % 60000) / 1000)
+          countdown = `${days}d ${hours}h ${mins}m ${secs}s`
+        } else if (isApproved) {
+          countdown = 'Due now'
+        }
+
+        const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1)
+
+        return `
+          <tr>
+            <td style="font-family:monospace;font-size:0.78rem;color:var(--text-lo)">${d.txn_id || '—'}</td>
+            <td style="text-transform:uppercase;font-weight:600">MAIN WALLET</td>
+            <td>
+              <div style="font-weight:600;color:var(--text-hi)">${planLabel}</div>
+              <div style="font-size:0.72rem;color:var(--text-lo)">$${Number(d.amount).toFixed(2)}</div>
+            </td>
+            <td style="color:var(--text-lo)">Main Wallet</td>
+            <td style="color:var(--gold);font-weight:700">$${isApproved ? profit : '0.00'}</td>
+            <td>${statusBadge}</td>
+            <td><span class="countdown" id="cd-${d.id}">${countdown}</span></td>
+          </tr>
+        `
+      }).join('')
+
+      // Live countdown update
+      startCountdowns(data)
+    }
+
+    function startCountdowns(data) {
+      clearInterval(window._cdInterval)
+      window._cdInterval = setInterval(() => {
+        data.forEach(d => {
+          const el = document.getElementById(`cd-${d.id}`)
+          if (!el || d.status !== 'approved') return
+          const plan = (d.method || 'bronze').toLowerCase()
+          const created = new Date(d.created_at)
+          const nextProfit = new Date(created.getTime() + PLAN_PERIODS[plan] * 86400000)
+          const diff = nextProfit - new Date()
+          if (diff > 0) {
+            const days  = Math.floor(diff / 86400000)
+            const hours = Math.floor((diff % 86400000) / 3600000)
+            const mins  = Math.floor((diff % 3600000) / 60000)
+            const secs  = Math.floor((diff % 60000) / 1000)
+            el.textContent = `${days}d ${hours}h ${mins}m ${secs}s`
+          } else {
+            el.textContent = 'Due now'
+          }
+        })
+      }, 1000)
+    }
+
+    // Filter
+    function applyFilter() {
+      const txn  = document.getElementById('filterTxn').value.trim().toLowerCase()
+      const type = document.getElementById('filterType').value
+      let filtered = allDeposits
+      if (txn)  filtered = filtered.filter(d => d.txn_id?.toLowerCase().includes(txn))
+      if (type && type !== 'all') filtered = filtered.filter(d => (d.method||'').toLowerCase() === type)
+      renderTable(filtered)
+    }
+
+    document.getElementById('filterBtn').addEventListener('click', applyFilter)
+    document.getElementById('filterTxn').addEventListener('keydown', e => { if(e.key==='Enter') applyFilter() })
+
+    document.getElementById('logoutBtn').addEventListener('click', async e => {
+      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    })
+
+    loadDeposits()
+  </script>
+
+  <script>
+    const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sb.classList.toggle('open');ov.classList.toggle('open')})
+    ov.addEventListener('click',()=>{sb.classList.remove('open');ov.classList.remove('open')})
+  </script>
+</body>
+</html>

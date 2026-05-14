@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Transfer Money</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
+    .user-name { font-size:0.875rem; font-weight:600; }
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb .current { color:var(--gold); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); max-width:90vw; }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.success { border-color:rgba(34,197,94,0.4); }
+    .toast.error { border-color:rgba(248,113,113,0.4); }
+
+    /* Balance bar */
+    .balance-bar { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.75rem; }
+    .balance-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; display:flex; align-items:center; gap:1rem; }
+    .balance-icon { font-size:1.5rem; }
+    .balance-label { font-size:0.78rem; color:var(--text-lo); margin-bottom:0.25rem; }
+    .balance-val { font-family:var(--font-display); font-size:1.2rem; font-weight:700; color:var(--gold); }
+
+    /* Transfer form */
+    .transfer-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:2rem; margin-bottom:2rem; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    .form-field { display:flex; flex-direction:column; gap:0.4rem; }
+    .form-field.full { grid-column:1/-1; }
+    .form-field label { font-size:0.82rem; color:var(--text-mid); font-weight:500; }
+    .form-field input, .form-field select {
+      background:#0d0d0d; border:1px solid var(--border); border-radius:6px;
+      padding:0.8rem 1rem; color:var(--text-hi); font-family:var(--font-body);
+      font-size:0.9rem; outline:none; appearance:none; width:100%;
+      transition:border-color 0.2s;
+    }
+    .form-field input:focus, .form-field select:focus { border-color:rgba(245,166,35,0.4); }
+    .form-field input::placeholder { color:#444; }
+    .form-field input[type="password"] { letter-spacing:0.15em; }
+
+    /* Receiver lookup */
+    .receiver-status {
+      font-size:0.75rem; margin-top:0.3rem; height:1rem;
+      transition:color 0.2s;
+    }
+    .receiver-status.found   { color:#22c55e; }
+    .receiver-status.notfound{ color:#f87171; }
+    .receiver-status.loading { color:var(--text-lo); }
+
+    /* Wallet selector */
+    .wallet-info {
+      background:rgba(245,166,35,0.06); border:1px solid rgba(245,166,35,0.15);
+      border-radius:8px; padding:0.75rem 1rem; margin-top:0.5rem;
+      font-size:0.82rem; color:var(--text-mid); display:none;
+    }
+    .wallet-info.visible { display:block; }
+    .wallet-info span { color:var(--gold); font-weight:700; }
+
+    .btn-submit { background:var(--blue); color:#fff; font-family:var(--font-body); font-size:0.95rem; font-weight:700; padding:0.85rem; border-radius:8px; border:none; cursor:pointer; margin-top:1.5rem; transition:background 0.2s,transform 0.2s; width:100%; display:flex; align-items:center; justify-content:center; gap:0.6rem; }
+    .btn-submit:hover { background:#1d4ed8; transform:translateY(-1px); }
+    .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    /* Table */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .data-table tbody td { padding:0.9rem 1rem; font-size:0.85rem; color:var(--text-mid); }
+    .no-data { text-align:center; padding:2.5rem; color:var(--text-lo); }
+    .badge { display:inline-block; padding:0.25rem 0.65rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+    .badge-success { background:rgba(34,197,94,0.12); color:#22c55e; }
+    .badge-pending  { background:rgba(245,166,35,0.12); color:var(--gold); }
+    .badge-failed   { background:rgba(248,113,113,0.12); color:#f87171; }
+
+    .spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+    .btn-submit:disabled .spinner { display:inline-block; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    @media(max-width:860px) { .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)} .main{margin-left:0} .hamburger-btn{display:flex} .page{padding:1.25rem} .header{padding:0 1.25rem} .balance-bar{grid-template-columns:1fr} .form-grid{grid-template-columns:1fr} .form-field.full{grid-column:auto} }
+    @media(max-width:540px) { .user-name{display:none} .page-header{flex-direction:column;align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="dashboard-copy-signals.html" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="dashboard-invest-history.html" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="dashboard-transfer.html" class="nav-link active"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="#" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="#" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <h1 class="page-title">Transfer Money</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a><span>—</span>
+          <span class="current">Transfer Money</span>
+        </div>
+      </div>
+
+      <!-- Balances -->
+      <div class="balance-bar">
+        <div class="balance-card">
+          <div class="balance-icon">💰</div>
+          <div><div class="balance-label">Main Balance</div><div class="balance-val" id="balMain">$0.00</div></div>
+        </div>
+        <div class="balance-card">
+          <div class="balance-icon">📊</div>
+          <div><div class="balance-label">Interest Balance</div><div class="balance-val" id="balInterest">$0.00</div></div>
+        </div>
+      </div>
+
+      <!-- Transfer form -->
+      <div class="transfer-card">
+        <div class="form-grid">
+
+          <div class="form-field">
+            <label>Receiver Email *</label>
+            <input type="email" id="receiverEmail" placeholder="doe@gmail.com"/>
+            <div class="receiver-status" id="receiverStatus"></div>
+          </div>
+
+          <div class="form-field">
+            <label>Account Name</label>
+            <input type="text" id="accountName" placeholder="John Doe" readonly/>
+          </div>
+
+          <div class="form-field">
+            <label>Amount *</label>
+            <input type="number" id="transferAmount" placeholder="0.0" min="1" step="0.01"/>
+          </div>
+
+          <div class="form-field">
+            <label>Wallet *</label>
+            <select id="walletSelect">
+              <option value="">Select Wallet</option>
+              <option value="main">Main Balance</option>
+              <option value="interest">Interest Balance</option>
+            </select>
+            <div class="wallet-info" id="walletInfo">
+              Available: <span id="walletAvailable">$0.00</span>
+            </div>
+          </div>
+
+          <div class="form-field full">
+            <label>Password *</label>
+            <input type="password" id="transferPassword" placeholder="Enter your account password"/>
+          </div>
+
+        </div>
+
+        <button class="btn-submit" id="transferBtn">
+          <span class="spinner" id="transferSpinner"></span>
+          <span id="transferBtnText">Transfer Money</span>
+        </button>
+      </div>
+
+      <!-- History table -->
+      <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Transaction</th>
+              <th>Receiver</th>
+              <th>Amount</th>
+              <th>Fee</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="transferHistoryBody">
+            <tr><td colspan="6" class="no-data">No transfer history</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script src="cookies.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
+
+    const { data:{session} } = await supabase.auth.getSession()
+    if (!session) window.location.href = 'login.html'
+    const user = session.user
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
+    document.getElementById('userAvatar').textContent = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+
+    function showToast(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(()=>t.classList.remove('show'), 4000)
+    }
+
+    // Load sender balances
+    let senderProfile = null
+    const {data:sp} = await supabase.from('profiles').select('main_balance,interest_balance,full_name').eq('id',user.id).single()
+    if (sp) {
+      senderProfile = sp
+      document.getElementById('balMain').textContent     = `$${Number(sp.main_balance||0).toFixed(2)}`
+      document.getElementById('balInterest').textContent = `$${Number(sp.interest_balance||0).toFixed(2)}`
+    }
+
+    // Wallet selector → show available balance
+    document.getElementById('walletSelect').addEventListener('change', e => {
+      const info = document.getElementById('walletInfo')
+      const avail = document.getElementById('walletAvailable')
+      const val = e.target.value
+      if (!val) { info.classList.remove('visible'); return }
+      const bal = val === 'main'
+        ? Number(senderProfile?.main_balance||0)
+        : Number(senderProfile?.interest_balance||0)
+      avail.textContent = `$${bal.toFixed(2)}`
+      info.classList.add('visible')
+    })
+
+    // Receiver email lookup with debounce
+    let receiverUID = null
+    let lookupTimer = null
+    document.getElementById('receiverEmail').addEventListener('input', e => {
+      const email = e.target.value.trim()
+      const status = document.getElementById('receiverStatus')
+      const nameField = document.getElementById('accountName')
+      receiverUID = null
+      nameField.value = ''
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = ''; return
+      }
+      if (email === user.email) {
+        status.textContent = "⚠️ Can't transfer to yourself"
+        status.className = 'receiver-status notfound'; return
+      }
+
+      clearTimeout(lookupTimer)
+      status.textContent = 'Looking up...'; status.className = 'receiver-status loading'
+
+      lookupTimer = setTimeout(async () => {
+        const { data } = await supabase
+          .from('profiles').select('id,full_name,email').eq('email', email).single()
+        if (data) {
+          receiverUID = data.id
+          nameField.value = data.full_name || data.email.split('@')[0]
+          status.textContent = '✅ User found'
+          status.className = 'receiver-status found'
+        } else {
+          status.textContent = '❌ User not found on CryptoFXMiners'
+          status.className = 'receiver-status notfound'
+        }
+      }, 700)
+    })
+
+    // Transfer submit
+    document.getElementById('transferBtn').addEventListener('click', async () => {
+      const email    = document.getElementById('receiverEmail').value.trim()
+      const amount   = parseFloat(document.getElementById('transferAmount').value)
+      const wallet   = document.getElementById('walletSelect').value
+      const password = document.getElementById('transferPassword').value
+
+      if (!email)       { showToast('⚠️ Please enter receiver email.'); return }
+      if (!receiverUID) { showToast('⚠️ Receiver not found. Check email.'); return }
+      if (!amount || amount < 1) { showToast('⚠️ Minimum transfer amount is $1.'); return }
+      if (!wallet)      { showToast('⚠️ Please select a wallet.'); return }
+      if (!password)    { showToast('⚠️ Please enter your password.'); return }
+
+      // Check balance
+      const available = wallet === 'main'
+        ? Number(senderProfile?.main_balance||0)
+        : Number(senderProfile?.interest_balance||0)
+      if (amount > available) { showToast('⚠️ Insufficient balance.'); return }
+
+      // Verify password by re-signing in
+      const btn = document.getElementById('transferBtn')
+      btn.disabled = true
+      document.getElementById('transferBtnText').textContent = 'Verifying...'
+
+      try {
+        const { error: authError } = await supabase.auth.signInWithPassword({
+          email: user.email, password
+        })
+        if (authError) { showToast('⚠️ Incorrect password.'); return }
+
+        document.getElementById('transferBtnText').textContent = 'Transferring...'
+
+        const txnId = 'TRF-' + Date.now()
+        const fee = 0 // no fee on transfers
+
+        // Deduct from sender
+        const balField = wallet === 'main' ? 'main_balance' : 'interest_balance'
+        const newBal = available - amount
+        await supabase.from('profiles').update({ [balField]: newBal }).eq('id', user.id)
+
+        // Credit receiver
+        const { data: recvProfile } = await supabase.from('profiles').select('main_balance').eq('id', receiverUID).single()
+        const recvBal = Number(recvProfile?.main_balance||0) + amount
+        await supabase.from('profiles').update({ main_balance: recvBal }).eq('id', receiverUID)
+
+        // Log transaction for sender
+        await supabase.from('transactions').insert({
+          user_id: user.id, txn_id: txnId, type: 'send_money',
+          amount, note: `Transfer to ${email}`, created_at: new Date().toISOString()
+        })
+        // Log for receiver
+        await supabase.from('transactions').insert({
+          user_id: receiverUID, txn_id: 'TRF-R-'+Date.now(), type: 'receive_money',
+          amount, note: `Transfer from ${user.email}`, created_at: new Date().toISOString()
+        })
+
+        // Update local balance display
+        if (wallet === 'main') {
+          senderProfile.main_balance = newBal
+          document.getElementById('balMain').textContent = `$${newBal.toFixed(2)}`
+        } else {
+          senderProfile.interest_balance = newBal
+          document.getElementById('balInterest').textContent = `$${newBal.toFixed(2)}`
+        }
+        document.getElementById('walletAvailable').textContent = `$${newBal.toFixed(2)}`
+
+        showToast(`✅ $${amount.toFixed(2)} sent to ${email} successfully!`, 'success')
+
+        // Clear form
+        document.getElementById('receiverEmail').value = ''
+        document.getElementById('accountName').value   = ''
+        document.getElementById('transferAmount').value= ''
+        document.getElementById('walletSelect').value  = ''
+        document.getElementById('transferPassword').value = ''
+        document.getElementById('receiverStatus').textContent = ''
+        document.getElementById('walletInfo').classList.remove('visible')
+        receiverUID = null
+
+        loadHistory()
+
+      } catch (err) {
+        showToast('⚠️ ' + (err.message || 'Transfer failed. Try again.'))
+      } finally {
+        btn.disabled = false
+        document.getElementById('transferBtnText').textContent = 'Transfer Money'
+      }
+    })
+
+    // Load history
+    async function loadHistory() {
+      const { data } = await supabase
+        .from('transactions').select('*')
+        .eq('user_id', user.id)
+        .in('type', ['send_money','receive_money'])
+        .order('created_at', { ascending: false })
+        .limit(20)
+
+      const body = document.getElementById('transferHistoryBody')
+      if (!data?.length) { body.innerHTML='<tr><td colspan="6" class="no-data">No transfer history</td></tr>'; return }
+
+      body.innerHTML = data.map(t => {
+        const isReceive = t.type === 'receive_money'
+        const cls = 'badge-success'
+        return `
+          <tr>
+            <td>${new Date(t.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+            <td style="font-family:monospace;font-size:0.78rem;color:var(--text-lo)">${t.txn_id||'—'}</td>
+            <td style="font-size:0.82rem;color:var(--text-mid);max-width:180px;overflow:hidden;text-overflow:ellipsis">${t.note||'—'}</td>
+            <td style="color:${isReceive?'#22c55e':'#f87171'};font-weight:700">
+              ${isReceive?'+':'-'}$${Number(t.amount).toFixed(2)}
+            </td>
+            <td style="color:var(--text-lo)">$0.00</td>
+            <td><span class="badge ${cls}">Succeed</span></td>
+          </tr>
+        `
+      }).join('')
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async e => {
+      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    })
+
+    loadHistory()
+  </script>
+
+  <script>
+    const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sb.classList.toggle('open');ov.classList.toggle('open')})
+    ov.addEventListener('click',()=>{sb.classList.remove('open');ov.classList.remove('open')})
+  </script>
+</body>
+</html>
