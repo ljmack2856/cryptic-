@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CryptoFXMiners — Withdraw History</title>
+  <title>CryptoFXMiners — Commissions Log</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
@@ -42,48 +42,47 @@
     .currency-opt { padding:0.65rem 1.1rem; font-size:0.875rem; color:var(--text-mid); cursor:pointer; transition:background 0.15s,color 0.15s; }
     .currency-opt:hover { background:rgba(245,166,35,0.1); color:var(--gold); }
     .currency-opt.selected { background:var(--gold); color:#000; font-weight:700; }
-    .user-btn { display:flex; align-items:center; gap:0.65rem; }
-    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; }
-    .user-name { font-size:0.875rem; font-weight:600; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; background:none; border:none; cursor:pointer; text-decoration:none; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; overflow:hidden; }
+    .user-avatar img { width:100%; height:100%; object-fit:cover; }
+    .user-name { font-size:0.875rem; font-weight:600; color:var(--text-hi); }
     .page { padding:2rem; flex:1; }
     .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.5rem; }
     .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
     .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
     .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--gold); }
     .breadcrumb .current { color:var(--gold); }
-    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
-    .sidebar-overlay.open { display:block; }
-    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
 
-    /* Filter bar */
-    .filter-bar { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; }
-    .filter-field { display:flex; flex-direction:column; gap:0.4rem; flex:1; min-width:160px; }
-    .filter-field label { font-size:0.78rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.06em; }
-    .filter-field input, .filter-field select { background:#0d0d0d; border:1px solid var(--border); border-radius:6px; padding:0.7rem 0.9rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.875rem; outline:none; appearance:none; transition:border-color 0.2s; width:100%; }
-    .filter-field input:focus, .filter-field select:focus { border-color:rgba(245,166,35,0.4); }
-    .filter-field input::placeholder { color:#444; }
-    .btn-filter { background:var(--blue); color:#fff; font-family:var(--font-body); font-size:0.875rem; font-weight:700; padding:0.7rem 1.75rem; border-radius:6px; border:none; cursor:pointer; align-self:flex-end; transition:background 0.2s; white-space:nowrap; }
-    .btn-filter:hover { background:#1d4ed8; }
+    /* Summary card */
+    .summary-card {
+      background:var(--card); border:1px solid var(--border); border-radius:12px;
+      padding:1.25rem 1.5rem; margin-bottom:1.5rem;
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+    }
+    .summary-item { display:flex; flex-direction:column; gap:0.25rem; }
+    .summary-label { font-size:0.75rem; color:var(--text-lo); text-transform:uppercase; letter-spacing:0.08em; }
+    .summary-value { font-size:1.4rem; font-weight:700; font-family:var(--font-display); color:var(--gold); }
 
-    /* Table */
     .data-table { width:100%; border-collapse:collapse; }
     .data-table thead tr { background:var(--gold); }
     .data-table thead th { padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; white-space:nowrap; }
     .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
     .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
-    .data-table tbody td { padding:0.9rem 1rem; font-size:0.875rem; color:var(--text-mid); vertical-align:middle; }
-    .no-data { text-align:center; padding:3rem 1rem; color:var(--text-lo); font-size:0.9rem; }
+    .data-table tbody td { padding:0.9rem 1rem; font-size:0.875rem; color:var(--text-mid); }
+    .no-data { text-align:center; padding:2.5rem 1rem; color:var(--text-lo); font-size:0.9rem; }
 
-    .badge { display:inline-block; padding:0.25rem 0.65rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
-    .badge-pending  { background:rgba(245,166,35,0.12); color:var(--gold); }
-    .badge-approved { background:rgba(34,197,94,0.12);  color:#22c55e; }
-    .badge-rejected { background:rgba(248,113,113,0.12); color:#f87171; }
+    .badge { display:inline-block; padding:0.25rem 0.6rem; border-radius:20px; font-size:0.72rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+    .badge-referral { background:rgba(139,92,246,0.12); color:#8b5cf6; }
+    .badge-deposit  { background:rgba(34,197,94,0.12);  color:#22c55e; }
+    .badge-invest   { background:rgba(59,130,246,0.12); color:#3b82f6; }
+    .badge-default  { background:rgba(255,255,255,0.06); color:var(--text-mid); }
 
-    /* Buyer cell */
-    .buyer-cell { display:flex; align-items:center; gap:0.65rem; }
-    .buyer-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.72rem; font-weight:800; color:#000; flex-shrink:0; }
-    .buyer-name { font-size:0.875rem; font-weight:600; color:var(--text-hi); }
-    .buyer-email { font-size:0.72rem; color:var(--text-lo); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateX(-50%) translateY(0); }
 
     /* Pagination */
     .pagination { display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:1.5rem; flex-wrap:wrap; }
@@ -92,15 +91,31 @@
     .page-btn.active { background:var(--gold); color:#000; border-color:var(--gold); font-weight:700; }
     .page-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
-    @media(max-width:860px) { .sidebar{transform:translateX(-100%)} .sidebar.open{transform:translateX(0)} .main{margin-left:0} .hamburger-btn{display:flex} .page{padding:1.25rem} .header{padding:0 1.25rem} .filter-bar{flex-direction:column} .btn-filter{align-self:stretch;text-align:center} }
-    @media(max-width:540px) { .user-name{display:none} .page-header{flex-direction:column;align-items:flex-start} }
+    @media(max-width:860px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main { margin-left:0; }
+      .hamburger-btn { display:flex; }
+      .page { padding:1.25rem; }
+      .header { padding:0 1.25rem; }
+      .summary-card { flex-direction:column; }
+    }
+    @media(max-width:540px) {
+      .user-name { display:none; }
+      .page-header { flex-direction:column; align-items:flex-start; }
+    }
   </style>
 </head>
 <body>
+
+  <div class="toast" id="toast"></div>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a></div>
+    <div class="sidebar-logo">
+      <a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+    </div>
     <nav class="sidebar-nav">
       <div class="nav-group">
         <div class="nav-group-label">General Information</div>
@@ -126,12 +141,12 @@
       <div class="nav-group">
         <div class="nav-group-label">Payouts</div>
         <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
-        <a href="dashboard-payout-history.html" class="nav-link active"><span class="icon">📋</span> Payout History</a>
+        <a href="dashboard-payout-history.html" class="nav-link"><span class="icon">📋</span> Payout History</a>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Referral</div>
-        <a href="dashboard-referrals.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
-        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+        <a href="dashboard-referred-users.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="dashboard-referral-commissions.html" class="nav-link active"><span class="icon">🎁</span> Referral Commissions</a>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Account Information</div>
@@ -145,6 +160,7 @@
     </nav>
   </aside>
 
+  <!-- MAIN -->
   <div class="main">
     <header class="header">
       <div class="header-left">
@@ -158,9 +174,12 @@
           </button>
           <div class="currency-dropdown" id="currencyDropdown">
             <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="BDT">BDT</div>
             <div class="currency-opt" data-code="EUR">EUR</div>
-            <div class="currency-opt" data-code="KES">KES</div>
             <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="INR">INR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="TSH">TSH</div>
             <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
           </div>
         </div>
@@ -173,30 +192,24 @@
 
     <div class="page">
       <div class="page-header">
-        <h1 class="page-title">Withdraw History</h1>
+        <h1 class="page-title">Commissions Log</h1>
         <div class="breadcrumb">
-          <a href="dashboard-payout.html">Payout</a><span>—</span>
-          <span class="current">Withdraw History</span>
+          <a href="dashboard.html">Dashboard</a>
+          <span>—</span>
+          <span class="current">Commissions Log</span>
         </div>
       </div>
 
-      <!-- Filter -->
-      <div class="filter-bar">
-        <div class="filter-field">
-          <label>Transaction No</label>
-          <input type="text" id="filterTxn" placeholder="Transaction no"/>
+      <!-- Summary -->
+      <div class="summary-card">
+        <div class="summary-item">
+          <div class="summary-label">Total Commissions Earned</div>
+          <div class="summary-value" id="totalEarned">$0.00</div>
         </div>
-        <div class="filter-field">
-          <label>Select Type</label>
-          <select id="filterStatus">
-            <option value="">Select Type</option>
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
+        <div class="summary-item">
+          <div class="summary-label">Total Referrals</div>
+          <div class="summary-value" id="totalReferrals">0</div>
         </div>
-        <button class="btn-filter" id="filterBtn">Submit</button>
       </div>
 
       <!-- Table -->
@@ -204,17 +217,14 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Buyer</th>
-              <th>Transaction No</th>
-              <th>Payment Method</th>
+              <th>Date</th>
+              <th>Type</th>
+              <th>From</th>
               <th>Amount</th>
-              <th>Fee</th>
-              <th>Status</th>
-              <th>Options</th>
             </tr>
           </thead>
-          <tbody id="payoutBody">
-            <tr><td colspan="7" class="no-data">No Data Found</td></tr>
+          <tbody id="commBody">
+            <tr><td colspan="4" class="no-data">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -222,88 +232,103 @@
       <div class="pagination" id="pagination"></div>
     </div>
 
-    <footer class="dash-footer">COPYRIGHT © 2026. All Rights Reserved By Crypto FX Miners</footer>
+    <footer class="dash-footer">COPYRIGHT &copy; 2025. All Rights Reserved By Crypto FX Miners</footer>
   </div>
 
-  <script src="cookies.js"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-    const supabase = createClient('https://xbazuosvlggtolahgcjv.supabase.co','sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F')
 
-    const { data:{session} } = await supabase.auth.getSession()
-    if (!session) window.location.href = 'login.html'
+    const supabase = createClient(
+      'https://xbazuosvlggtolahgcjv.supabase.co',
+      'sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F'
+    )
+
+    // Auth check
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = 'login.html'; throw new Error('No session') }
     const user = session.user
-    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'
-    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)
-    document.getElementById('userAvatar').textContent = initials
-    document.getElementById('userName').textContent = name
 
+    // Load profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name, username, avatar_url')
+      .eq('id', user.id)
+      .single()
+
+    const name = profile?.full_name || profile?.username || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+    const avatarEl = document.getElementById('userAvatar')
+    if (profile?.avatar_url) {
+      avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="avatar"/>`
+    } else {
+      avatarEl.textContent = initials
+    }
+
+    // Toast
+    function showToast(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(() => t.classList.remove('show'), 4000)
+    }
+
+    // Badge
+    function badge(type) {
+      const map = { referral_bonus:'badge-referral', deposit:'badge-deposit', invest:'badge-invest' }
+      const cls = map[type] || 'badge-default'
+      const label = (type||'bonus').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase())
+      return `<span class="badge ${cls}">${label}</span>`
+    }
+
+    // Load commissions from transactions table (type = referral_bonus)
     const PAGE_SIZE = 10
     let currentPage = 1
-    let allWithdrawals = []
+    let allComm = []
 
-    async function loadWithdrawals() {
-      const { data } = await supabase
-        .from('withdrawals').select('*')
+    async function loadCommissions() {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
         .eq('user_id', user.id)
+        .eq('type', 'referral_bonus')
         .order('created_at', { ascending: false })
-      allWithdrawals = data || []
-      applyFilter()
+
+      if (error) { showToast('Failed to load commissions'); return }
+      allComm = data || []
+
+      // Update summary
+      const total = allComm.reduce((sum, r) => sum + Number(r.amount || 0), 0)
+      document.getElementById('totalEarned').textContent = `$${total.toFixed(2)}`
+      document.getElementById('totalReferrals').textContent = allComm.length
+
+      renderTable()
+      renderPagination()
     }
 
-    function applyFilter() {
-      const txn    = document.getElementById('filterTxn').value.trim().toLowerCase()
-      const status = document.getElementById('filterStatus').value
-      let filtered = allWithdrawals
-      if (txn)    filtered = filtered.filter(w => w.txn_id?.toLowerCase().includes(txn))
-      if (status && status !== 'all') filtered = filtered.filter(w => w.status === status)
-      currentPage = 1
-      renderTable(filtered)
-      renderPagination(filtered)
-    }
-
-    function renderTable(data) {
-      const body = document.getElementById('payoutBody')
+    function renderTable() {
+      const body = document.getElementById('commBody')
       const start = (currentPage - 1) * PAGE_SIZE
-      const slice = data.slice(start, start + PAGE_SIZE)
+      const slice = allComm.slice(start, start + PAGE_SIZE)
 
       if (!slice.length) {
-        body.innerHTML = '<tr><td colspan="7" class="no-data">No Data Found</td></tr>'
+        body.innerHTML = '<tr><td colspan="4" class="no-data">No Data Found</td></tr>'
         return
       }
 
-      const cls = { pending:'badge-pending', approved:'badge-approved', rejected:'badge-rejected' }
-
-      body.innerHTML = slice.map(w => `
+      body.innerHTML = slice.map(r => `
         <tr>
-          <td>
-            <div class="buyer-cell">
-              <div class="buyer-avatar">${initials}</div>
-              <div>
-                <div class="buyer-name">${name}</div>
-                <div class="buyer-email">${user.email}</div>
-              </div>
-            </div>
-          </td>
-          <td style="font-family:monospace;font-size:0.78rem;color:var(--text-lo)">${w.txn_id||'—'}</td>
-          <td style="text-transform:capitalize">${w.method?.replace(/_/g,' ')||'—'}</td>
-          <td style="color:#f87171;font-weight:700">$${Number(w.amount).toFixed(2)}</td>
-          <td style="color:var(--text-lo)">$${Number(w.fee||0).toFixed(2)}</td>
-          <td><span class="badge ${cls[w.status]||'badge-pending'}">${w.status||'pending'}</span></td>
-          <td>
-            <a href="dashboard-payout.html" style="color:var(--gold);font-size:0.8rem;font-weight:600;text-decoration:none;">
-              View
-            </a>
-          </td>
+          <td>${new Date(r.created_at).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'})}</td>
+          <td>${badge(r.type)}</td>
+          <td style="font-size:0.82rem;color:var(--text-lo)">${r.description || r.txn_id || '—'}</td>
+          <td style="color:#22c55e;font-weight:600;">+$${Number(r.amount||0).toFixed(2)}</td>
         </tr>
       `).join('')
     }
 
-    function renderPagination(data) {
-      const total = Math.ceil(data.length / PAGE_SIZE)
+    function renderPagination() {
+      const total = Math.ceil(allComm.length / PAGE_SIZE)
       const pg = document.getElementById('pagination')
       if (total <= 1) { pg.innerHTML = ''; return }
-
       pg.innerHTML = `
         <button class="page-btn" id="pgPrev" ${currentPage===1?'disabled':''}>← Prev</button>
         ${Array.from({length:total},(_,i)=>`
@@ -312,35 +337,43 @@
         <button class="page-btn" id="pgNext" ${currentPage===total?'disabled':''}>Next →</button>
       `
       pg.querySelectorAll('[data-page]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          currentPage = parseInt(btn.dataset.page)
-          renderTable(data); renderPagination(data)
-        })
+        btn.addEventListener('click', () => { currentPage=parseInt(btn.dataset.page); renderTable(); renderPagination() })
       })
-      pg.querySelector('#pgPrev')?.addEventListener('click', () => { if(currentPage>1){currentPage--;renderTable(data);renderPagination(data)} })
-      pg.querySelector('#pgNext')?.addEventListener('click', () => { if(currentPage<total){currentPage++;renderTable(data);renderPagination(data)} })
+      pg.querySelector('#pgPrev')?.addEventListener('click', () => { if(currentPage>1){currentPage--;renderTable();renderPagination()} })
+      pg.querySelector('#pgNext')?.addEventListener('click', () => { if(currentPage<total){currentPage++;renderTable();renderPagination()} })
     }
 
-    document.getElementById('filterBtn').addEventListener('click', applyFilter)
-    document.getElementById('filterTxn').addEventListener('keydown', e => { if(e.key==='Enter') applyFilter() })
-
-    document.getElementById('logoutBtn').addEventListener('click', async e => {
-      e.preventDefault(); await supabase.auth.signOut(); clearSessionCookies(); window.location.href='login.html'
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault()
+      await supabase.auth.signOut()
+      window.location.href = 'login.html'
     })
 
-    loadWithdrawals()
+    loadCommissions()
   </script>
 
   <script>
-    const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay')
-    document.getElementById('hamburgerBtn').addEventListener('click',()=>{sb.classList.toggle('open');ov.classList.toggle('open')})
-    ov.addEventListener('click',()=>{sb.classList.remove('open');ov.classList.remove('open')})
-    const currBtn=document.getElementById('currencyBtn'),currDD=document.getElementById('currencyDropdown'),currLbl=document.getElementById('currencyLabel')
-    currBtn.addEventListener('click',e=>{e.stopPropagation();currDD.classList.toggle('open')})
-    document.querySelectorAll('.currency-opt').forEach(opt=>{
-      opt.addEventListener('click',()=>{document.querySelectorAll('.currency-opt').forEach(o=>o.classList.remove('selected'));opt.classList.add('selected');currLbl.textContent=opt.dataset.code;currDD.classList.remove('open')})
+    // Hamburger
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+      sidebar.classList.toggle('open'); overlay.classList.toggle('open')
     })
-    document.addEventListener('click',e=>{if(!currBtn.contains(e.target)&&!currDD.contains(e.target))currDD.classList.remove('open')})
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open') })
+
+    // Currency dropdown
+    const currBtn = document.getElementById('currencyBtn')
+    const currDD  = document.getElementById('currencyDropdown')
+    const currLbl = document.getElementById('currencyLabel')
+    currBtn.addEventListener('click', e => { e.stopPropagation(); currDD.classList.toggle('open') })
+    document.querySelectorAll('.currency-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.currency-opt').forEach(o => o.classList.remove('selected'))
+        opt.classList.add('selected'); currLbl.textContent = opt.dataset.code; currDD.classList.remove('open')
+      })
+    })
+    document.addEventListener('click', e => { if(!currBtn.contains(e.target)&&!currDD.contains(e.target)) currDD.classList.remove('open') })
   </script>
 </body>
 </html>

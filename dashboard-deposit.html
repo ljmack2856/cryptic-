@@ -161,37 +161,37 @@
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Invest</div>
-        <a href="#" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
-        <a href="#" class="nav-link"><span class="icon">📈</span> Invest History</a>
+        <a href="dasboard-copy-signals.html" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="dashboard-invest-history.html" class="nav-link"><span class="icon">📈</span> Invest History</a>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Transfer &amp; Request</div>
-        <a href="#" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
-        <a href="#" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
-        <a href="#" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+        <a href="dashboard-transfer.html" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="dashboard-request-money.html" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="dashboard-receive-request.html" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Deposits</div>
         <a href="dashboard-deposit.html" class="nav-link active"><span class="icon">➕</span> Create Deposit</a>
-        <a href="#" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+        <a href="dashboard-deposit-history.html" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Payouts</div>
-        <a href="#" class="nav-link"><span class="icon">💸</span> Payout</a>
-        <a href="#" class="nav-link"><span class="icon">📋</span> Payout History</a>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="dashboard-payout-history.html" class="nav-link"><span class="icon">📋</span> Payout History</a>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Referral</div>
-        <a href="#" class="nav-link"><span class="icon">👥</span> Referred Users</a>
-        <a href="#" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+        <a href="dashboard-referred-users.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="dashboard-referral-commissions.html" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Account Information</div>
-        <a href="#" class="nav-link"><span class="icon">✉️</span> Messages</a>
+        <a href="dashboard-messages.html" class="nav-link"><span class="icon">✉️</span> Messages</a>
         <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
-        <a href="#" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
         <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
-        <a href="#" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
         <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
       </div>
     </nav>
@@ -261,10 +261,24 @@
         <div class="method-info" id="methodInfo">
           <h4 id="methodTitle">Send Payment To:</h4>
           <p id="methodDesc"></p>
-          <div class="address" id="methodAddress">
-            <span id="addressText"></span>
-            <button class="copy-addr" onclick="copyAddress()">📋 Copy</button>
+          <!-- Crypto address box -->
+        <div class="address" id="cryptoAddressBox">
+          <span id="addressText"></span>
+          <button class="copy-addr" onclick="copyAddress()">📋 Copy</button>
+        </div>
+
+        <!-- M-Pesa STK push box -->
+        <div id="mpesaBox" style="display:none; margin-top:0.75rem;">
+          <div class="form-field" style="margin-bottom:0.75rem;">
+            <label>Your M-Pesa Phone Number *</label>
+            <input type="tel" id="mpesaPhone" placeholder="07XX XXX XXX or 01XX XXX XXX"/>
+            <span style="font-size:0.75rem;color:var(--text-lo);margin-top:0.3rem;">
+              Format: 0712345678 or 0112345678
+            </span>
           </div>
+          <!-- STK Push status display -->
+          <div id="stkStatus" style="display:none; padding:0.85rem 1rem; border-radius:8px; margin-top:0.5rem; font-size:0.875rem; line-height:1.6;"></div>
+        </div>
         </div>
 
         <div class="form-field" style="margin-bottom:1.25rem">
@@ -272,9 +286,15 @@
           <textarea id="depositDesc" placeholder="Paste your transaction hash or reference here after sending..."></textarea>
         </div>
 
-        <button class="btn-submit" id="submitDeposit">
+        <button class="btn-submit" id="submitDeposit" style="display:flex;">
           <span class="spinner" id="depositSpinner"></span>
           <span id="depositBtnText">Submit Deposit</span>
+        </button>
+
+        <!-- M-Pesa specific submit button -->
+        <button class="btn-submit" id="submitMpesaBtn" style="display:none; background:#22c55e;">
+          <span class="spinner" id="mpesaSpinner"></span>
+          <span id="mpesaBtnText">📱 Send STK Push</span>
         </button>
       </div>
 
@@ -333,18 +353,38 @@
       ethereum:   { title:'Ethereum (ETH) Address', desc:'Send ETH to the address below. Minimum deposit: $150', address:'0x71C7656EC7ab88b098defB751B7401B5f6d8976F' },
       usdt_trc20: { title:'USDT TRC20 Address',     desc:'Send USDT via TRC20 network. Minimum deposit: $150', address:'TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE' },
       usdt_erc20: { title:'USDT ERC20 Address',     desc:'Send USDT via ERC20 network. Minimum deposit: $150', address:'0x71C7656EC7ab88b098defB751B7401B5f6d8976F' },
-      mpesa:      { title:'M-Pesa Paybill',          desc:'Pay via M-Pesa Paybill. Use your email as account number.', address:'Paybill: 123456 | Account: your-email@example.com' },
+      mpesa:      { title:'M-Pesa STK Push', desc:'Enter your M-Pesa phone number below. You will receive a prompt on your phone to enter your PIN.', address:'STK_PUSH' },
     }
 
     // Show wallet info on method change
     document.getElementById('paymentMethod').addEventListener('change', (e) => {
       const val = e.target.value
-      const box = document.getElementById('methodInfo')
-      if (!val || !methodDetails[val]) { box.classList.remove('visible'); return }
+      const box        = document.getElementById('methodInfo')
+      const cryptoBox  = document.getElementById('cryptoAddressBox')
+      const mpesaBox   = document.getElementById('mpesaBox')
+      const submitBtn  = document.getElementById('submitDeposit')
+      const submitMpesa= document.getElementById('submitMpesaBtn')
+
+      if (!val || !methodDetails[val]) {
+        box.classList.remove('visible')
+        return
+      }
       const d = methodDetails[val]
       document.getElementById('methodTitle').textContent = d.title
       document.getElementById('methodDesc').textContent  = d.desc
-      document.getElementById('addressText').textContent = d.address
+
+      if (val === 'mpesa') {
+        cryptoBox.style.display  = 'none'
+        mpesaBox.style.display   = 'block'
+        submitBtn.style.display  = 'none'
+        submitMpesa.style.display= 'flex'
+      } else {
+        document.getElementById('addressText').textContent = d.address
+        cryptoBox.style.display  = 'flex'
+        mpesaBox.style.display   = 'none'
+        submitBtn.style.display  = 'flex'
+        submitMpesa.style.display= 'none'
+      }
       box.classList.add('visible')
     })
 
@@ -353,6 +393,93 @@
       const addr = document.getElementById('addressText').textContent
       navigator.clipboard.writeText(addr).then(() => showToast('✅ Address copied!', 'success'))
     }
+
+    // ── M-Pesa STK Push
+    document.getElementById('submitMpesaBtn').addEventListener('click', async () => {
+      const phone  = document.getElementById('mpesaPhone').value.trim()
+      const amount = parseFloat(document.getElementById('depositAmount').value)
+
+      if (!phone)             { showToast('⚠️ Please enter your M-Pesa phone number.'); return }
+      if (!amount || amount < 10) { showToast('⚠️ Minimum deposit is $10.'); return }
+
+      // Convert USD to KES (approximate — you can update this rate)
+      const KES_RATE  = 130  // 1 USD ≈ 130 KES
+      const amountKES = Math.ceil(amount * KES_RATE)
+
+      const btn = document.getElementById('submitMpesaBtn')
+      btn.disabled = true
+      document.getElementById('mpesaBtnText').textContent = 'Sending to your phone...'
+
+      const stkStatus = document.getElementById('stkStatus')
+      stkStatus.style.display = 'block'
+      stkStatus.style.background = 'rgba(245,166,35,0.08)'
+      stkStatus.style.border = '1px solid rgba(245,166,35,0.2)'
+      stkStatus.style.color = 'var(--gold)'
+      stkStatus.textContent = '⏳ Sending STK push to your phone... Please wait.'
+
+      try {
+        const txnId = 'DEP-MPESA-' + Date.now()
+
+        // Step 1: Call STK push FIRST to get the checkoutRequestId
+        const { data: fnData, error: fnErr } = await supabase.functions.invoke('mpesa-stk-push', {
+          body: {
+            phone:      phone,
+            amount:     amountKES,
+            accountRef: 'CryptoFXMiners',
+            userId:     user.id,
+            txnId:      txnId,
+          }
+        })
+
+        if (fnErr) throw fnErr
+        if (!fnData?.success) throw new Error(fnData?.message || 'STK push failed')
+
+        // Step 2: NOW insert deposit with checkoutRequestId as reference
+        // This way the callback can always find it — no race condition
+        const { error: depErr } = await supabase.from('deposits').insert({
+          user_id:    user.id,
+          txn_id:     txnId,
+          method:     'mpesa',
+          amount:     amount,
+          reference:  fnData.checkoutRequestId, // ← set immediately, callback will find it
+          status:     'pending',
+          created_at: new Date().toISOString(),
+        })
+        if (depErr) throw depErr
+
+        if (fnData?.success) {
+
+          stkStatus.style.background = 'rgba(34,197,94,0.08)'
+          stkStatus.style.border     = '1px solid rgba(34,197,94,0.2)'
+          stkStatus.style.color      = '#22c55e'
+          stkStatus.innerHTML = `
+            ✅ <strong>STK Push sent!</strong><br/>
+            📱 Check your phone <strong>${phone}</strong> — you should see an M-Pesa prompt.<br/>
+            Enter your M-Pesa PIN to complete the payment of <strong>KES ${amountKES.toLocaleString()}</strong>.<br/>
+            <span style="font-size:0.78rem;color:var(--text-lo);margin-top:0.5rem;display:block;">
+              Your deposit will be confirmed automatically once payment is received.
+            </span>
+          `
+
+          document.getElementById('depositAmount').value = ''
+          document.getElementById('mpesaPhone').value    = ''
+          loadDepositHistory()
+
+        } else {
+          throw new Error(fnData?.message || 'STK push failed')
+        }
+
+      } catch (err) {
+        stkStatus.style.background = 'rgba(248,113,113,0.08)'
+        stkStatus.style.border     = '1px solid rgba(248,113,113,0.2)'
+        stkStatus.style.color      = '#f87171'
+        stkStatus.textContent      = '⚠️ ' + (err.message || 'Failed to send STK push. Try again.')
+        showToast('⚠️ ' + (err.message || 'STK push failed'))
+      } finally {
+        btn.disabled = false
+        document.getElementById('mpesaBtnText').textContent = '📱 Send STK Push'
+      }
+    })
 
     // Submit deposit
     document.getElementById('submitDeposit').addEventListener('click', async () => {

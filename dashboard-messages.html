@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoFXMiners — Messages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d0d0d; --sidebar:#111111; --card:#161616;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --blue:#2563eb; --text-hi:#ffffff; --text-lo:#777; --text-mid:#aaa;
+      --sidebar-w:280px; --header-h:68px;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); min-height:100vh; display:flex; }
+
+    /* ── Sidebar ── */
+    .sidebar { width:var(--sidebar-w); background:var(--sidebar); border-right:1px solid var(--border); position:fixed; top:0; left:0; bottom:0; z-index:200; display:flex; flex-direction:column; overflow-y:auto; transition:transform 0.3s; }
+    .sidebar-logo { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .sidebar-logo a { text-decoration:none; font-family:var(--font-display); font-size:1.1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+    .sidebar-logo .crypto{color:#fff} .sidebar-logo .fxminers{color:var(--gold)}
+    .sidebar-nav { padding:1.25rem 0; flex:1; }
+    .nav-group { margin-bottom:1.5rem; }
+    .nav-group-label { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); padding:0 1.5rem 0.6rem; }
+    .nav-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.5rem; color:var(--text-mid); text-decoration:none; font-size:0.9rem; font-weight:500; transition:background 0.2s,color 0.2s; border-left:3px solid transparent; }
+    .nav-link:hover { background:rgba(245,166,35,0.06); color:var(--text-hi); }
+    .nav-link.active { color:var(--gold); border-left-color:var(--gold); background:rgba(245,166,35,0.08); }
+    .nav-link .icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
+
+    /* ── Main ── */
+    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+    .header { height:var(--header-h); background:var(--sidebar); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .hamburger-btn { display:none; background:none; border:none; cursor:pointer; flex-direction:column; gap:4px; padding:4px; }
+    .hamburger-btn span { display:block; width:20px; height:2px; background:var(--text-hi); border-radius:2px; }
+    .lang-select { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 0.8rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; outline:none; }
+    .header-right { display:flex; align-items:center; gap:1rem; }
+    .currency-wrap { position:relative; }
+    .currency-btn { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:0.4rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; }
+    .currency-dropdown { position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; overflow:hidden; min-width:130px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:999; display:none; }
+    .currency-dropdown.open { display:block; }
+    .currency-opt { padding:0.65rem 1.1rem; font-size:0.875rem; color:var(--text-mid); cursor:pointer; transition:background 0.15s,color 0.15s; }
+    .currency-opt:hover { background:rgba(245,166,35,0.1); color:var(--gold); }
+    .currency-opt.selected { background:var(--gold); color:#000; font-weight:700; }
+    .user-btn { display:flex; align-items:center; gap:0.65rem; background:none; border:none; cursor:pointer; text-decoration:none; }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.9rem; font-weight:800; color:#000; flex-shrink:0; overflow:hidden; }
+    .user-avatar img { width:100%; height:100%; object-fit:cover; }
+    .user-name { font-size:0.875rem; font-weight:600; color:var(--text-hi); }
+
+    /* ── Page ── */
+    .page { padding:2rem; flex:1; }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:0.75rem; }
+    .page-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+    .breadcrumb { font-size:0.8rem; color:var(--text-lo); display:flex; align-items:center; gap:0.4rem; }
+    .breadcrumb a { color:var(--text-lo); text-decoration:none; }
+    .breadcrumb a:hover { color:var(--gold); }
+    .breadcrumb .current { color:var(--gold); }
+
+    /* ── Buttons ── */
+    .btn-create {
+      background:var(--blue); color:#fff;
+      font-family:var(--font-body); font-size:0.875rem; font-weight:700;
+      padding:0.65rem 1.5rem; border-radius:8px; border:none;
+      cursor:pointer; transition:background 0.2s, transform 0.15s;
+      white-space:nowrap;
+    }
+    .btn-create:hover { background:#1d4ed8; transform:translateY(-1px); }
+    .btn-back {
+      background:rgba(255,255,255,0.06); color:var(--text-mid);
+      font-family:var(--font-body); font-size:0.875rem; font-weight:600;
+      padding:0.6rem 1.25rem; border-radius:8px; border:1px solid var(--border);
+      cursor:pointer; transition:background 0.2s, color 0.2s;
+    }
+    .btn-back:hover { background:rgba(255,255,255,0.1); color:var(--text-hi); }
+    .btn-submit {
+      background:var(--blue); color:#fff;
+      font-family:var(--font-body); font-size:0.9rem; font-weight:700;
+      padding:0.75rem 2rem; border-radius:8px; border:none;
+      cursor:pointer; transition:background 0.2s, transform 0.15s;
+      margin-top:0.5rem;
+    }
+    .btn-submit:hover { background:#1d4ed8; transform:translateY(-1px); }
+    .btn-submit:disabled { opacity:0.55; cursor:not-allowed; transform:none; }
+
+    /* ── Table ── */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table thead tr { background:var(--gold); }
+    .data-table thead th { padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; color:#000; text-align:left; white-space:nowrap; }
+    .data-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .data-table tbody tr:hover { background:rgba(255,255,255,0.02); }
+    .data-table tbody td { padding:0.9rem 1rem; font-size:0.875rem; color:var(--text-mid); vertical-align:middle; }
+    .no-data { text-align:center; padding:2.5rem 1rem; color:var(--text-lo); font-size:0.9rem; }
+
+    /* Status badges */
+    .badge { display:inline-block; padding:0.25rem 0.65rem; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; }
+    .badge-open    { background:rgba(245,166,35,0.12); color:var(--gold); }
+    .badge-replied { background:rgba(34,197,94,0.12);  color:#22c55e; }
+    .badge-closed  { background:rgba(255,255,255,0.06); color:var(--text-lo); }
+
+    /* Action button */
+    .btn-view { background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.25); padding:0.3rem 0.85rem; border-radius:6px; font-size:0.78rem; font-weight:600; cursor:pointer; font-family:var(--font-body); transition:background 0.2s; }
+    .btn-view:hover { background:rgba(37,99,235,0.25); }
+
+    /* ── Create form ── */
+    #viewCreate { display:none; }
+    .form-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.75rem 2rem; }
+    .form-field { display:flex; flex-direction:column; gap:0.45rem; margin-bottom:1.25rem; }
+    .form-field label { font-size:0.85rem; color:var(--text-mid); font-weight:500; }
+    .form-field input,
+    .form-field textarea {
+      background:#0d0d0d; border:1px solid var(--border);
+      border-radius:8px; padding:0.8rem 1rem;
+      color:var(--text-hi); font-family:var(--font-body); font-size:0.9rem;
+      outline:none; transition:border-color 0.2s; width:100%;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus { border-color:rgba(245,166,35,0.4); }
+    .form-field input::placeholder,
+    .form-field textarea::placeholder { color:#444; }
+    .form-field textarea { resize:vertical; min-height:180px; }
+
+    /* File input */
+    .file-wrap {
+      background:#0d0d0d; border:1px solid var(--border); border-radius:8px;
+      padding:0.75rem 1rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
+    }
+    .btn-file {
+      background:rgba(255,255,255,0.08); color:var(--text-hi);
+      font-family:var(--font-body); font-size:0.82rem; font-weight:600;
+      padding:0.5rem 1.1rem; border-radius:6px; border:1px solid var(--border);
+      cursor:pointer; white-space:nowrap;
+    }
+    .file-name { font-size:0.85rem; color:var(--text-lo); flex:1; }
+    #fileInput { display:none; }
+
+    /* ── Thread modal ── */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:500; align-items:center; justify-content:center; padding:1rem; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:#1a1a1a; border:1px solid var(--border); border-radius:14px; width:100%; max-width:600px; max-height:85vh; display:flex; flex-direction:column; }
+    .modal-header { padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .modal-title { font-family:var(--font-display); font-size:1rem; font-weight:700; }
+    .modal-close { background:none; border:none; color:var(--text-lo); font-size:1.3rem; cursor:pointer; line-height:1; padding:0.2rem 0.5rem; }
+    .modal-close:hover { color:var(--text-hi); }
+    .modal-body { padding:1.25rem 1.5rem; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:1rem; }
+    .msg-bubble { padding:0.85rem 1rem; border-radius:10px; max-width:90%; font-size:0.875rem; line-height:1.5; }
+    .msg-user  { background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.2); align-self:flex-end; color:var(--text-hi); }
+    .msg-admin { background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.15); align-self:flex-start; color:var(--text-hi); }
+    .msg-meta  { font-size:0.72rem; color:var(--text-lo); margin-top:0.3rem; }
+
+    /* ── Misc ── */
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); }
+    .sidebar-overlay.open { display:block; }
+    .dash-footer { border-top:1px solid var(--border); padding:1rem 2rem; font-size:0.78rem; color:var(--text-lo); text-align:center; }
+    .toast { position:fixed; top:1.25rem; left:50%; transform:translateX(-50%) translateY(-80px); background:#1a1a1a; border:1px solid var(--border); color:var(--text-hi); font-size:0.875rem; font-weight:500; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); z-index:9999; transition:transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+
+    @media(max-width:860px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main { margin-left:0; }
+      .hamburger-btn { display:flex; }
+      .page { padding:1.25rem; }
+      .header { padding:0 1.25rem; }
+      .form-card { padding:1.25rem; }
+    }
+    @media(max-width:540px) {
+      .user-name { display:none; }
+      .page-header { flex-direction:column; align-items:flex-start; }
+      .btn-create { align-self:stretch; text-align:center; width:100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="toast"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Thread modal -->
+  <div class="modal-overlay" id="threadModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modalSubject">Thread</span>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">General Information</div>
+        <a href="dashboard.html" class="nav-link"><span class="icon">📊</span> Dashboard</a>
+        <a href="dashboard-transactions.html" class="nav-link"><span class="icon">💳</span> Transactions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Invest</div>
+        <a href="dasboard-copy-signals.html" class="nav-link"><span class="icon">📡</span> Copy Signals</a>
+        <a href="dashboard-invest-history.html" class="nav-link"><span class="icon">📈</span> Invest History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Transfer &amp; Request</div>
+        <a href="dashboard-transfer.html" class="nav-link"><span class="icon">↔️</span> Transfer Money</a>
+        <a href="dashboard-request-money.html" class="nav-link"><span class="icon">💰</span> Send Request Money</a>
+        <a href="dashboard-receive-request.html" class="nav-link"><span class="icon">📥</span> Receive Request Money</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Deposits</div>
+        <a href="dashboard-deposit.html" class="nav-link"><span class="icon">➕</span> Create Deposit</a>
+        <a href="dashboard-deposit-history.html" class="nav-link"><span class="icon">🕐</span> Deposit History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Payouts</div>
+        <a href="dashboard-payout.html" class="nav-link"><span class="icon">💸</span> Payout</a>
+        <a href="dashboard-payout-history.html" class="nav-link"><span class="icon">📋</span> Payout History</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Referral</div>
+        <a href="dashboard-referred-users.html" class="nav-link"><span class="icon">👥</span> Referred Users</a>
+        <a href="dashboard-referral-commissions.html" class="nav-link"><span class="icon">🎁</span> Referral Commissions</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Account Information</div>
+        <a href="dashboard-messages.html" class="nav-link active"><span class="icon">✉️</span> Messages</a>
+        <a href="#" class="nav-link"><span class="icon">🪪</span> KYC Verification</a>
+        <a href="dashboard-edit-profile.html" class="nav-link"><span class="icon">✏️</span> Edit Profile</a>
+        <a href="#" class="nav-link"><span class="icon">🔐</span> 2FA Security</a>
+        <a href="dashboard-change-password.html" class="nav-link"><span class="icon">🔑</span> Change Password</a>
+        <a href="#" class="nav-link" id="logoutBtn"><span class="icon">🚪</span> Logout</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger-btn" id="hamburgerBtn"><span></span><span></span><span></span></button>
+        <select class="lang-select"><option>EN</option><option>SW</option><option>FR</option></select>
+      </div>
+      <div class="header-right">
+        <div class="currency-wrap">
+          <button class="currency-btn" id="currencyBtn">
+            <span id="currencyLabel">USD</span><span style="font-size:0.7rem">▾</span>
+          </button>
+          <div class="currency-dropdown" id="currencyDropdown">
+            <div class="currency-opt selected" data-code="USD">USD</div>
+            <div class="currency-opt" data-code="BDT">BDT</div>
+            <div class="currency-opt" data-code="EUR">EUR</div>
+            <div class="currency-opt" data-code="NGN">NGN</div>
+            <div class="currency-opt" data-code="INR">INR</div>
+            <div class="currency-opt" data-code="KES">KES</div>
+            <div class="currency-opt" data-code="TSH">TSH</div>
+            <div class="currency-opt" data-code="Bitcoin">Bitcoin</div>
+          </div>
+        </div>
+        <div class="user-btn">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">Loading...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+
+      <!-- ── LIST VIEW ── -->
+      <div id="viewList">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Messages</h1>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+            <div class="breadcrumb">
+              <a href="dashboard.html">Dashboard</a><span>—</span>
+              <span class="current">Messages</span>
+            </div>
+            <button class="btn-create" id="btnShowCreate">Create Message</button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto; border-radius:8px; border:1px solid var(--border);">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="msgBody">
+              <tr><td colspan="5" class="no-data">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── CREATE VIEW ── -->
+      <div id="viewCreate">
+        <div class="page-header">
+          <h1 class="page-title">Messages</h1>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Dashboard</a><span>—</span>
+            <span class="current">Messages</span>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-field">
+            <label>Subject</label>
+            <input type="text" id="msgSubject" placeholder="Enter Subject"/>
+          </div>
+          <div class="form-field">
+            <label>Message</label>
+            <textarea id="msgBody2" placeholder="Enter Subject"></textarea>
+          </div>
+          <div class="form-field">
+            <label>Attachment <span style="color:var(--text-lo);font-size:0.78rem;">(optional)</span></label>
+            <div class="file-wrap">
+              <button class="btn-file" id="btnChooseFile">Choose File</button>
+              <span class="file-name" id="fileName">No file chosen</span>
+              <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx"/>
+            </div>
+          </div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.5rem;">
+            <button class="btn-back" id="btnBack">← Back</button>
+            <button class="btn-submit" id="btnSubmit">Submit</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .page -->
+    <footer class="dash-footer">COPYRIGHT &copy; 2025. All Rights Reserved By Crypto FX Miners</footer>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+    const supabase = createClient(
+      'https://xbazuosvlggtolahgcjv.supabase.co',
+      'sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F'
+    )
+
+    // ── Auth ──
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = 'login.html'; throw new Error('No session') }
+    const user = session.user
+
+    // ── Profile ──
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name, username, avatar_url')
+      .eq('id', user.id)
+      .single()
+
+    const name = profile?.full_name || profile?.username || user.email?.split('@')[0] || 'User'
+    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2)
+    document.getElementById('userName').textContent = name
+    const avatarEl = document.getElementById('userAvatar')
+    if (profile?.avatar_url) {
+      avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="avatar"/>`
+    } else {
+      avatarEl.textContent = initials
+    }
+
+    // ── Toast ──
+    function showToast(msg, type='error') {
+      const t = document.getElementById('toast')
+      t.textContent = msg; t.className = `toast ${type} show`
+      setTimeout(() => t.classList.remove('show'), 4000)
+    }
+
+    // ── View toggle ──
+    const viewList   = document.getElementById('viewList')
+    const viewCreate = document.getElementById('viewCreate')
+
+    document.getElementById('btnShowCreate').addEventListener('click', () => {
+      viewList.style.display = 'none'
+      viewCreate.style.display = 'block'
+    })
+    document.getElementById('btnBack').addEventListener('click', () => {
+      viewList.style.display = 'block'
+      viewCreate.style.display = 'none'
+    })
+
+    // ── File picker ──
+    const fileInput = document.getElementById('fileInput')
+    document.getElementById('btnChooseFile').addEventListener('click', () => fileInput.click())
+    fileInput.addEventListener('change', () => {
+      document.getElementById('fileName').textContent = fileInput.files[0]?.name || 'No file chosen'
+    })
+
+    // ── Load tickets ──
+    let allTickets = []
+
+    async function loadTickets() {
+      const { data, error } = await supabase
+        .from('support_tickets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        document.getElementById('msgBody').innerHTML =
+          '<tr><td colspan="5" class="no-data">No Data Found</td></tr>'
+        return
+      }
+      allTickets = data || []
+      renderTickets()
+    }
+
+    function statusBadge(status) {
+      const map = { open:'badge-open', replied:'badge-replied', closed:'badge-closed' }
+      const cls = map[status] || 'badge-open'
+      const label = status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Open'
+      return `<span class="badge ${cls}">${label}</span>`
+    }
+
+    function renderTickets() {
+      const body = document.getElementById('msgBody')
+      if (!allTickets.length) {
+        body.innerHTML = '<tr><td colspan="5" class="no-data">No Data Found</td></tr>'
+        return
+      }
+      body.innerHTML = allTickets.map((t, i) => `
+        <tr>
+          <td style="font-family:monospace;font-size:0.78rem;color:var(--text-lo)">#${String(i+1).padStart(4,'0')}</td>
+          <td style="color:var(--text-hi);font-weight:500;">${t.subject || '—'}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.message || '—'}</td>
+          <td style="white-space:nowrap;">${new Date(t.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+          <td><button class="btn-view" data-id="${t.id}">View</button></td>
+        </tr>
+      `).join('')
+
+      document.querySelectorAll('.btn-view').forEach(btn => {
+        btn.addEventListener('click', () => openThread(btn.dataset.id))
+      })
+    }
+
+    // ── Thread modal ──
+    function openThread(ticketId) {
+      const ticket = allTickets.find(t => t.id === ticketId)
+      if (!ticket) return
+
+      document.getElementById('modalSubject').textContent = ticket.subject || 'Thread'
+      const body = document.getElementById('modalBody')
+
+      let html = `
+        <div class="msg-bubble msg-user">
+          <div>${ticket.message}</div>
+          <div class="msg-meta">${new Date(ticket.created_at).toLocaleString()}</div>
+        </div>
+      `
+
+      if (ticket.admin_reply) {
+        html += `
+          <div class="msg-bubble msg-admin">
+            <div><strong style="color:var(--gold);font-size:0.78rem;">Support Team</strong></div>
+            <div>${ticket.admin_reply}</div>
+            <div class="msg-meta">${ticket.replied_at ? new Date(ticket.replied_at).toLocaleString() : ''}</div>
+          </div>
+        `
+      } else {
+        html += `<div style="text-align:center;color:var(--text-lo);font-size:0.82rem;padding:0.5rem;">Awaiting reply from support team...</div>`
+      }
+
+      body.innerHTML = html
+      document.getElementById('threadModal').classList.add('open')
+    }
+
+    document.getElementById('modalClose').addEventListener('click', () => {
+      document.getElementById('threadModal').classList.remove('open')
+    })
+    document.getElementById('threadModal').addEventListener('click', e => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.remove('open')
+    })
+
+    // ── Submit new ticket ──
+    document.getElementById('btnSubmit').addEventListener('click', async () => {
+      const subject = document.getElementById('msgSubject').value.trim()
+      const message = document.getElementById('msgBody2').value.trim()
+
+      if (!subject) { showToast('Please enter a subject'); return }
+      if (!message) { showToast('Please enter a message'); return }
+
+      const btn = document.getElementById('btnSubmit')
+      btn.disabled = true; btn.textContent = 'Submitting...'
+
+      // Handle file upload if present
+      let attachmentUrl = null
+      const file = fileInput.files[0]
+      if (file) {
+        const ext = file.name.split('.').pop()
+        const path = `tickets/${user.id}/${Date.now()}.${ext}`
+        const { error: uploadErr } = await supabase.storage
+          .from('attachments')
+          .upload(path, file)
+        if (!uploadErr) {
+          const { data: urlData } = supabase.storage.from('attachments').getPublicUrl(path)
+          attachmentUrl = urlData.publicUrl
+        }
+      }
+
+      const { error } = await supabase.from('support_tickets').insert({
+        user_id:    user.id,
+        subject,
+        message,
+        status:     'open',
+        attachment: attachmentUrl,
+      })
+
+      btn.disabled = false; btn.textContent = 'Submit'
+
+      if (error) {
+        showToast('Failed to submit. Please try again.')
+        return
+      }
+
+      showToast('Message sent successfully!', 'success')
+      document.getElementById('msgSubject').value = ''
+      document.getElementById('msgBody2').value = ''
+      fileInput.value = ''
+      document.getElementById('fileName').textContent = 'No file chosen'
+
+      // Switch back to list and reload
+      viewList.style.display = 'block'
+      viewCreate.style.display = 'none'
+      loadTickets()
+    })
+
+    // ── Logout ──
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault()
+      await supabase.auth.signOut()
+      window.location.href = 'login.html'
+    })
+
+    loadTickets()
+  </script>
+
+  <script>
+    // Hamburger
+    const sidebar = document.getElementById('sidebar')
+    const overlay = document.getElementById('sidebarOverlay')
+    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+      sidebar.classList.toggle('open'); overlay.classList.toggle('open')
+    })
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open') })
+
+    // Currency dropdown
+    const currBtn = document.getElementById('currencyBtn')
+    const currDD  = document.getElementById('currencyDropdown')
+    const currLbl = document.getElementById('currencyLabel')
+    currBtn.addEventListener('click', e => { e.stopPropagation(); currDD.classList.toggle('open') })
+    document.querySelectorAll('.currency-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.currency-opt').forEach(o => o.classList.remove('selected'))
+        opt.classList.add('selected'); currLbl.textContent = opt.dataset.code; currDD.classList.remove('open')
+      })
+    })
+    document.addEventListener('click', e => {
+      if (!currBtn.contains(e.target) && !currDD.contains(e.target)) currDD.classList.remove('open')
+    })
+  </script>
+</body>
+</html>
