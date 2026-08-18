@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms of Service — CryptoFXMiners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0d0d0d; --card:#161616; --border:rgba(255,255,255,0.07);
+      --gold:#f5a623; --gold-dark:#d4891a; --text-hi:#ffffff;
+      --text-lo:#777; --text-mid:#aaa;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); line-height:1.7; }
+    nav { background:#111; border-bottom:1px solid var(--border); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .nav-logo { font-family:var(--font-display); font-size:1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-decoration:none; }
+    .nav-logo .crypto{color:#fff} .nav-logo .fxminers{color:var(--gold)}
+    .nav-links { display:flex; gap:1.5rem; align-items:center; }
+    .nav-links a { color:var(--text-mid); text-decoration:none; font-size:0.875rem; font-weight:500; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--gold); }
+    .nav-btn { background:var(--gold); color:#000; padding:0.5rem 1.25rem; border-radius:6px; font-weight:700; font-size:0.85rem; }
+    .nav-btn:hover { background:var(--gold-dark) !important; color:#000 !important; }
+    .hero { background:linear-gradient(135deg,#111 0%,#0d0d0d 100%); border-bottom:1px solid var(--border); padding:4rem 2rem 3rem; text-align:center; }
+    .hero-badge { display:inline-block; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:var(--gold); font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.4rem 1rem; border-radius:20px; margin-bottom:1.25rem; }
+    .hero h1 { font-family:var(--font-display); font-size:clamp(2rem,5vw,3rem); font-weight:800; margin-bottom:0.75rem; }
+    .hero p { color:var(--text-mid); font-size:1rem; max-width:520px; margin:0 auto 1rem; }
+    .hero-meta { font-size:0.8rem; color:var(--text-lo); }
+    .container { max-width:860px; margin:0 auto; padding:3rem 2rem 5rem; }
+    .toc { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem 1.75rem; margin-bottom:3rem; }
+    .toc-title { font-family:var(--font-display); font-size:0.85rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+    .toc ol { padding-left:1.25rem; display:grid; grid-template-columns:1fr 1fr; gap:0.35rem 2rem; }
+    .toc ol li a { color:var(--text-mid); text-decoration:none; font-size:0.875rem; transition:color 0.2s; }
+    .toc ol li a:hover { color:var(--gold); }
+    .section { margin-bottom:3rem; scroll-margin-top:80px; }
+    .section-num { display:inline-block; background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.72rem; font-weight:700; letter-spacing:0.08em; padding:0.2rem 0.65rem; border-radius:4px; margin-bottom:0.75rem; font-family:var(--font-display); }
+    .section h2 { font-family:var(--font-display); font-size:1.35rem; font-weight:700; margin-bottom:1rem; }
+    .section p { color:var(--text-mid); font-size:0.9375rem; margin-bottom:0.85rem; }
+    .section ul, .section ol { color:var(--text-mid); font-size:0.9375rem; padding-left:1.5rem; margin-bottom:0.85rem; }
+    .section li { margin-bottom:0.45rem; }
+    .section strong { color:var(--text-hi); font-weight:600; }
+    .divider { border:none; border-top:1px solid var(--border); margin:2.5rem 0; }
+    .highlight { background:rgba(245,166,35,0.05); border:1px solid rgba(245,166,35,0.15); border-left:3px solid var(--gold); border-radius:8px; padding:1rem 1.25rem; margin:1.25rem 0; }
+    .highlight p { color:var(--text-mid); font-size:0.875rem; margin:0; }
+    .warning { background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15); border-left:3px solid #ef4444; border-radius:8px; padding:1rem 1.25rem; margin:1.25rem 0; }
+    .warning p { color:#fca5a5; font-size:0.875rem; margin:0; }
+    .contact-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem 1.75rem; margin-top:1.25rem; }
+    .contact-card p { margin:0.3rem 0; font-size:0.9rem; color:var(--text-mid); }
+    .contact-card strong { color:var(--text-hi); }
+    footer { background:#111; border-top:1px solid var(--border); padding:2rem; text-align:center; }
+    .footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .footer-links a { color:var(--text-lo); text-decoration:none; font-size:0.8rem; transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { color:var(--text-lo); font-size:0.78rem; }
+    @media(max-width:640px) { .toc ol{grid-template-columns:1fr} .nav-links{display:none} .hero{padding:2.5rem 1.25rem 2rem} .container{padding:2rem 1.25rem 4rem} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="plans.html">Plans</a>
+    <a href="privacy-policy.html">Privacy</a>
+    <a href="aml-policy.html">AML Policy</a>
+    <a href="login.html" class="nav-btn">Login</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Legal Document</div>
+  <h1>Terms of Service</h1>
+  <p>Please read these terms carefully before using CryptoFXMiners. By registering, you agree to be bound by them.</p>
+  <div class="hero-meta">Last updated: May 2026 &nbsp;·&nbsp; Effective: May 2026</div>
+</div>
+
+<div class="container">
+
+  <div class="warning">
+    <p><strong>Investment Risk Warning:</strong> Cryptocurrency trading and investment involves significant risk. The value of investments can go down as well as up. Past returns do not guarantee future results. Only invest what you can afford to lose. CryptoFXMiners does not guarantee profits.</p>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#t1">Acceptance of Terms</a></li>
+      <li><a href="#t2">Eligibility</a></li>
+      <li><a href="#t3">Account Registration & KYC</a></li>
+      <li><a href="#t4">Services Offered</a></li>
+      <li><a href="#t5">Deposits & Withdrawals</a></li>
+      <li><a href="#t6">Investment Plans & Returns</a></li>
+      <li><a href="#t7">Referral Programme</a></li>
+      <li><a href="#t8">Fees & Charges</a></li>
+      <li><a href="#t9">Prohibited Activities</a></li>
+      <li><a href="#t10">Suspension & Termination</a></li>
+      <li><a href="#t11">Limitation of Liability</a></li>
+      <li><a href="#t12">Intellectual Property</a></li>
+      <li><a href="#t13">Dispute Resolution</a></li>
+      <li><a href="#t14">Governing Law</a></li>
+      <li><a href="#t15">Changes to Terms</a></li>
+      <li><a href="#t16">Contact</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="t1">
+    <div class="section-num">01</div>
+    <h2>Acceptance of Terms</h2>
+    <p>By accessing or using the CryptoFXMiners platform ("Platform", "Service") at cryptofxminers.com, creating an account, or making any transaction, you ("User", "you") agree to be legally bound by these Terms of Service ("Terms").</p>
+    <p>If you do not agree to these Terms, you must not use the Platform. These Terms constitute a binding legal agreement between you and CryptoFXMiners.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t2">
+    <div class="section-num">02</div>
+    <h2>Eligibility</h2>
+    <p>To use CryptoFXMiners, you must:</p>
+    <ul>
+      <li>Be at least <strong>18 years of age</strong>.</li>
+      <li>Be a resident of Kenya or a jurisdiction where our services are not prohibited.</li>
+      <li>Have the legal capacity to enter into a binding contract.</li>
+      <li>Not be prohibited from using financial services under any applicable law.</li>
+      <li>Provide accurate, current, and complete information during registration.</li>
+    </ul>
+    <p>By registering, you represent and warrant that you meet all eligibility requirements.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t3">
+    <div class="section-num">03</div>
+    <h2>Account Registration & KYC</h2>
+    <p>You must register an account to access our services. You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.</p>
+    <p>We require all users to complete Know Your Customer (KYC) verification before making deposits or withdrawals above regulatory thresholds. KYC requires submission of:</p>
+    <ul>
+      <li>A valid Kenya National Identity Card (or Passport for non-citizens).</li>
+      <li>A selfie or clear photograph for identity verification.</li>
+      <li>Additional documentation as may be required under our AML Policy.</li>
+    </ul>
+    <div class="highlight">
+      <p>Accounts that have not completed KYC verification may have restricted access to deposits, withdrawals, and investment features until verification is complete.</p>
+    </div>
+    <p>You must not create multiple accounts. Duplicate accounts will be suspended without notice.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t4">
+    <div class="section-num">04</div>
+    <h2>Services Offered</h2>
+    <p>CryptoFXMiners provides the following services:</p>
+    <ul>
+      <li>Cryptocurrency copy trading and investment plans with stated return rates.</li>
+      <li>M-Pesa deposit and withdrawal processing.</li>
+      <li>Portfolio tracking and transaction history.</li>
+      <li>Peer-to-peer money transfer between registered users.</li>
+      <li>A referral programme for earning commissions.</li>
+    </ul>
+    <p>We reserve the right to modify, suspend, or discontinue any service at any time with reasonable notice where possible.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t5">
+    <div class="section-num">05</div>
+    <h2>Deposits & Withdrawals</h2>
+    <p><strong>Minimum deposit:</strong> USD 50 (or equivalent in KES at the prevailing rate).</p>
+    <p><strong>Deposits</strong> are processed via M-Pesa STK Push. Once a deposit is confirmed by M-Pesa, it will be credited to your account balance. We are not responsible for delays caused by Safaricom or M-Pesa network issues.</p>
+    <p><strong>Withdrawals</strong> are subject to:</p>
+    <ul>
+      <li>Completed KYC verification on your account.</li>
+      <li>Sufficient available balance (not locked in active investment plans).</li>
+      <li>Our processing schedule — withdrawals are typically processed within 24–72 hours on business days.</li>
+      <li>Any applicable withdrawal fees as stated on the Platform.</li>
+    </ul>
+    <div class="highlight">
+      <p>All transactions are final once processed. We cannot reverse completed M-Pesa transactions. If you believe a transaction is in error, contact our support team immediately.</p>
+    </div>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t6">
+    <div class="section-num">06</div>
+    <h2>Investment Plans & Returns</h2>
+    <p>CryptoFXMiners offers investment plans with stated return rates. By investing in a plan, you acknowledge and agree that:</p>
+    <ul>
+      <li>Stated returns are <strong>projections based on trading performance</strong> and are not guaranteed.</li>
+      <li>Past performance does not guarantee future results.</li>
+      <li>Cryptocurrency markets are highly volatile and investments may decrease in value.</li>
+      <li>You may lose some or all of your invested capital.</li>
+      <li>Returns are credited to your account balance subject to plan terms and conditions.</li>
+      <li>Invested funds are locked for the duration of the plan and cannot be withdrawn early.</li>
+    </ul>
+    <div class="warning">
+      <p><strong>Risk Disclosure:</strong> Do not invest funds you cannot afford to lose. Cryptocurrency investment is high risk. CryptoFXMiners does not provide financial advice. Consult a qualified financial adviser before investing.</p>
+    </div>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t7">
+    <div class="section-num">07</div>
+    <h2>Referral Programme</h2>
+    <p>CryptoFXMiners operates a referral programme that allows users to earn commissions when they refer new users who make qualifying deposits.</p>
+    <ul>
+      <li>Referral commissions are credited automatically when a referred user's deposit is approved.</li>
+      <li>Commissions are based on rates stated on the Platform and may change with notice.</li>
+      <li>Self-referrals and fraudulent referrals are strictly prohibited and will result in account termination and forfeiture of all commissions.</li>
+      <li>Referral commissions are subject to the same withdrawal terms as account balances.</li>
+    </ul>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t8">
+    <div class="section-num">08</div>
+    <h2>Fees & Charges</h2>
+    <p>CryptoFXMiners may charge fees for certain services. All applicable fees are displayed on the Platform before you confirm a transaction. We reserve the right to introduce or modify fees with 7 days' notice to registered users.</p>
+    <p>M-Pesa transaction charges imposed by Safaricom are separate from our fees and are the user's responsibility.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t9">
+    <div class="section-num">09</div>
+    <h2>Prohibited Activities</h2>
+    <p>You must not use the Platform to:</p>
+    <ul>
+      <li>Engage in money laundering, terrorist financing, or any illegal financial activity.</li>
+      <li>Create fake or duplicate accounts.</li>
+      <li>Use automated bots, scripts, or systems to interact with the Platform.</li>
+      <li>Attempt to hack, disrupt, or gain unauthorised access to the Platform or other users' accounts.</li>
+      <li>Provide false or misleading information during registration or KYC.</li>
+      <li>Engage in fraudulent referral activities.</li>
+      <li>Violate any applicable Kenyan law or regulation.</li>
+    </ul>
+    <p>Violation of these prohibitions may result in immediate account suspension, termination, and reporting to relevant authorities.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t10">
+    <div class="section-num">10</div>
+    <h2>Suspension & Termination</h2>
+    <p>We reserve the right to suspend or terminate your account at any time if:</p>
+    <ul>
+      <li>You violate these Terms.</li>
+      <li>We suspect fraudulent, illegal, or suspicious activity.</li>
+      <li>You fail to complete KYC verification within the required timeframe.</li>
+      <li>We are required to do so by a regulatory authority or court order.</li>
+    </ul>
+    <p>Upon termination, any available balance (excluding locked investments) will be returned to you after deducting applicable fees, subject to the completion of any pending investigations.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t11">
+    <div class="section-num">11</div>
+    <h2>Limitation of Liability</h2>
+    <p>To the maximum extent permitted by Kenyan law, CryptoFXMiners shall not be liable for:</p>
+    <ul>
+      <li>Investment losses resulting from market volatility or adverse trading conditions.</li>
+      <li>Losses caused by M-Pesa network failures, Safaricom downtime, or payment processing errors beyond our control.</li>
+      <li>Indirect, consequential, or incidental damages arising from use of the Platform.</li>
+      <li>Unauthorised access to your account resulting from your failure to protect your credentials.</li>
+      <li>Force majeure events including acts of God, government actions, or infrastructure failures.</li>
+    </ul>
+    <p>Our total liability to you in any circumstances shall not exceed the total amount deposited by you in the 90 days preceding the event giving rise to the claim.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t12">
+    <div class="section-num">12</div>
+    <h2>Intellectual Property</h2>
+    <p>All content on the Platform including the CryptoFXMiners name, logo, design, text, and software is owned by or licensed to CryptoFXMiners and is protected by Kenyan and international intellectual property laws. You may not reproduce, distribute, or create derivative works without our written permission.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t13">
+    <div class="section-num">13</div>
+    <h2>Dispute Resolution</h2>
+    <p>In the event of a dispute, you agree to first contact our support team at <strong>support@cryptofxminers.com</strong> to seek an informal resolution. We will respond within 7 business days.</p>
+    <p>If a dispute cannot be resolved informally, it shall be referred to mediation or arbitration in Nairobi, Kenya, in accordance with Kenyan law.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t14">
+    <div class="section-num">14</div>
+    <h2>Governing Law</h2>
+    <p>These Terms are governed by and construed in accordance with the laws of Kenya. Any legal proceedings shall be subject to the exclusive jurisdiction of the courts of Kenya.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t15">
+    <div class="section-num">15</div>
+    <h2>Changes to Terms</h2>
+    <p>We may update these Terms at any time. Material changes will be communicated to registered users by email or platform notification at least 7 days before taking effect. Continued use of the Platform after changes take effect constitutes your acceptance of the updated Terms.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="t16">
+    <div class="section-num">16</div>
+    <h2>Contact</h2>
+    <p>For questions about these Terms, contact us:</p>
+    <div class="contact-card">
+      <p><strong>CryptoFXMiners — Legal & Compliance</strong></p>
+      <p>Email: <strong>legal@cryptofxminers.com</strong></p>
+      <p>Support: <strong>support@cryptofxminers.com</strong></p>
+      <p>Website: <strong>cryptofxminers.com</strong></p>
+      <p>Jurisdiction: <strong>Nairobi, Kenya</strong></p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="terms-of-service.html">Terms of Service</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="aml-policy.html">AML Policy</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+  <p class="footer-copy">&copy; 2026 CryptoFXMiners. All rights reserved. Registered in Kenya.</p>
+</footer>
+
+</body>
+</html>
