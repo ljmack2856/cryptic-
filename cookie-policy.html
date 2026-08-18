@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cookie Policy — CryptoFXMiners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0d0d0d; --card:#161616; --border:rgba(255,255,255,0.07);
+      --gold:#f5a623; --gold-dark:#d4891a; --text-hi:#ffffff;
+      --text-lo:#777; --text-mid:#aaa;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); line-height:1.7; }
+    nav { background:#111; border-bottom:1px solid var(--border); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .nav-logo { font-family:var(--font-display); font-size:1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-decoration:none; }
+    .nav-logo .crypto{color:#fff} .nav-logo .fxminers{color:var(--gold)}
+    .nav-links { display:flex; gap:1.5rem; align-items:center; }
+    .nav-links a { color:var(--text-mid); text-decoration:none; font-size:0.875rem; font-weight:500; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--gold); }
+    .nav-btn { background:var(--gold); color:#000 !important; padding:0.5rem 1.25rem; border-radius:6px; font-weight:700; font-size:0.85rem; }
+    .hero { background:linear-gradient(135deg,#111 0%,#0d0d0d 100%); border-bottom:1px solid var(--border); padding:4rem 2rem 3rem; text-align:center; }
+    .hero-badge { display:inline-block; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:var(--gold); font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.4rem 1rem; border-radius:20px; margin-bottom:1.25rem; }
+    .hero h1 { font-family:var(--font-display); font-size:clamp(2rem,5vw,3rem); font-weight:800; margin-bottom:0.75rem; }
+    .hero p { color:var(--text-mid); font-size:1rem; max-width:520px; margin:0 auto 1rem; }
+    .hero-meta { font-size:0.8rem; color:var(--text-lo); }
+    .container { max-width:860px; margin:0 auto; padding:3rem 2rem 5rem; }
+    .toc { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem 1.75rem; margin-bottom:3rem; }
+    .toc-title { font-family:var(--font-display); font-size:0.85rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+    .toc ol { padding-left:1.25rem; display:grid; grid-template-columns:1fr 1fr; gap:0.35rem 2rem; }
+    .toc ol li a { color:var(--text-mid); text-decoration:none; font-size:0.875rem; transition:color 0.2s; }
+    .toc ol li a:hover { color:var(--gold); }
+    .section { margin-bottom:3rem; scroll-margin-top:80px; }
+    .section-num { display:inline-block; background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.72rem; font-weight:700; letter-spacing:0.08em; padding:0.2rem 0.65rem; border-radius:4px; margin-bottom:0.75rem; font-family:var(--font-display); }
+    .section h2 { font-family:var(--font-display); font-size:1.35rem; font-weight:700; margin-bottom:1rem; }
+    .section p { color:var(--text-mid); font-size:0.9375rem; margin-bottom:0.85rem; }
+    .section ul { color:var(--text-mid); font-size:0.9375rem; padding-left:1.5rem; margin-bottom:0.85rem; }
+    .section li { margin-bottom:0.45rem; }
+    .section strong { color:var(--text-hi); font-weight:600; }
+    .divider { border:none; border-top:1px solid var(--border); margin:2.5rem 0; }
+    .highlight { background:rgba(245,166,35,0.05); border:1px solid rgba(245,166,35,0.15); border-left:3px solid var(--gold); border-radius:8px; padding:1rem 1.25rem; margin:1.25rem 0; }
+    .highlight p { color:var(--text-mid); font-size:0.875rem; margin:0; }
+
+    /* Cookie table */
+    .cookie-table { width:100%; border-collapse:collapse; margin:1.25rem 0; }
+    .cookie-table th { background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.8rem; font-weight:700; padding:0.75rem 1rem; text-align:left; border-bottom:1px solid var(--border); }
+    .cookie-table td { padding:0.75rem 1rem; font-size:0.85rem; color:var(--text-mid); border-bottom:1px solid var(--border); vertical-align:top; }
+    .cookie-table tr:last-child td { border-bottom:none; }
+    .cookie-table td strong { color:var(--text-hi); font-size:0.82rem; }
+
+    /* Cookie type badges */
+    .badge-essential { display:inline-block; background:rgba(34,197,94,0.1); color:#22c55e; font-size:0.7rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:4px; }
+    .badge-functional { display:inline-block; background:rgba(59,130,246,0.1); color:#60a5fa; font-size:0.7rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:4px; }
+
+    /* Consent banner preview */
+    .banner-preview { background:#1a1a1a; border:1px solid var(--border); border-radius:12px; padding:1.25rem 1.5rem; margin:1.5rem 0; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .banner-text { font-size:0.85rem; color:var(--text-mid); flex:1; }
+    .banner-text strong { color:var(--text-hi); }
+    .banner-btns { display:flex; gap:0.5rem; flex-shrink:0; }
+    .btn-accept { background:var(--gold); color:#000; font-family:var(--font-body); font-size:0.8rem; font-weight:700; padding:0.5rem 1.1rem; border-radius:6px; border:none; cursor:pointer; }
+    .btn-decline { background:rgba(255,255,255,0.06); color:var(--text-mid); font-family:var(--font-body); font-size:0.8rem; font-weight:600; padding:0.5rem 1.1rem; border-radius:6px; border:1px solid var(--border); cursor:pointer; }
+
+    .contact-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem 1.75rem; margin-top:1.25rem; }
+    .contact-card p { margin:0.3rem 0; font-size:0.9rem; color:var(--text-mid); }
+    .contact-card strong { color:var(--text-hi); }
+    footer { background:#111; border-top:1px solid var(--border); padding:2rem; text-align:center; }
+    .footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .footer-links a { color:var(--text-lo); text-decoration:none; font-size:0.8rem; transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { color:var(--text-lo); font-size:0.78rem; }
+    @media(max-width:640px) { .toc ol{grid-template-columns:1fr} .nav-links{display:none} .hero{padding:2.5rem 1.25rem 2rem} .container{padding:2rem 1.25rem 4rem} .banner-preview{flex-direction:column} .cookie-table{font-size:0.8rem} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="terms-of-service.html">Terms</a>
+    <a href="privacy-policy.html">Privacy</a>
+    <a href="aml-policy.html">AML Policy</a>
+    <a href="login.html" class="nav-btn">Login</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Legal Document</div>
+  <h1>Cookie Policy</h1>
+  <p>How CryptoFXMiners uses cookies and similar technologies to keep your session secure and the platform working.</p>
+  <div class="hero-meta">Last updated: May 2026 &nbsp;·&nbsp; Effective: May 2026</div>
+</div>
+
+<div class="container">
+
+  <div class="highlight">
+    <p><strong>Short version:</strong> We only use essential cookies required for the platform to function — login sessions and security tokens. We do not use advertising cookies, tracking pixels, or third-party analytics that profile you across the web.</p>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#c1">What Are Cookies?</a></li>
+      <li><a href="#c2">How We Use Cookies</a></li>
+      <li><a href="#c3">Cookies We Use</a></li>
+      <li><a href="#c4">Third-Party Cookies</a></li>
+      <li><a href="#c5">Local Storage</a></li>
+      <li><a href="#c6">Your Cookie Choices</a></li>
+      <li><a href="#c7">Managing Cookies by Browser</a></li>
+      <li><a href="#c8">Cookie Consent</a></li>
+      <li><a href="#c9">Changes to This Policy</a></li>
+      <li><a href="#c10">Contact Us</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="c1">
+    <div class="section-num">01</div>
+    <h2>What Are Cookies?</h2>
+    <p>Cookies are small text files that a website places on your device when you visit it. They are widely used to make websites work correctly, remember your preferences, and provide information to the website operator.</p>
+    <p>Cookies can be:</p>
+    <ul>
+      <li><strong>Session cookies</strong> — temporary cookies that are deleted when you close your browser.</li>
+      <li><strong>Persistent cookies</strong> — cookies that remain on your device for a set period or until you delete them.</li>
+      <li><strong>First-party cookies</strong> — set by the website you are visiting (CryptoFXMiners).</li>
+      <li><strong>Third-party cookies</strong> — set by other domains whose content appears on the website.</li>
+    </ul>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c2">
+    <div class="section-num">02</div>
+    <h2>How We Use Cookies</h2>
+    <p>CryptoFXMiners uses cookies and browser storage for the following purposes:</p>
+    <ul>
+      <li>To maintain your login session so you remain signed in while using the platform.</li>
+      <li>To store authentication tokens securely in your browser.</li>
+      <li>To remember your currency and language preferences.</li>
+      <li>To protect against cross-site request forgery (CSRF) attacks.</li>
+      <li>To keep the platform secure and functioning correctly.</li>
+    </ul>
+    <p>We do <strong>not</strong> use cookies for advertising, behavioural tracking, or to build profiles for marketing purposes.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c3">
+    <div class="section-num">03</div>
+    <h2>Cookies We Use</h2>
+    <p>The following table describes the specific cookies placed by CryptoFXMiners:</p>
+    <table class="cookie-table">
+      <thead>
+        <tr>
+          <th>Cookie Name</th>
+          <th>Type</th>
+          <th>Purpose</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>sb-access-token</strong></td>
+          <td><span class="badge-essential">Essential</span></td>
+          <td>Supabase authentication token — keeps you logged in securely.</td>
+          <td>1 hour (auto-refreshed)</td>
+        </tr>
+        <tr>
+          <td><strong>sb-refresh-token</strong></td>
+          <td><span class="badge-essential">Essential</span></td>
+          <td>Refreshes your session automatically without requiring you to log in again.</td>
+          <td>60 days</td>
+        </tr>
+        <tr>
+          <td><strong>sb-auth-token</strong></td>
+          <td><span class="badge-essential">Essential</span></td>
+          <td>Maintains your authenticated session across page navigations.</td>
+          <td>Session</td>
+        </tr>
+        <tr>
+          <td><strong>currency_pref</strong></td>
+          <td><span class="badge-functional">Functional</span></td>
+          <td>Remembers your selected display currency (e.g. USD, KES).</td>
+          <td>30 days</td>
+        </tr>
+        <tr>
+          <td><strong>lang_pref</strong></td>
+          <td><span class="badge-functional">Functional</span></td>
+          <td>Remembers your language preference (EN, SW, FR).</td>
+          <td>30 days</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c4">
+    <div class="section-num">04</div>
+    <h2>Third-Party Cookies</h2>
+    <p>CryptoFXMiners integrates with the following third-party services that may set their own cookies or tokens:</p>
+    <ul>
+      <li><strong>Supabase</strong> — our backend and authentication provider. Supabase uses secure cookies to manage authenticated sessions. These are essential and cannot be disabled without breaking the platform.</li>
+      <li><strong>Google Fonts</strong> — we load fonts from Google Fonts. Google may set cookies or log requests. No personal data from our platform is shared with Google.</li>
+    </ul>
+    <p>We do not integrate with Facebook Pixel, Google Analytics, advertising networks, or any other third-party tracking services.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c5">
+    <div class="section-num">05</div>
+    <h2>Local Storage</h2>
+    <p>In addition to cookies, we use your browser's <strong>localStorage</strong> to store non-sensitive preference data such as your selected currency and sidebar state. This data:</p>
+    <ul>
+      <li>Remains on your device until you clear your browser data.</li>
+      <li>Is never transmitted to our servers.</li>
+      <li>Contains no personal or financial information.</li>
+      <li>Can be cleared at any time through your browser settings.</li>
+    </ul>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c6">
+    <div class="section-num">06</div>
+    <h2>Your Cookie Choices</h2>
+    <p>You have the following options regarding cookies:</p>
+    <ul>
+      <li><strong>Accept all cookies</strong> — the platform functions fully with all features available.</li>
+      <li><strong>Essential cookies only</strong> — you can disable functional/preference cookies, but some features like saved currency preferences will not work.</li>
+      <li><strong>Block all cookies</strong> — if you block all cookies, you will not be able to log in to the platform as authentication requires session cookies.</li>
+    </ul>
+    <div class="highlight">
+      <p>Essential authentication cookies cannot be disabled without losing access to your account. They are strictly necessary for the platform to function securely.</p>
+    </div>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c7">
+    <div class="section-num">07</div>
+    <h2>Managing Cookies by Browser</h2>
+    <p>You can manage or delete cookies through your browser settings. Here's how in major browsers:</p>
+    <ul>
+      <li><strong>Google Chrome:</strong> Settings → Privacy and Security → Cookies and other site data</li>
+      <li><strong>Microsoft Edge:</strong> Settings → Cookies and site permissions → Manage and delete cookies</li>
+      <li><strong>Mozilla Firefox:</strong> Settings → Privacy & Security → Cookies and Site Data</li>
+      <li><strong>Safari:</strong> Preferences → Privacy → Manage Website Data</li>
+      <li><strong>Opera:</strong> Settings → Advanced → Privacy & security → Site Settings → Cookies</li>
+    </ul>
+    <p>Note that clearing cookies will log you out of CryptoFXMiners and reset your saved preferences.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c8">
+    <div class="section-num">08</div>
+    <h2>Cookie Consent</h2>
+    <p>When you first visit CryptoFXMiners, you will see a cookie consent notice. This is what it looks like:</p>
+
+    <div class="banner-preview">
+      <div class="banner-text">
+        <strong>We use cookies</strong> — CryptoFXMiners uses essential cookies to keep you logged in and the platform secure. We do not use advertising or tracking cookies. <a href="cookie-policy.html" style="color:var(--gold);text-decoration:none;">Learn more</a>
+      </div>
+      <div class="banner-btns">
+        <button class="btn-accept">Accept</button>
+        <button class="btn-decline">Essential only</button>
+      </div>
+    </div>
+
+    <p>By clicking <strong>Accept</strong> or continuing to use the platform, you consent to our use of cookies as described in this policy. You can withdraw consent at any time by clearing your cookies in your browser settings.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c9">
+    <div class="section-num">09</div>
+    <h2>Changes to This Policy</h2>
+    <p>We may update this Cookie Policy when we change the cookies we use or when legal requirements change. We will notify registered users of material changes. The effective date at the top of this page will be updated accordingly.</p>
+    <p>We encourage you to review this policy periodically to stay informed about how we use cookies.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="c10">
+    <div class="section-num">10</div>
+    <h2>Contact Us</h2>
+    <p>If you have questions about our use of cookies or wish to exercise your rights under the Kenya Data Protection Act 2019, contact us:</p>
+    <div class="contact-card">
+      <p><strong>CryptoFXMiners — Data Protection Officer</strong></p>
+      <p>Email: <strong>privacy@cryptofxminers.com</strong></p>
+      <p>Website: <strong>cryptofxminers.com</strong></p>
+      <p>Jurisdiction: <strong>Nairobi, Kenya</strong></p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="terms-of-service.html">Terms of Service</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="aml-policy.html">AML Policy</a>
+    <a href="cookie-policy.html">Cookie Policy</a>
+  </div>
+  <p class="footer-copy">&copy; 2026 CryptoFXMiners. All rights reserved. Registered in Kenya.</p>
+</footer>
+
+</body>
+</html>

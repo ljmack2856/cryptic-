@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AML Policy — CryptoFXMiners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0d0d0d; --card:#161616; --border:rgba(255,255,255,0.07);
+      --gold:#f5a623; --gold-dark:#d4891a; --text-hi:#ffffff;
+      --text-lo:#777; --text-mid:#aaa;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); line-height:1.7; }
+    nav { background:#111; border-bottom:1px solid var(--border); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .nav-logo { font-family:var(--font-display); font-size:1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-decoration:none; }
+    .nav-logo .crypto{color:#fff} .nav-logo .fxminers{color:var(--gold)}
+    .nav-links { display:flex; gap:1.5rem; align-items:center; }
+    .nav-links a { color:var(--text-mid); text-decoration:none; font-size:0.875rem; font-weight:500; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--gold); }
+    .nav-btn { background:var(--gold); color:#000; padding:0.5rem 1.25rem; border-radius:6px; font-weight:700; font-size:0.85rem; }
+    .nav-btn:hover { background:var(--gold-dark) !important; color:#000 !important; }
+    .hero { background:linear-gradient(135deg,#111 0%,#0d0d0d 100%); border-bottom:1px solid var(--border); padding:4rem 2rem 3rem; text-align:center; }
+    .hero-badge { display:inline-block; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:var(--gold); font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.4rem 1rem; border-radius:20px; margin-bottom:1.25rem; }
+    .hero h1 { font-family:var(--font-display); font-size:clamp(2rem,5vw,3rem); font-weight:800; margin-bottom:0.75rem; }
+    .hero p { color:var(--text-mid); font-size:1rem; max-width:560px; margin:0 auto 1rem; }
+    .hero-meta { font-size:0.8rem; color:var(--text-lo); }
+    .container { max-width:860px; margin:0 auto; padding:3rem 2rem 5rem; }
+    .toc { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem 1.75rem; margin-bottom:3rem; }
+    .toc-title { font-family:var(--font-display); font-size:0.85rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+    .toc ol { padding-left:1.25rem; display:grid; grid-template-columns:1fr 1fr; gap:0.35rem 2rem; }
+    .toc ol li a { color:var(--text-mid); text-decoration:none; font-size:0.875rem; transition:color 0.2s; }
+    .toc ol li a:hover { color:var(--gold); }
+    .section { margin-bottom:3rem; scroll-margin-top:80px; }
+    .section-num { display:inline-block; background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.72rem; font-weight:700; letter-spacing:0.08em; padding:0.2rem 0.65rem; border-radius:4px; margin-bottom:0.75rem; font-family:var(--font-display); }
+    .section h2 { font-family:var(--font-display); font-size:1.35rem; font-weight:700; margin-bottom:1rem; }
+    .section p { color:var(--text-mid); font-size:0.9375rem; margin-bottom:0.85rem; }
+    .section ul, .section ol { color:var(--text-mid); font-size:0.9375rem; padding-left:1.5rem; margin-bottom:0.85rem; }
+    .section li { margin-bottom:0.45rem; }
+    .section strong { color:var(--text-hi); font-weight:600; }
+    .divider { border:none; border-top:1px solid var(--border); margin:2.5rem 0; }
+    .highlight { background:rgba(245,166,35,0.05); border:1px solid rgba(245,166,35,0.15); border-left:3px solid var(--gold); border-radius:8px; padding:1rem 1.25rem; margin:1.25rem 0; }
+    .highlight p { color:var(--text-mid); font-size:0.875rem; margin:0; }
+    .law-ref { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; padding:1rem 1.25rem; margin:1.25rem 0; }
+    .law-ref p { color:var(--text-lo); font-size:0.82rem; margin:0; font-style:italic; }
+    .contact-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem 1.75rem; margin-top:1.25rem; }
+    .contact-card p { margin:0.3rem 0; font-size:0.9rem; color:var(--text-mid); }
+    .contact-card strong { color:var(--text-hi); }
+    .threshold-table { width:100%; border-collapse:collapse; margin:1.25rem 0; }
+    .threshold-table th { background:rgba(245,166,35,0.1); color:var(--gold); font-size:0.8rem; font-weight:700; padding:0.75rem 1rem; text-align:left; border-bottom:1px solid var(--border); }
+    .threshold-table td { padding:0.75rem 1rem; font-size:0.875rem; color:var(--text-mid); border-bottom:1px solid var(--border); }
+    .threshold-table tr:last-child td { border-bottom:none; }
+    footer { background:#111; border-top:1px solid var(--border); padding:2rem; text-align:center; }
+    .footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .footer-links a { color:var(--text-lo); text-decoration:none; font-size:0.8rem; transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { color:var(--text-lo); font-size:0.78rem; }
+    @media(max-width:640px) { .toc ol{grid-template-columns:1fr} .nav-links{display:none} .hero{padding:2.5rem 1.25rem 2rem} .container{padding:2rem 1.25rem 4rem} .threshold-table{font-size:0.8rem} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="terms-of-service.html">Terms</a>
+    <a href="privacy-policy.html">Privacy</a>
+    <a href="login.html" class="nav-btn">Login</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Regulatory Compliance</div>
+  <h1>AML & CTF Policy</h1>
+  <p>Anti-Money Laundering and Counter-Terrorism Financing Policy. Our commitment to financial integrity and regulatory compliance.</p>
+  <div class="hero-meta">Last updated: May 2026 &nbsp;·&nbsp; Effective: May 2026</div>
+</div>
+
+<div class="container">
+
+  <div class="highlight">
+    <p><strong>Regulatory Basis:</strong> This policy is issued in compliance with the Proceeds of Crime and Anti-Money Laundering Act (POCAMLA) Cap 59B, the Prevention of Terrorism Act (PTA) Cap 59G, and the Financial Reporting Centre Act (FRCA) Cap 59F of the Laws of Kenya.</p>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#a1">Policy Statement</a></li>
+      <li><a href="#a2">Legal Framework</a></li>
+      <li><a href="#a3">Definitions</a></li>
+      <li><a href="#a4">Customer Due Diligence (CDD)</a></li>
+      <li><a href="#a5">Know Your Customer (KYC)</a></li>
+      <li><a href="#a6">Enhanced Due Diligence</a></li>
+      <li><a href="#a7">Transaction Monitoring</a></li>
+      <li><a href="#a8">Suspicious Activity Reporting</a></li>
+      <li><a href="#a9">Prohibited Persons & Sanctions</a></li>
+      <li><a href="#a10">Record Keeping</a></li>
+      <li><a href="#a11">Staff Training</a></li>
+      <li><a href="#a12">Compliance Officer</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="a1">
+    <div class="section-num">01</div>
+    <h2>Policy Statement</h2>
+    <p>CryptoFXMiners ("the Company") is committed to the highest standards of Anti-Money Laundering (AML) and Counter-Terrorism Financing (CTF) compliance. We will not knowingly facilitate, participate in, or support money laundering, terrorist financing, or any other financial crime.</p>
+    <p>This policy applies to all users, employees, contractors, and agents of CryptoFXMiners. Compliance with this policy is mandatory and non-negotiable.</p>
+    <p>The Company will:</p>
+    <ul>
+      <li>Verify the identity of all customers before providing services.</li>
+      <li>Monitor transactions for suspicious activity on an ongoing basis.</li>
+      <li>Report suspicious transactions to the Financial Reporting Centre (FRC) as required by law.</li>
+      <li>Refuse to process transactions that appear to involve proceeds of crime.</li>
+      <li>Cooperate fully with law enforcement and regulatory investigations.</li>
+      <li>Maintain records of all customer identification and transactions for a minimum of 7 years.</li>
+    </ul>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a2">
+    <div class="section-num">02</div>
+    <h2>Legal Framework</h2>
+    <p>This policy is governed by and complies with the following Kenyan legislation and regulations:</p>
+    <ul>
+      <li><strong>Proceeds of Crime and Anti-Money Laundering Act (POCAMLA), Cap 59B</strong> — the primary AML legislation in Kenya.</li>
+      <li><strong>Prevention of Terrorism Act (PTA), Cap 59G</strong> — prohibiting financing of terrorism.</li>
+      <li><strong>Financial Reporting Centre Act (FRCA), Cap 59F</strong> — establishing reporting obligations.</li>
+      <li><strong>Kenya Data Protection Act, 2019</strong> — governing the processing of personal data collected for AML purposes.</li>
+      <li><strong>Financial Action Task Force (FATF) Recommendations</strong> — international AML standards adopted by Kenya.</li>
+    </ul>
+    <div class="law-ref">
+      <p>References: Financial Reporting Centre (FRC) Kenya — www.frc.go.ke | Office of the Data Protection Commissioner (ODPC) — www.odpc.go.ke</p>
+    </div>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a3">
+    <div class="section-num">03</div>
+    <h2>Definitions</h2>
+    <ul>
+      <li><strong>Money Laundering:</strong> The process of making illegally obtained funds appear legitimate by passing them through a complex sequence of banking transfers or commercial transactions.</li>
+      <li><strong>Terrorist Financing:</strong> The provision of funds or financial services to support terrorist activities.</li>
+      <li><strong>KYC (Know Your Customer):</strong> The process of verifying the identity of customers and assessing the risks they present.</li>
+      <li><strong>CDD (Customer Due Diligence):</strong> The measures taken to identify and verify customers and understand the nature of their business.</li>
+      <li><strong>EDD (Enhanced Due Diligence):</strong> Additional scrutiny applied to higher-risk customers.</li>
+      <li><strong>PEP (Politically Exposed Person):</strong> An individual who holds or has held a prominent public position, or a close associate or family member of such a person.</li>
+      <li><strong>Suspicious Transaction:</strong> Any transaction that gives reasonable grounds to suspect it involves proceeds of crime or terrorist financing.</li>
+      <li><strong>STR (Suspicious Transaction Report):</strong> A formal report submitted to the Financial Reporting Centre.</li>
+    </ul>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a4">
+    <div class="section-num">04</div>
+    <h2>Customer Due Diligence (CDD)</h2>
+    <p>We apply Customer Due Diligence measures to all users at account opening and on an ongoing basis. CDD involves:</p>
+    <ul>
+      <li>Identifying and verifying the customer's identity using reliable, independent source documents.</li>
+      <li>Understanding the nature and purpose of the customer's use of our platform.</li>
+      <li>Assessing the risk profile of the customer.</li>
+      <li>Conducting ongoing monitoring of the business relationship and transactions.</li>
+    </ul>
+    <p>CDD must be completed before a customer can make deposits or withdrawals above threshold amounts. We reserve the right to refuse or terminate a business relationship if CDD requirements cannot be met.</p>
+
+    <table class="threshold-table">
+      <thead>
+        <tr>
+          <th>Transaction Type</th>
+          <th>CDD Requirement</th>
+          <th>Threshold</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Account Registration</td>
+          <td>Basic identity verification (email + phone)</td>
+          <td>All users</td>
+        </tr>
+        <tr>
+          <td>Deposits & Withdrawals</td>
+          <td>Full KYC (National ID + selfie)</td>
+          <td>USD 50 and above</td>
+        </tr>
+        <tr>
+          <td>Large Transactions</td>
+          <td>Enhanced Due Diligence + source of funds</td>
+          <td>KES 1,000,000+ (approx. USD 7,700)</td>
+        </tr>
+        <tr>
+          <td>PEPs & High-Risk Users</td>
+          <td>Enhanced Due Diligence mandatory</td>
+          <td>Regardless of amount</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a5">
+    <div class="section-num">05</div>
+    <h2>Know Your Customer (KYC)</h2>
+    <p>All users must complete KYC verification to access full platform features. The KYC process requires:</p>
+    <ul>
+      <li><strong>Proof of Identity:</strong> Kenya National Identity Card (front and back) or valid Passport.</li>
+      <li><strong>Facial Verification:</strong> A clear selfie or photograph matching the ID document.</li>
+      <li><strong>Phone Verification:</strong> M-Pesa registered phone number in the user's name.</li>
+    </ul>
+    <p>For higher-risk customers, we may additionally require:</p>
+    <ul>
+      <li>Proof of address (utility bill, bank statement dated within 3 months).</li>
+      <li>Source of funds declaration.</li>
+      <li>Employment or business verification documents.</li>
+    </ul>
+    <div class="highlight">
+      <p>KYC documents are stored securely and processed in accordance with our Privacy Policy and the Kenya Data Protection Act 2019. They are accessed only by authorised compliance personnel.</p>
+    </div>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a6">
+    <div class="section-num">06</div>
+    <h2>Enhanced Due Diligence (EDD)</h2>
+    <p>Enhanced Due Diligence is applied to customers who present a higher risk of money laundering or terrorist financing. EDD is mandatory for:</p>
+    <ul>
+      <li><strong>Politically Exposed Persons (PEPs)</strong> — including current and former government officials, senior executives of state-owned enterprises, and their family members or close associates.</li>
+      <li><strong>High-Value Transactions</strong> — individual transactions or cumulative monthly transactions exceeding KES 1,000,000.</li>
+      <li><strong>Non-Resident Users</strong> — users transacting from jurisdictions with elevated AML risk.</li>
+      <li><strong>Unusual Transaction Patterns</strong> — users flagged by our transaction monitoring systems.</li>
+    </ul>
+    <p>EDD measures include obtaining additional documentation, verifying the source of funds and wealth, and applying increased transaction monitoring. We reserve the right to restrict or terminate accounts that cannot satisfy EDD requirements.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a7">
+    <div class="section-num">07</div>
+    <h2>Transaction Monitoring</h2>
+    <p>We monitor all transactions on our platform for indicators of suspicious activity. Our monitoring focuses on:</p>
+    <ul>
+      <li>Unusual transaction volumes or frequencies inconsistent with a user's stated activity.</li>
+      <li>Multiple rapid deposits and withdrawals with no investment activity.</li>
+      <li>Transactions structured to avoid reporting thresholds (structuring/smurfing).</li>
+      <li>Transfers to or from high-risk jurisdictions.</li>
+      <li>Inconsistency between declared income and transaction volumes.</li>
+      <li>Use of the platform by multiple people using a single account.</li>
+      <li>Requests to transfer funds to third parties unrelated to the user's stated purpose.</li>
+    </ul>
+    <p>When suspicious patterns are detected, we will escalate to our Compliance Officer for further investigation and, where required, file a Suspicious Transaction Report (STR) with the Financial Reporting Centre.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a8">
+    <div class="section-num">08</div>
+    <h2>Suspicious Activity Reporting</h2>
+    <p>Under POCAMLA and the FRCA, we are legally required to report suspicious transactions to the Financial Reporting Centre (FRC) of Kenya. We will file an STR when:</p>
+    <ul>
+      <li>We know or suspect that a transaction involves proceeds of crime.</li>
+      <li>We know or suspect that a transaction is related to terrorist financing.</li>
+      <li>A customer refuses to provide KYC information without reasonable explanation.</li>
+      <li>A transaction has no apparent lawful purpose.</li>
+    </ul>
+    <div class="highlight">
+      <p><strong>Tipping Off is Prohibited:</strong> Under POCAMLA, once an STR has been filed or is being considered, we are legally prohibited from informing the customer that they are under investigation. Doing so is a criminal offence.</p>
+    </div>
+    <p>All STR filings are handled confidentially by our Compliance Officer. Users must not attempt to influence or interfere with our reporting obligations.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a9">
+    <div class="section-num">09</div>
+    <h2>Prohibited Persons & Sanctions Screening</h2>
+    <p>We screen all users against applicable sanctions lists and will not provide services to:</p>
+    <ul>
+      <li>Individuals or entities on the UN Security Council Consolidated Sanctions List.</li>
+      <li>Individuals or entities on the Kenya Sanctions List.</li>
+      <li>Individuals or entities designated as terrorists under the Prevention of Terrorism Act.</li>
+      <li>Individuals convicted of money laundering or financial crimes.</li>
+      <li>Entities from FATF-designated high-risk or non-cooperative jurisdictions.</li>
+    </ul>
+    <p>If a match is found against a sanctions list, we will immediately freeze the account, decline to process transactions, and notify the relevant authorities as required by law.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a10">
+    <div class="section-num">10</div>
+    <h2>Record Keeping</h2>
+    <p>We maintain the following records for a minimum of <strong>7 years</strong> as required by POCAMLA:</p>
+    <ul>
+      <li>All customer identification and KYC documents.</li>
+      <li>All transaction records including deposits, withdrawals, transfers, and investments.</li>
+      <li>All STRs filed with the FRC and related correspondence.</li>
+      <li>Records of CDD and EDD measures applied.</li>
+      <li>Staff AML training records.</li>
+    </ul>
+    <p>Records are stored securely and made available to regulatory authorities upon lawful request.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a11">
+    <div class="section-num">11</div>
+    <h2>Staff Training</h2>
+    <p>All staff and contractors who handle customer data or transactions receive regular training on:</p>
+    <ul>
+      <li>How to identify suspicious transactions and red flags.</li>
+      <li>KYC and CDD procedures.</li>
+      <li>Legal obligations under POCAMLA and the FRCA.</li>
+      <li>The tipping-off prohibition.</li>
+      <li>How to escalate concerns to the Compliance Officer.</li>
+    </ul>
+    <p>AML training is conducted at onboarding and refreshed at least annually or when significant regulatory changes occur.</p>
+  </div>
+  <hr class="divider"/>
+
+  <div class="section" id="a12">
+    <div class="section-num">12</div>
+    <h2>Compliance Officer & Reporting</h2>
+    <p>CryptoFXMiners has appointed a Compliance Officer responsible for overseeing AML/CTF compliance, handling STR filings, and liaising with the Financial Reporting Centre and other regulatory authorities.</p>
+    <p>If you have concerns about suspicious activity, or if you are a third party with a legitimate legal request, contact our Compliance Officer:</p>
+    <div class="contact-card">
+      <p><strong>CryptoFXMiners — Compliance Officer</strong></p>
+      <p>Email: <strong>compliance@cryptofxminers.com</strong></p>
+      <p>Website: <strong>cryptofxminers.com</strong></p>
+      <p>Jurisdiction: <strong>Nairobi, Kenya</strong></p>
+    </div>
+    <p style="margin-top:1.25rem;">This policy is reviewed annually or whenever significant regulatory changes occur. The current version supersedes all previous versions.</p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="terms-of-service.html">Terms of Service</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="aml-policy.html">AML Policy</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+  <p class="footer-copy">&copy; 2026 CryptoFXMiners. All rights reserved. Registered in Kenya. Committed to AML/CTF Compliance.</p>
+</footer>
+
+</body>
+</html>

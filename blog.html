@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog — CryptoFXMiners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0d0d0d; --card:#161616; --card-hover:#1c1c1c;
+      --border:rgba(255,255,255,0.07); --gold:#f5a623; --gold-dark:#d4891a;
+      --text-hi:#ffffff; --text-lo:#666; --text-mid:#999;
+      --font-display:'Syne',sans-serif; --font-body:'DM Sans',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text-hi); font-family:var(--font-body); line-height:1.7; }
+
+    /* NAV */
+    nav { background:#111; border-bottom:1px solid var(--border); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .nav-logo { font-family:var(--font-display); font-size:1rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; text-decoration:none; }
+    .nav-logo .crypto{color:#fff} .nav-logo .fxminers{color:var(--gold)}
+    .nav-links { display:flex; gap:1.5rem; align-items:center; }
+    .nav-links a { color:var(--text-mid); text-decoration:none; font-size:0.875rem; font-weight:500; transition:color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold); }
+    .nav-btn { background:var(--gold); color:#000 !important; padding:0.5rem 1.25rem; border-radius:6px; font-weight:700; font-size:0.85rem; }
+    .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; }
+    .hamburger span { display:block; width:22px; height:2px; background:var(--text-hi); border-radius:2px; }
+
+    /* HERO */
+    .hero { padding:5rem 2rem 4rem; text-align:center; background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,166,35,0.06) 0%, transparent 70%); border-bottom:1px solid var(--border); }
+    .hero-badge { display:inline-block; background:rgba(245,166,35,0.1); border:1px solid rgba(245,166,35,0.2); color:var(--gold); font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:0.4rem 1rem; border-radius:20px; margin-bottom:1.5rem; }
+    .hero h1 { font-family:var(--font-display); font-size:clamp(2.2rem,6vw,3.5rem); font-weight:800; line-height:1.1; margin-bottom:1rem; }
+    .hero h1 span { color:var(--gold); }
+    .hero p { color:var(--text-mid); font-size:1.05rem; max-width:520px; margin:0 auto; }
+
+    /* FILTERS */
+    .filters-wrap { max-width:1200px; margin:0 auto; padding:2.5rem 2rem 0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+    .filter-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .filter-tab { background:rgba(255,255,255,0.04); border:1px solid var(--border); color:var(--text-mid); font-family:var(--font-body); font-size:0.82rem; font-weight:600; padding:0.5rem 1rem; border-radius:20px; cursor:pointer; transition:all 0.2s; }
+    .filter-tab:hover { border-color:rgba(245,166,35,0.3); color:var(--text-hi); }
+    .filter-tab.active { background:var(--gold); color:#000; border-color:var(--gold); }
+    .search-wrap { position:relative; }
+    .search-input { background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:8px; padding:0.55rem 1rem 0.55rem 2.5rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.875rem; width:220px; outline:none; transition:border-color 0.2s; }
+    .search-input:focus { border-color:rgba(245,166,35,0.3); }
+    .search-input::placeholder { color:var(--text-lo); }
+    .search-icon { position:absolute; left:0.75rem; top:50%; transform:translateY(-50%); color:var(--text-lo); font-size:0.85rem; pointer-events:none; }
+
+    /* GRID */
+    .grid-wrap { max-width:1200px; margin:0 auto; padding:2.5rem 2rem 5rem; }
+
+    /* FEATURED POST */
+    .featured { display:grid; grid-template-columns:1fr 1fr; gap:0; background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:3rem; transition:border-color 0.3s; cursor:pointer; text-decoration:none; }
+    .featured:hover { border-color:rgba(245,166,35,0.25); }
+    .featured-img { background:linear-gradient(135deg,#1a1a1a,#222); min-height:320px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .featured-img-inner { font-size:5rem; opacity:0.6; }
+    .featured-img-bg { position:absolute; inset:0; background:radial-gradient(ellipse at center, rgba(245,166,35,0.08), transparent 70%); }
+    .featured-content { padding:2.5rem; display:flex; flex-direction:column; justify-content:center; }
+    .post-meta { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+    .post-cat { background:rgba(245,166,35,0.12); color:var(--gold); font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.25rem 0.65rem; border-radius:4px; }
+    .post-date { color:var(--text-lo); font-size:0.78rem; }
+    .post-read { color:var(--text-lo); font-size:0.78rem; }
+    .featured h2 { font-family:var(--font-display); font-size:1.6rem; font-weight:700; line-height:1.25; margin-bottom:1rem; color:var(--text-hi); }
+    .featured p { color:var(--text-mid); font-size:0.9rem; line-height:1.65; margin-bottom:1.5rem; }
+    .read-more { display:inline-flex; align-items:center; gap:0.4rem; color:var(--gold); font-size:0.85rem; font-weight:700; text-decoration:none; }
+    .read-more:hover { gap:0.65rem; }
+    .author-row { display:flex; align-items:center; gap:0.65rem; margin-top:auto; padding-top:1.5rem; border-top:1px solid var(--border); }
+    .author-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#d4891a); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:0.75rem; font-weight:800; color:#000; flex-shrink:0; }
+    .author-name { font-size:0.82rem; font-weight:600; color:var(--text-hi); }
+    .author-role { font-size:0.75rem; color:var(--text-lo); }
+
+    /* ARTICLE GRID */
+    .articles-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .article-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; text-decoration:none; display:flex; flex-direction:column; transition:border-color 0.3s, transform 0.2s; }
+    .article-card:hover { border-color:rgba(245,166,35,0.2); transform:translateY(-3px); }
+    .article-thumb { height:160px; display:flex; align-items:center; justify-content:center; font-size:3rem; position:relative; overflow:hidden; }
+    .article-thumb-bg { position:absolute; inset:0; }
+    .article-thumb-icon { position:relative; z-index:1; opacity:0.75; }
+    .article-body { padding:1.25rem; flex:1; display:flex; flex-direction:column; }
+    .article-body .post-meta { margin-bottom:0.85rem; }
+    .article-body h3 { font-family:var(--font-display); font-size:1rem; font-weight:700; line-height:1.35; margin-bottom:0.65rem; color:var(--text-hi); }
+    .article-body p { color:var(--text-mid); font-size:0.845rem; line-height:1.6; flex:1; }
+    .article-footer { padding:1rem 1.25rem; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .article-author { font-size:0.78rem; color:var(--text-lo); }
+    .article-link { color:var(--gold); font-size:0.78rem; font-weight:700; }
+
+    /* NEWSLETTER */
+    .newsletter { background:linear-gradient(135deg, rgba(245,166,35,0.08), rgba(245,166,35,0.03)); border:1px solid rgba(245,166,35,0.15); border-radius:16px; padding:3rem 2rem; text-align:center; margin-top:3rem; }
+    .newsletter h2 { font-family:var(--font-display); font-size:1.75rem; font-weight:700; margin-bottom:0.75rem; }
+    .newsletter p { color:var(--text-mid); font-size:0.9rem; margin-bottom:1.75rem; }
+    .newsletter-form { display:flex; gap:0.75rem; max-width:420px; margin:0 auto; }
+    .newsletter-input { flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; padding:0.75rem 1rem; color:var(--text-hi); font-family:var(--font-body); font-size:0.875rem; outline:none; }
+    .newsletter-input:focus { border-color:rgba(245,166,35,0.3); }
+    .newsletter-input::placeholder { color:var(--text-lo); }
+    .newsletter-btn { background:var(--gold); color:#000; font-family:var(--font-body); font-size:0.875rem; font-weight:700; padding:0.75rem 1.5rem; border-radius:8px; border:none; cursor:pointer; white-space:nowrap; transition:background 0.2s; }
+    .newsletter-btn:hover { background:var(--gold-dark); }
+
+    footer { background:#111; border-top:1px solid var(--border); padding:2rem; text-align:center; margin-top:0; }
+    .footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .footer-links a { color:var(--text-lo); text-decoration:none; font-size:0.8rem; transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { color:var(--text-lo); font-size:0.78rem; }
+
+    @media(max-width:900px) {
+      .articles-grid { grid-template-columns:repeat(2,1fr); }
+      .featured { grid-template-columns:1fr; }
+      .featured-img { min-height:200px; }
+    }
+    @media(max-width:600px) {
+      .articles-grid { grid-template-columns:1fr; }
+      .nav-links { display:none; }
+      .hero { padding:3rem 1.25rem 2.5rem; }
+      .grid-wrap, .filters-wrap { padding-left:1.25rem; padding-right:1.25rem; }
+      .newsletter-form { flex-direction:column; }
+      .search-input { width:160px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="crypto">Crypto</span><span class="fxminers">FXMINERS</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="plans.html">Plans</a>
+    <a href="blog.html" class="active">Blog</a>
+    <a href="register.html">Register</a>
+    <a href="login.html" class="nav-btn">Login</a>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Insights & Education</div>
+  <h1>The <span>CryptoFX</span> Blog</h1>
+  <p>Market insights, trading strategies, platform updates, and crypto education — all in one place.</p>
+</div>
+
+<!-- FILTERS -->
+<div class="filters-wrap">
+  <div class="filter-tabs">
+    <button class="filter-tab active" data-filter="all">All Posts</button>
+    <button class="filter-tab" data-filter="market">Market Insights</button>
+    <button class="filter-tab" data-filter="education">Education</button>
+    <button class="filter-tab" data-filter="platform">Platform Updates</button>
+    <button class="filter-tab" data-filter="strategy">Strategy</button>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search articles..."/>
+  </div>
+</div>
+
+<!-- BLOG GRID -->
+<div class="grid-wrap">
+
+  <!-- FEATURED POST -->
+  <a href="#" class="featured" data-cat="market">
+    <div class="featured-img">
+      <div class="featured-img-bg"></div>
+      <div class="featured-img-inner">₿</div>
+    </div>
+    <div class="featured-content">
+      <div class="post-meta">
+        <span class="post-cat">Market Insights</span>
+        <span class="post-date">May 20, 2026</span>
+        <span class="post-read">8 min read</span>
+      </div>
+      <h2>Bitcoin Hits New All-Time High — What It Means for Copy Traders in 2026</h2>
+      <p>Bitcoin's latest surge past the $100,000 mark has sent ripples across the entire crypto market. We break down what this means for copy trading strategies, which signals to follow, and how CryptoFXMiners traders are positioning themselves for the next phase.</p>
+      <span class="read-more">Read full article →</span>
+      <div class="author-row">
+        <div class="author-avatar">CF</div>
+        <div>
+          <div class="author-name">CryptoFX Research Team</div>
+          <div class="author-role">Market Analysis</div>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ARTICLES GRID -->
+  <div class="articles-grid" id="articlesGrid">
+
+    <a href="#" class="article-card" data-cat="education" data-title="What is Copy Trading">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"></div>
+        <span class="article-thumb-icon">📡</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Education</span>
+          <span class="post-date">May 15, 2026</span>
+        </div>
+        <h3>What Is Copy Trading and How Does It Work?</h3>
+        <p>New to crypto investing? Copy trading lets you automatically mirror the trades of experienced professionals. Here's everything you need to know to get started.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">5 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="strategy" data-title="Risk Management Crypto">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#1a2e1a,#162e16)"></div>
+        <span class="article-thumb-icon">🛡️</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Strategy</span>
+          <span class="post-date">May 10, 2026</span>
+        </div>
+        <h3>Risk Management in Crypto: The 5 Rules Every Investor Must Know</h3>
+        <p>Crypto markets are volatile. Protecting your capital is just as important as chasing returns. These five rules have helped our top traders preserve wealth through market cycles.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">7 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="platform" data-title="M-Pesa Deposits">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#2e1a0a,#1a0f00)"></div>
+        <span class="article-thumb-icon">📱</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Platform Updates</span>
+          <span class="post-date">May 5, 2026</span>
+        </div>
+        <h3>How to Deposit Using M-Pesa STK Push — Step-by-Step Guide</h3>
+        <p>We've launched M-Pesa STK Push deposits for Kenyan users. No more manual transfers — just enter your phone number, confirm your PIN, and your deposit is credited instantly.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">3 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="market" data-title="Ethereum 2026 Outlook">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#0a0a2e,#0a0a1e)"></div>
+        <span class="article-thumb-icon">⟠</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Market Insights</span>
+          <span class="post-date">Apr 28, 2026</span>
+        </div>
+        <h3>Ethereum in 2026: The Case for ETH as a Long-Term Investment</h3>
+        <p>With the Ethereum ecosystem expanding into real-world asset tokenisation and institutional adoption accelerating, we examine whether ETH belongs in every crypto portfolio.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">10 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="education" data-title="KYC Verification Guide">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#1e1a0a,#1a150a)"></div>
+        <span class="article-thumb-icon">🪪</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Education</span>
+          <span class="post-date">Apr 20, 2026</span>
+        </div>
+        <h3>Why KYC Verification Matters and How to Complete It in 2 Minutes</h3>
+        <p>KYC is mandatory for all financial platforms — and for good reason. Here's why identity verification protects you, how we handle your documents, and how to complete it fast.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">4 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="strategy" data-title="Referral Programme">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#2e0a1a,#1a0010)"></div>
+        <span class="article-thumb-icon">🎁</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Strategy</span>
+          <span class="post-date">Apr 14, 2026</span>
+        </div>
+        <h3>Earning Passive Income with the CryptoFXMiners Referral Programme</h3>
+        <p>Did you know you can earn commissions every time someone you refer makes a deposit? Here's how our referral programme works and how to maximise your earnings.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">5 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="market" data-title="Kenya Crypto Regulation">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#0a1e0a,#051005)"></div>
+        <span class="article-thumb-icon">🇰🇪</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Market Insights</span>
+          <span class="post-date">Apr 7, 2026</span>
+        </div>
+        <h3>Kenya's Crypto Regulation Landscape in 2026 — What Investors Need to Know</h3>
+        <p>Kenya has made significant strides in crypto regulation. We break down the latest guidelines from the Central Bank and what they mean for local investors and platforms.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">9 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="education" data-title="Dollar Cost Averaging">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#1e0a2e,#10051a)"></div>
+        <span class="article-thumb-icon">📊</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Education</span>
+          <span class="post-date">Mar 30, 2026</span>
+        </div>
+        <h3>Dollar-Cost Averaging in Crypto: The Beginner's Best Strategy</h3>
+        <p>Timing the market is nearly impossible — even for professionals. Dollar-cost averaging removes the guesswork and lets time do the work. Here's how to apply it on our platform.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">6 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card" data-cat="platform" data-title="New Investment Plans">
+      <div class="article-thumb">
+        <div class="article-thumb-bg" style="background:linear-gradient(135deg,#2e2a0a,#1a1500)"></div>
+        <span class="article-thumb-icon">🚀</span>
+      </div>
+      <div class="article-body">
+        <div class="post-meta">
+          <span class="post-cat">Platform Updates</span>
+          <span class="post-date">Mar 22, 2026</span>
+        </div>
+        <h3>Introducing Our New Investment Plans — Higher Returns, More Flexibility</h3>
+        <p>We've launched a revamped suite of investment plans designed to suit every risk appetite — from conservative 30-day plans to aggressive 90-day growth portfolios.</p>
+      </div>
+      <div class="article-footer">
+        <span class="article-author">4 min read</span>
+        <span class="article-link">Read →</span>
+      </div>
+    </a>
+
+  </div><!-- end articles-grid -->
+
+  <!-- NO RESULTS -->
+  <div id="noResults" style="display:none; text-align:center; padding:3rem 1rem; color:var(--text-lo);">
+    <div style="font-size:2.5rem; margin-bottom:1rem;">🔍</div>
+    <p style="font-size:1rem; color:var(--text-mid);">No articles found for your search.</p>
+    <p style="font-size:0.875rem; margin-top:0.5rem;">Try a different keyword or category.</p>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter">
+    <h2>Stay Ahead of the Market</h2>
+    <p>Get weekly crypto insights, platform updates, and exclusive trading tips delivered to your inbox.</p>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="your@email.com" id="nlEmail"/>
+      <button class="newsletter-btn" id="nlBtn">Subscribe</button>
+    </div>
+    <p style="color:var(--text-lo);font-size:0.78rem;margin-top:1rem;">No spam. Unsubscribe anytime. We respect your privacy.</p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="plans.html">Plans</a>
+    <a href="blog.html">Blog</a>
+    <a href="terms-of-service.html">Terms of Service</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="aml-policy.html">AML Policy</a>
+    <a href="cookie-policy.html">Cookie Policy</a>
+  </div>
+  <p class="footer-copy">&copy; 2026 CryptoFXMiners. All rights reserved. Registered in Kenya.</p>
+</footer>
+
+<script>
+  // Filter tabs
+  const tabs = document.querySelectorAll('.filter-tab')
+  const cards = document.querySelectorAll('.article-card')
+  const noResults = document.getElementById('noResults')
+  const searchInput = document.getElementById('searchInput')
+
+  function filterCards() {
+    const activeFilter = document.querySelector('.filter-tab.active').dataset.filter
+    const searchTerm = searchInput.value.toLowerCase()
+    let visible = 0
+
+    cards.forEach(card => {
+      const cat = card.dataset.cat
+      const title = (card.dataset.title || card.querySelector('h3').textContent).toLowerCase()
+      const matchesFilter = activeFilter === 'all' || cat === activeFilter
+      const matchesSearch = !searchTerm || title.includes(searchTerm) || cat.includes(searchTerm)
+
+      if (matchesFilter && matchesSearch) {
+        card.style.display = 'flex'
+        visible++
+      } else {
+        card.style.display = 'none'
+      }
+    })
+
+    noResults.style.display = visible === 0 ? 'block' : 'none'
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'))
+      tab.classList.add('active')
+      filterCards()
+    })
+  })
+
+  searchInput.addEventListener('input', filterCards)
+
+  // Newsletter
+  document.getElementById('nlBtn').addEventListener('click', () => {
+    const email = document.getElementById('nlEmail').value.trim()
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address.')
+      return
+    }
+    document.getElementById('nlBtn').textContent = '✓ Subscribed!'
+    document.getElementById('nlBtn').style.background = '#22c55e'
+    document.getElementById('nlEmail').value = ''
+    setTimeout(() => {
+      document.getElementById('nlBtn').textContent = 'Subscribe'
+      document.getElementById('nlBtn').style.background = ''
+    }, 3000)
+  })
+</script>
+
+</body>
+</html>
