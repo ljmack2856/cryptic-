@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/crypbjdr/public_html/
+    - /bin/cp -r *.html $DEPLOYPATH
+    - find . -maxdepth 1 -name "*.js" ! -name "rebrand.js" -exec cp {} $DEPLOYPATH \;
+    - /bin/cp -r *.css $DEPLOYPATH
+    - /bin/cp -r images $DEPLOYPATH
