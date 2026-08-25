@@ -1,372 +1,542 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CryptoBitPesa — Best Platform for Crypto Exchange & Trades</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CryptoBitPesa — Best Platform for Crypto Exchange & Trades</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/favicon-32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="images/favicon-16.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="images/favicon-180.png"
+    />
+    <meta
+      property="og:title"
+      content="CryptoBitPesa — Best Platform for Crypto Exchange & Trades"
+    />
+    <meta
+      property="og:description"
+      content="Trade with CryptoBitPesa for best profits on every rebate."
+    />
+    <meta
+      property="og:image"
+      content="https://cryptobitpesa.com/images/og-image.png"
+    />
+    <meta property="og:url" content="https://cryptobitpesa.com" />
+    <meta property="og:type" content="website" />
 
-  <!-- ══════════════════════════════
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="CryptoBitPesa — Best Platform for Crypto Exchange & Trades"
+    />
+    <meta
+      name="twitter:description"
+      content="Trade with CryptoBitPesa for best profits on every rebate."
+    />
+    <meta
+      name="twitter:image"
+      content="https://cryptobitpesa.com/images/og-image.png"
+    />
+  </head>
+  <body>
+    <!-- ══════════════════════════════
        NAVBAR
   ══════════════════════════════ -->
-  <nav>
-    <div class="nav-inner">
+    <nav>
+      <div class="nav-inner">
+        <!-- LOGO — left -->
+        <a
+          href="index.html"
+          class="logo"
+          style="display: flex; align-items: center; gap: 0.6rem"
+        >
+          <img
+            src="images/navbar-logo-64.png"
+            alt="CryptoBitPesa"
+            style="height: 32px; width: 32px"
+          />
+          <span class="crypto">Crypto</span
+          ><span class="fxminers">BITPESA</span>
+        </a>
 
-      <!-- LOGO — left -->
-      <a href="index.html" class="logo">
-        <span class="crypto">Crypto</span><span class="fxminers">BITPESA</span>
-      </a>
+        <!-- DESKTOP LINKS — right -->
+        <ul class="nav-links">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="plans.html">Plans</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#team">Team</a></li>
+          <li id="navRegisterItem"><a href="register.html">Register</a></li>
+          <li>
+            <a href="login.html" class="nav-login" id="navLoginLink">Login</a>
+          </li>
+        </ul>
 
-      <!-- DESKTOP LINKS — right -->
-      <ul class="nav-links">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="plans.html">Plans</a></li>
-        <li><a href="#how-it-works">How it works</a></li>
-        <li><a href="#team">Team</a></li>
-        <li><a href="register.html">Register</a></li>
-        <li><a href="login.html" class="nav-login">Login</a></li>
-      </ul>
+        <!-- HAMBURGER — mobile only -->
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
 
-      <!-- HAMBURGER — mobile only -->
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-
+    <!-- MOBILE DROPDOWN PANEL -->
+    <div id="mobilePanel" class="mobile-panel">
+      <a href="index.html">Home</a>
+      <a href="plans.html">Plans</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#team">Team</a>
+      <a href="register.html" id="mobileRegisterLink">Register</a>
+      <a href="login.html" id="mobileLoginLink">Login</a>
     </div>
-  </nav>
 
-  <!-- MOBILE DROPDOWN PANEL -->
-  <div id="mobilePanel" class="mobile-panel">
-    <a href="index.html">Home</a>
-    <a href="plans.html">Plans</a>
-    <a href="#how-it-works">How it works</a>
-    <a href="#team">Team</a>
-    <a href="register.html">Register</a>
-    <a href="login.html">Login</a>
-  </div>
-
-  <!-- ══════════════════════════════
+    <!-- ══════════════════════════════
        HERO
   ══════════════════════════════ -->
-  <section id="home">
-    <div class="hero-content">
-      <h1>Best Platform for Crypto Exchange &amp; Trades</h1>
-      <p>Trade with CryptoBitPesa for best profits on every rebates.</p>
-      <a href="register.html" class="btn-green">Create Free Account</a>
-    </div>
+    <section id="home">
+      <div class="hero-content">
+        <h1>Best Platform for Crypto Exchange &amp; Trades</h1>
+        <p>Trade with CryptoBitPesa for best profits on every rebates.</p>
+        <a href="register.html" class="btn-green">Create Free Account</a>
+      </div>
 
-    <div class="hero-visual">
-      <!--
+      <div class="hero-visual">
+        <!--
         TO USE YOUR OWN BITCOIN IMAGE:
         Replace the src below with your image path, e.g.:
           src="images/bitcoin.png"
         Make sure the image file is in the same folder as index.html.
         Transparent PNG on dark bg looks best (like the screenshot).
       -->
-      <img
-        src="images/slide2.jpg"
-        alt="Bitcoin"
-        class="hero-coin"
-        onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg'"
-      />
-    </div>
-  </section>
+        <img
+          src="images/slide2.jpg"
+          alt="Bitcoin"
+          class="hero-coin"
+          onerror="
+            this.src =
+              'https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg'
+          "
+        />
+      </div>
+    </section>
 
-  <!-- ══ WHATSAPP FLOATING BUTTON ══ -->
-  <!--
+    <!-- ══ WHATSAPP FLOATING BUTTON ══ -->
+    <!--
     Replace the href number below with your WhatsApp number:
     https://wa.me/YOURCOUNTRYCODE+PHONENUMBER
     Example for Kenya +254: https://wa.me/254712345678
   -->
-  <a href="https://wa.me/+254794645880" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" fill="#fff">
-      <path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.736 5.472 2.027 7.774L0 32l8.418-2.005A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.5a13.43 13.43 0 01-6.845-1.872l-.49-.29-5.001 1.192 1.216-4.862-.32-.5A13.46 13.46 0 012.5 16C2.5 8.544 8.544 2.5 16 2.5S29.5 8.544 29.5 16 23.456 29.5 16 29.5zm7.44-9.77c-.408-.204-2.414-1.19-2.788-1.327-.374-.136-.646-.204-.918.204-.272.408-1.054 1.327-1.292 1.599-.238.272-.476.306-.884.102-.408-.204-1.724-.635-3.284-2.026-1.213-1.082-2.033-2.42-2.27-2.828-.238-.408-.026-.629.179-.832.183-.183.408-.476.612-.714.204-.238.272-.408.408-.68.136-.272.068-.51-.034-.714-.102-.204-.918-2.21-1.258-3.028-.332-.796-.67-.688-.918-.7l-.782-.013c-.272 0-.714.102-1.088.51-.374.408-1.428 1.394-1.428 3.4s1.462 3.944 1.666 4.216c.204.272 2.876 4.388 6.972 6.154.975.42 1.735.672 2.328.861.978.31 1.869.266 2.573.162.785-.117 2.414-.986 2.754-1.938.34-.952.34-1.768.238-1.938-.102-.17-.374-.272-.782-.476z"/>
-    </svg>
-    <span class="wa-tooltip">We are here to help,<br/>Let's Chat</span>
-  </a>
+    <a
+      href="https://wa.me/+254794645880"
+      class="whatsapp-float"
+      target="_blank"
+      rel="noopener"
+      aria-label="Chat on WhatsApp"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 32 32"
+        width="28"
+        height="28"
+        fill="#fff"
+      >
+        <path
+          d="M16 0C7.163 0 0 7.163 0 16c0 2.822.736 5.472 2.027 7.774L0 32l8.418-2.005A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.5a13.43 13.43 0 01-6.845-1.872l-.49-.29-5.001 1.192 1.216-4.862-.32-.5A13.46 13.46 0 012.5 16C2.5 8.544 8.544 2.5 16 2.5S29.5 8.544 29.5 16 23.456 29.5 16 29.5zm7.44-9.77c-.408-.204-2.414-1.19-2.788-1.327-.374-.136-.646-.204-.918.204-.272.408-1.054 1.327-1.292 1.599-.238.272-.476.306-.884.102-.408-.204-1.724-.635-3.284-2.026-1.213-1.082-2.033-2.42-2.27-2.828-.238-.408-.026-.629.179-.832.183-.183.408-.476.612-.714.204-.238.272-.408.408-.68.136-.272.068-.51-.034-.714-.102-.204-.918-2.21-1.258-3.028-.332-.796-.67-.688-.918-.7l-.782-.013c-.272 0-.714.102-1.088.51-.374.408-1.428 1.394-1.428 3.4s1.462 3.944 1.666 4.216c.204.272 2.876 4.388 6.972 6.154.975.42 1.735.672 2.328.861.978.31 1.869.266 2.573.162.785-.117 2.414-.986 2.754-1.938.34-.952.34-1.768.238-1.938-.102-.17-.374-.272-.782-.476z"
+        />
+      </svg>
+      <span class="wa-tooltip">We are here to help,<br />Let's Chat</span>
+    </a>
 
-
-  <!-- ══════════════════════════════
+    <!-- ══════════════════════════════
        SAFE & SECURE SECTION
   ══════════════════════════════ -->
-  <section id="about" class="safe-section">
-    <div class="safe-image reveal">
-      <img src="images/coinflow.png" alt="Crypto coins" />
-    </div>
-    <div class="safe-content reveal">
-      <h2>Safe and Secure Way<br/>to Invest in Crypto</h2>
-      <p>The trading hours for all currency pairs is 00:01 server time to 23:59 server time daily (23:57 on Friday), whereas for Gold is 01:02 server time to 23:57. All other Metals (XAG, XPD, XPT) open for trading at 01:00 server time (Monday) and close at 23:59 server time daily (23:57 on Friday).</p>
-      <a href="register.html" class="btn-green">Create Free Account</a>
-    </div>
-  </section>
-<!-- ══════════════════════════════
+    <section id="about" class="safe-section">
+      <div class="safe-image reveal">
+        <img src="images/coinflow.png" alt="Crypto coins" />
+      </div>
+      <div class="safe-content reveal">
+        <h2>Safe and Secure Way<br />to Invest in Crypto</h2>
+        <p>
+          The trading hours for all currency pairs is 00:01 server time to 23:59
+          server time daily (23:57 on Friday), whereas for Gold is 01:02 server
+          time to 23:57. All other Metals (XAG, XPD, XPT) open for trading at
+          01:00 server time (Monday) and close at 23:59 server time daily (23:57
+          on Friday).
+        </p>
+        <a href="register.html" class="btn-green">Create Free Account</a>
+      </div>
+    </section>
+    <!-- ══════════════════════════════
        PROFIT CALCULATOR SECTION
        Paste this AFTER the safe-section and BEFORE the footer in index.html
   ══════════════════════════════ -->
-  <section id="calculator" class="calc-section">
-
-    <div class="calc-image reveal">
-      <!--
+    <section id="calculator" class="calc-section">
+      <div class="calc-image reveal">
+        <!--
         Replace src with your own calculator/finance illustration image.
         e.g.  src="images/calculator-illustration.png"
       -->
-      <img src="images/calculator.png"
-           alt="Profit Calculator"
-           onerror="this.style.display='none'" />
-    </div>
+        <img
+          src="images/calculator.png"
+          alt="Profit Calculator"
+          onerror="this.style.display = 'none'"
+        />
+      </div>
 
-    <div class="calc-content reveal">
-      <div class="calc-label">Profit Calculator</div>
-      <h2>Quick Profit Calculate</h2>
-      <p>Enter your investment amount and select your plan to instantly see your projected daily, weekly, and monthly profits.</p>
+      <div class="calc-content reveal">
+        <div class="calc-label">Profit Calculator</div>
+        <h2>Quick Profit Calculate</h2>
+        <p>
+          Enter your investment amount and select your plan to instantly see
+          your projected daily, weekly, and monthly profits.
+        </p>
 
-      <div class="calc-row">
-        <!-- SELECT PLAN -->
-        <div class="calc-field">
-          <label for="calcPlan">Select Plan</label>
-          <div class="calc-select-wrap">
-            <select id="calcPlan">
-              <option value="bronze">Bronze</option>
-              <option value="silver">Silver</option>
-              <option value="gold">Gold</option>
-              <option value="premium">Premium</option>
-              <option value="executive">Executive</option>
-            </select>
+        <div class="calc-row">
+          <!-- SELECT PLAN -->
+          <div class="calc-field">
+            <label for="calcPlan">Select Plan</label>
+            <div class="calc-select-wrap">
+              <select id="calcPlan">
+                <option value="bronze">Bronze</option>
+                <option value="silver">Silver</option>
+                <option value="gold">Gold</option>
+                <option value="premium">Premium</option>
+                <option value="executive">Executive</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ENTER AMOUNT -->
+          <div class="calc-field">
+            <label for="calcAmount">Enter Amount</label>
+            <input
+              type="number"
+              id="calcAmount"
+              class="calc-input"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+            />
+            <span class="calc-hint" id="calcHint"></span>
           </div>
         </div>
 
-        <!-- ENTER AMOUNT -->
-        <div class="calc-field">
-          <label for="calcAmount">Enter Amount</label>
-          <input type="number" id="calcAmount" class="calc-input"
-                 placeholder="0.00" min="0" step="0.01" />
-          <span class="calc-hint" id="calcHint"></span>
+        <!-- PROFIT DISPLAY -->
+        <div class="calc-profit-row">
+          <label>Profit Amount</label>
+          <div class="calc-profit-display" id="calcProfit">0.00</div>
         </div>
+
+        <!-- BREAKDOWN CARDS (shown after calculation) -->
+        <div class="calc-breakdown" id="calcBreakdown">
+          <div class="breakdown-card">
+            <div class="bd-label">Daily</div>
+            <div class="bd-value" id="bdDaily">$0.00</div>
+          </div>
+          <div class="breakdown-card">
+            <div class="bd-label">Weekly</div>
+            <div class="bd-value" id="bdWeekly">$0.00</div>
+          </div>
+          <div class="breakdown-card">
+            <div class="bd-label">Monthly</div>
+            <div class="bd-value" id="bdMonthly">$0.00</div>
+          </div>
+        </div>
+
+        <button class="btn-calculate" id="calcBtn">Calculate Now</button>
       </div>
-
-      <!-- PROFIT DISPLAY -->
-      <div class="calc-profit-row">
-        <label>Profit Amount</label>
-        <div class="calc-profit-display" id="calcProfit">0.00</div>
-      </div>
-
-      <!-- BREAKDOWN CARDS (shown after calculation) -->
-      <div class="calc-breakdown" id="calcBreakdown">
-        <div class="breakdown-card">
-          <div class="bd-label">Daily</div>
-          <div class="bd-value" id="bdDaily">$0.00</div>
-        </div>
-        <div class="breakdown-card">
-          <div class="bd-label">Weekly</div>
-          <div class="bd-value" id="bdWeekly">$0.00</div>
-        </div>
-        <div class="breakdown-card">
-          <div class="bd-label">Monthly</div>
-          <div class="bd-value" id="bdMonthly">$0.00</div>
-        </div>
-      </div>
-
-      <button class="btn-calculate" id="calcBtn">Calculate Now</button>
-    </div>
-
-  </section>
-  <!-- ══════════════════════════════
+    </section>
+    <!-- ══════════════════════════════
      HOW IT WORKS SECTION
 ══════════════════════════════ -->
-<section id="how-it-works" class="hiw-section">
-  <h2 class="hiw-title">How it Works</h2>
-  <p class="hiw-sub">With CryptoBitPesa the process is smooth</p>
+    <section id="how-it-works" class="hiw-section">
+      <h2 class="hiw-title">How it Works</h2>
+      <p class="hiw-sub">With CryptoBitPesa the process is smooth</p>
 
-  <div class="hiw-timeline">
-    <div class="hiw-line"></div>
+      <div class="hiw-timeline">
+        <div class="hiw-line"></div>
 
-    <div class="hiw-step">
-      <div class="hiw-dot"></div>
-      <h3>Create Account</h3>
-      <p>Get started with a free account</p>
-    </div>
+        <div class="hiw-step">
+          <div class="hiw-dot"></div>
+          <h3>Create Account</h3>
+          <p>Get started with a free account</p>
+        </div>
 
-    <div class="hiw-step">
-      <div class="hiw-dot active"></div>
-      <h3>Deposit Funds</h3>
-      <p>Deposit to your secured account wallet</p>
-    </div>
+        <div class="hiw-step">
+          <div class="hiw-dot active"></div>
+          <h3>Deposit Funds</h3>
+          <p>Deposit to your secured account wallet</p>
+        </div>
 
-    <div class="hiw-step">
-      <div class="hiw-dot"></div>
-      <h3>Investments</h3>
-      <p>Invest on a package of your choice</p>
-    </div>
+        <div class="hiw-step">
+          <div class="hiw-dot"></div>
+          <h3>Investments</h3>
+          <p>Invest on a package of your choice</p>
+        </div>
 
-    <div class="hiw-step">
-      <div class="hiw-dot"></div>
-      <h3>Analyse Profits</h3>
-      <p>Analyse your real-time rebates</p>
-    </div>
+        <div class="hiw-step">
+          <div class="hiw-dot"></div>
+          <h3>Analyse Profits</h3>
+          <p>Analyse your real-time rebates</p>
+        </div>
 
-    <div class="hiw-step">
-      <div class="hiw-dot"></div>
-      <h3>Withdraw</h3>
-      <p>Withdraw your funds anytime you wish</p>
-    </div>
-  </div>
-</section>
-<!-- ══════════════════════════════
+        <div class="hiw-step">
+          <div class="hiw-dot"></div>
+          <h3>Withdraw</h3>
+          <p>Withdraw your funds anytime you wish</p>
+        </div>
+      </div>
+    </section>
+    <!-- ══════════════════════════════
      TEAM SECTION
 ══════════════════════════════ -->
-<section id="team" class="team-section">
-  <div class="team-header reveal">
-    <h2>Meet Our Team</h2>
-    <p>Best team with knowledge in cryptocurrency world.</p>
-  </div>
+    <section id="team" class="team-section">
+      <div class="team-header reveal">
+        <h2>Meet Our Team</h2>
+        <p>Best team with knowledge in cryptocurrency world.</p>
+      </div>
 
-  <div class="team-cards reveal">
+      <div class="team-cards reveal">
+        <div class="tm-card">
+          <div class="tm-photo">
+            <img src="images/team1.webp" alt="Richard Brent" />
+            <div class="tm-socials">
+              <a href="#" target="_blank" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"
+                  />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="tm-info">
+            <h3>Richard Brent</h3>
+            <span>Chief Executive Officer</span>
+          </div>
+        </div>
 
-    <div class="tm-card">
-      <div class="tm-photo">
-        <img src="images/team1.webp" alt="Richard Brent" />
-        <div class="tm-socials">
-          <a href="#" target="_blank" aria-label="Facebook">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="Twitter">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
+        <div class="tm-card">
+          <div class="tm-photo">
+            <img src="images/team3.webp" alt="Britney Bells" />
+            <div class="tm-socials">
+              <a href="#" target="_blank" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"
+                  />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="tm-info">
+            <h3>Britney Bells</h3>
+            <span>Product Manager</span>
+          </div>
+        </div>
+
+        <div class="tm-card">
+          <div class="tm-photo">
+            <img src="images/team2.webp" alt="Williams Chad" />
+            <div class="tm-socials">
+              <a href="#" target="_blank" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"
+                  />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="tm-info">
+            <h3>Williams Chad</h3>
+            <span>Business Manager</span>
+          </div>
+        </div>
+
+        <div class="tm-card">
+          <div class="tm-photo">
+            <img src="images/team4.webp" alt="Steven Cole" />
+            <div class="tm-socials">
+              <a href="#" target="_blank" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="Twitter">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  />
+                </svg>
+              </a>
+              <a href="#" target="_blank" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"
+                  />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="tm-info">
+            <h3>Steven Cole</h3>
+            <span>Digital Marketer</span>
+          </div>
         </div>
       </div>
-      <div class="tm-info">
-        <h3>Richard Brent</h3>
-        <span>Chief Executive Officer</span>
-      </div>
-    </div>
-
-    <div class="tm-card">
-      <div class="tm-photo">
-        <img src="images/team3.webp" alt="Britney Bells" />
-        <div class="tm-socials">
-          <a href="#" target="_blank" aria-label="Facebook">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="Twitter">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-        </div>
-      </div>
-      <div class="tm-info">
-        <h3>Britney Bells</h3>
-        <span>Product Manager</span>
-      </div>
-    </div>
-
-    <div class="tm-card">
-      <div class="tm-photo">
-        <img src="images/team2.webp" alt="Williams Chad" />
-        <div class="tm-socials">
-          <a href="#" target="_blank" aria-label="Facebook">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="Twitter">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-        </div>
-      </div>
-      <div class="tm-info">
-        <h3>Williams Chad</h3>
-        <span>Business Manager</span>
-      </div>
-    </div>
-
-    <div class="tm-card">
-      <div class="tm-photo">
-        <img src="images/team4.webp" alt="Steven Cole" />
-        <div class="tm-socials">
-          <a href="#" target="_blank" aria-label="Facebook">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="Twitter">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-          </a>
-          <a href="#" target="_blank" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-        </div>
-      </div>
-      <div class="tm-info">
-        <h3>Steven Cole</h3>
-        <span>Digital Marketer</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-  <!-- ══════════════════════════════
+    </section>
+    <!-- ══════════════════════════════
        FOOTER
   ══════════════════════════════ -->
-  <footer>
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <a href="#home" class="logo">
-          <span class="crypto">Crypto</span><span class="fxminers">BITPESA</span>
-        </a>
-        <p>Your trusted platform for cryptocurrency exchange, trading, and investment. Secure, fast, and always available.</p>
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#home" class="logo">
+            <span class="crypto">Crypto</span
+            ><span class="fxminers">BITPESA</span>
+          </a>
+          <p>
+            Your trusted platform for cryptocurrency exchange, trading, and
+            investment. Secure, fast, and always available.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="plans.html">Plans</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#">Markets</a></li>
+            <li><a href="#">Referral Program</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms-of-services.html">Terms of Service</a></li>
+            <li><a href="aml-policy.html">AML Policy</a></li>
+            <li><a href="cookie-policy.html">Cookie Policy</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="footer-col">
-        <h4>Platform</h4>
-        <ul>
-          <li><a href="plans.html">Plans</a></li>
-          <li><a href="#how-it-works">How It Works</a></li>
-          <li><a href="#">Markets</a></li>
-          <li><a href="#">Referral Program</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="#team">Team</a></li>
-          <li><a href="#">About Us</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="#">Careers</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="privacy-policy.html">Privacy Policy</a></li>
-          <li><a href="terms-of-services.html">Terms of Service</a></li>
-          <li><a href="aml-policy.html">AML Policy</a></li>
-          <li><a href="cookie-policy.html">Cookie Policy</a></li>
-        </ul>
-      </div>
-    </div>
 
-    <div class="footer-bottom">
-      <p>© 2026 CryptoBitPesa. All rights reserved.</p>
-      <div class="footer-socials">
-        <a href="#" class="social-btn" aria-label="Twitter">𝕏</a>
-        <a href="#" class="social-btn" aria-label="Telegram">✈</a>
-        <a href="#" class="social-btn" aria-label="LinkedIn">in</a>
+      <div class="footer-bottom">
+        <p>© 2026 CryptoBitPesa. All rights reserved.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Twitter">𝕏</a>
+          <a href="#" class="social-btn" aria-label="Telegram">✈</a>
+          <a href="#" class="social-btn" aria-label="LinkedIn">in</a>
+        </div>
       </div>
-    </div>
-  </footer>
-  <script src="calculator.js"></script>
-  <script src="script.js"></script>
-</body>
+    </footer>
+    <script src="calculator.js"></script>
+    <script src="script.js"></script>
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+      const supabase = createClient(
+        "https://xbazuosvlggtolahgcjv.supabase.co",
+        "sb_publishable_9Wy4npRqw4-b5XbldMQACg_RF2uXc-F",
+      );
+
+      const dashboardIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard`;
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        const navRegisterItem = document.getElementById("navRegisterItem");
+        if (navRegisterItem) navRegisterItem.style.display = "none";
+        const navLoginLink = document.getElementById("navLoginLink");
+        if (navLoginLink) {
+          navLoginLink.innerHTML = dashboardIcon;
+          navLoginLink.href = "dashboard.html";
+        }
+
+        const mobileRegisterLink =
+          document.getElementById("mobileRegisterLink");
+        if (mobileRegisterLink) mobileRegisterLink.style.display = "none";
+        const mobileLoginLink = document.getElementById("mobileLoginLink");
+        if (mobileLoginLink) {
+          mobileLoginLink.innerHTML = dashboardIcon;
+          mobileLoginLink.href = "dashboard.html";
+        }
+      }
+    </script>
+  </body>
 </html>
