@@ -5,11 +5,11 @@
 // ══════════════════════════════════════════════
 
 const PLANS = {
-  bronze:    { label: 'Bronze',    min: 50,    max: 800,    dailyRate: 0.05  }, // 5% daily
-  silver:    { label: 'Silver',    min: 900,   max: 3000,   dailyRate: 0.08  }, // 8% daily
-  gold:      { label: 'Gold',      min: 3000,  max: 5000,   dailyRate: 0.10  }, // 10% daily
-  premium:   { label: 'Premium',   min: 5000,  max: 20000,  dailyRate: 0.13  }, // 13% daily
-  executive: { label: 'Executive', min: 20000, max: Infinity, dailyRate: 0.15 }, // 15% daily
+  bronze:    { label: 'Bronze',    min: 100,    max: 800,    dailyRate: 0.05  }, // 5% daily
+  silver:    { label: 'Silver',    min: 801,   max: 3000,   dailyRate: 0.08  }, // 8% daily
+  gold:      { label: 'Gold',      min: 3001,  max: 5000,   dailyRate: 0.10  }, // 10% daily
+  premium:   { label: 'Premium',   min: 5001,  max: 20000,  dailyRate: 0.13  }, // 13% daily
+  executive: { label: 'Executive', min: 20001, max: Infinity, dailyRate: 0.15 }, // 15% daily
 };
 
 function fmt(n) {
